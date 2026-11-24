@@ -37,6 +37,8 @@ jobs:
           restore-keys: |
             vista-recognition-seed-v1-
       - name: Bundle offline recognition image assets
+        env:
+          VISTA_FETCH_REMOTE_SEED_IMAGES: 'true'
         run: python3 scripts/fetch_recognition_seed_images.py
       - name: Assemble debug APK
         run: gradle --no-daemon :app:assembleDebug
