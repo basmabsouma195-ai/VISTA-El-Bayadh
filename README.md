@@ -25,14 +25,14 @@ Do not invent landmark history, coordinates, visitor ratings, opening hours or s
 
 ## Offline catalogue foundation
 
-The app now has a typed landmark model and an asset-backed catalogue reader:
+The app now has a typed landmark model, an asset-backed catalogue reader, and an offline-only image index reader:
 - `app/src/main/java/dz/vista/elbayadh/data/Landmark.kt`
 - `app/src/main/java/dz/vista/elbayadh/data/OfflineCatalogue.kt`
 - `app/src/main/assets/content/landmarks.json`
+- `app/src/main/java/dz/vista/elbayadh/recognition/OfflineRecognitionImageIndex.kt`
 
 The catalogue envelope includes schema/content versions, the province identity,
-categories and landmark records. The current list is deliberately empty until
-the province's records, coordinates, images and audio are sourced and reviewed.
+categories and landmark records. The current list is a partial working catalogue. Entries for Gour Brizina and Kef El Melh are present but marked under review; their descriptions and visitor-navigation coordinates are not yet established. Other seed entries are also incomplete. See `CONTENT_CATALOGUE.md` before adding or publishing records.
 See `CONTENT_CATALOGUE.md` before adding records.
 
 ## Continuous Android build
