@@ -32,7 +32,7 @@ The app now has a typed landmark model, an asset-backed catalogue reader, and an
 - `app/src/main/java/dz/vista/elbayadh/recognition/OfflineRecognitionImageIndex.kt`
 
 The catalogue envelope includes schema/content versions, the province identity,
-categories and landmark records. The current list is a partial working catalogue. Entries for Gour Brizina and Kef El Melh are present but marked under review; their descriptions and visitor-navigation coordinates are not yet established. Other seed entries are also incomplete. See `CONTENT_CATALOGUE.md` before adding or publishing records.
+categories and landmark records. The current list is a partial working catalogue. Entries for Gour Brizina, Kef El Melh, Ksar Bent Khass, Gour Bent El Khass, and Ksar Boussemghoun – Zaouia Sidi Ahmed Tidjani are present but marked under review; their descriptions and visitor-navigation coordinates are not yet established. Other seed entries are also incomplete. See `CONTENT_CATALOGUE.md` before adding or publishing records.
 See `CONTENT_CATALOGUE.md` before adding records.
 
 ## Continuous Android build
