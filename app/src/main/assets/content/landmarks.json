@@ -129,6 +129,39 @@
       "descriptionFr": "",
       "descriptionEn": "",
       "verification": "under_review"
+    },
+    {
+      "id": "ksar-bent-khass",
+      "categoryId": "ksour",
+      "nameAr": "قصر بنت الخس",
+      "nameFr": "Ksar Bent Khass",
+      "nameEn": "Ksar Bent Khass",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review"
+    },
+    {
+      "id": "gour-bent-el-khass",
+      "categoryId": "natural-sites",
+      "nameAr": "قور بنت الخس",
+      "nameFr": "Gour Bent El Khass",
+      "nameEn": "Gour Bent El Khass",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review"
+    },
+    {
+      "id": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "categoryId": "ksour",
+      "nameAr": "قصر بوسمغون – زاوية سيدي أحمد التيجاني",
+      "nameFr": "Ksar de Boussemghoun – Zaouïa Sidi Ahmed Tidjani",
+      "nameEn": "Boussemghoun Ksar – Zaouia of Sidi Ahmed Tidjani",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review"
     }
   ]
 }
