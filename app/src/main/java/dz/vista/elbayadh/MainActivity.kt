@@ -165,7 +165,7 @@ private fun WelcomeScreen(language: AppLanguage, onStart: () -> Unit) {
     Box(Modifier.fillMaxSize().background(ForestDeep)) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.weight(1f).fillMaxWidth()) {
-                LandmarkThumbnail("field-photos/ksar-bent-khass/architecture/1000078259.jpg", "Ksar Bent Khass", large = true)
+                LandmarkThumbnail("field-photos/ksar-bent-khass/architecture/1000078259.jpg", "Ksar Bent Khass", large = true, fullBleed = true)
                 Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, ForestDeep.copy(alpha = 0.96f)))))
                 Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 26.dp, vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("VISTA", color = Gold, fontSize = 38.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
@@ -617,7 +617,7 @@ private fun LandmarkDetailDialog(
 }
 
 @Composable
-private fun LandmarkThumbnail(assetPath: String?, description: String, large: Boolean = false) {
+private fun LandmarkThumbnail(assetPath: String?, description: String, large: Boolean = false, fullBleed: Boolean = false) {
     val context = LocalContext.current
     var bitmap by remember(assetPath) { mutableStateOf<Bitmap?>(null) }
 
@@ -652,7 +652,7 @@ private fun LandmarkThumbnail(assetPath: String?, description: String, large: Bo
         Image(
             bitmap = bitmap!!.asImageBitmap(),
             contentDescription = description,
-            modifier = (if (large) Modifier.fillMaxWidth().height(190.dp) else Modifier.size(76.dp)).clip(RoundedCornerShape(12.dp)),
+            modifier = (if (fullBleed) Modifier.fillMaxSize() else if (large) Modifier.fillMaxWidth().height(190.dp) else Modifier.size(76.dp)).clip(RoundedCornerShape(12.dp)),
             contentScale = ContentScale.Crop
         )
     }
