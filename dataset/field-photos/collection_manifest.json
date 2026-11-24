@@ -192,10 +192,10 @@
       "visualStatus": "rock_formation_gour_brezina",
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Location confirmed by user; keep excluded from recognition runtime pending photo integrity, multi-view coverage and dataset review.",
+      "reviewNote": "User confirmed this rock formation photograph depicts Gour Brezina; recognition remains disabled pending image review and dataset validation.",
       "landmarkId": "gour-brizina",
       "locationNameAr": "قور بريزينة",
-      "locationConfirmation": "User explicitly confirmed these four photographs depict Gour Brezina on 2026-11-24."
+      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph depicts Gour Brezina."
     },
     {
       "filename": "1000078308.jpg",
