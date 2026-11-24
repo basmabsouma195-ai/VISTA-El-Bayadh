@@ -1195,3 +1195,5 @@ private fun MoreScreen(
         }
     }
 }
+
+// Visual refresh CI verification marker.
