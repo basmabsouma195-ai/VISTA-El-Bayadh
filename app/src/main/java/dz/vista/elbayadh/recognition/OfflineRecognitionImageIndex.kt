@@ -17,7 +17,11 @@ data class RecognitionReferenceImage(
     val assetPath: String,
     val labelAr: String,
     val labelFr: String,
-    val labelEn: String
+    val labelEn: String,
+    val attribution: String,
+    val license: String,
+    val sourcePage: String,
+    val licenseUrl: String
 )
 
 class OfflineRecognitionImageIndex(context: Context) {
@@ -46,7 +50,11 @@ class OfflineRecognitionImageIndex(context: Context) {
                         assetPath = path,
                         labelAr = item.optString("labelAr"),
                         labelFr = item.optString("labelFr"),
-                        labelEn = item.optString("labelEn")
+                        labelEn = item.optString("labelEn"),
+                        attribution = item.optString("attribution"),
+                        license = item.optString("license"),
+                        sourcePage = item.optString("sourcePage"),
+                        licenseUrl = item.optString("licenseUrl")
                     )
                 )
             }
