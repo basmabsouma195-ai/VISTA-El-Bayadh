@@ -9,7 +9,10 @@
       "assetPath": "recognition/references/ksar-bent-khass.jpg",
       "labelAr": "قصر بنت الخس",
       "labelFr": "Ksar Bent Khass",
-      "labelEn": "Ksar Bent Khass"
+      "labelEn": "Ksar Bent Khass",
+      "runtimeApproved": true,
+      "verificationStatus": "verified",
+      "datasetRole": "field_reference"
     },
     {
       "id": "field-gour-bent-el-khass-sign-01",
@@ -18,7 +21,10 @@
       "assetPath": "recognition/references/gour-bent-el-khass.jpg",
       "labelAr": "قور بنت الخس",
       "labelFr": "Gour Bent El Khass",
-      "labelEn": "Gour Bent El Khass"
+      "labelEn": "Gour Bent El Khass",
+      "runtimeApproved": true,
+      "verificationStatus": "verified",
+      "datasetRole": "field_reference"
     },
     {
       "id": "field-ksar-boussemghoun-zaouia-sign-01",
@@ -27,7 +33,10 @@
       "assetPath": "recognition/references/ksar-boussemghoun-zaouia.jpg",
       "labelAr": "قصر بوسمغون – زاوية سيدي أحمد التيجاني",
       "labelFr": "Ksar de Boussemghoun – Zaouïa Sidi Ahmed Tidjani",
-      "labelEn": "Boussemghoun Ksar – Sidi Ahmed Tidjani Zaouia"
+      "labelEn": "Boussemghoun Ksar – Sidi Ahmed Tidjani Zaouia",
+      "runtimeApproved": true,
+      "verificationStatus": "verified",
+      "datasetRole": "field_reference"
     }
   ]
 }
