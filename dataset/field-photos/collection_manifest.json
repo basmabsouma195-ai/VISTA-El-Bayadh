@@ -137,10 +137,13 @@
     {
       "filename": "1000078299.jpg",
       "sha256": "3608bf45d94d20bd4a19ca5ceac2455b913bdddb2f7a8873207d8ffdfa0ffd51",
-      "visualStatus": "unclassified_landscape",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "mountain_wetland_kef_el_melh",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Mountain and wetland/pond view; exact site not confirmed"
+      "reviewNote": "Location confirmed by user; keep excluded from recognition runtime pending photo integrity, multi-view coverage and dataset review.",
+      "landmarkId": "kef-el-melh",
+      "locationNameAr": "كاف الملح",
+      "locationConfirmation": "User explicitly confirmed this photograph depicts Kef El Melh on 2026-11-24."
     },
     {
       "filename": "1000078302.jpg",
