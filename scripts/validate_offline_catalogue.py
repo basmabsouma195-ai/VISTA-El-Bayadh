@@ -57,6 +57,10 @@ for image in index.get("images", []):
     seen.add(iid)
     if image.get("landmarkId") not in set(ids):
         errors.append(f"{iid}: references unknown landmarkId")
+    if image.get("runtimeApproved") is True and image.get("verificationStatus") != "verified":
+        errors.append(f"{iid}: runtime-approved image must have verificationStatus=verified")
+    if image.get("datasetRole") == "seed_reference_only" and image.get("runtimeApproved") is True:
+        errors.append(f"{iid}: seed-only image cannot be runtime-approved")
     rel = pathlib.PurePosixPath(image.get("assetPath", ""))
     if not rel.parts or rel.is_absolute() or ".." in rel.parts or "://" in str(rel):
         errors.append(f"{iid}: unsafe or missing local assetPath")
