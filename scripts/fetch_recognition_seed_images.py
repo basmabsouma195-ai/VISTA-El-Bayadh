@@ -3,6 +3,7 @@
 import json
 import pathlib
 import sys
+import urllib.parse
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -16,8 +17,13 @@ def main():
     failures = []
     for item in data["images"]:
         destination = OUT / item["fileName"]
+        parts = urllib.parse.urlsplit(item["sourceFileUrl"])
+        encoded_path = urllib.parse.quote(parts.path, safe="/:")
+        source_url = urllib.parse.urlunsplit(
+            (parts.scheme, parts.netloc, encoded_path, parts.query, parts.fragment)
+        )
         request = urllib.request.Request(
-            item["sourceFileUrl"],
+            source_url,
             headers={"User-Agent": USER_AGENT},
         )
         try:
