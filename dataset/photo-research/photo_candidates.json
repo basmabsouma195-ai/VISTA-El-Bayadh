@@ -13,9 +13,15 @@
       "title": "اطلالة من القصر الى واحة بوسمغون",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:اطلالة_من_القصر_الى_واحة_بوسمغون-_القصر_القديم-_بوسمغون-_ولاية_البيض-_الجزائر.jpg",
       "repository": "Wikimedia Commons",
-      "status": "candidate",
+      "status": "license-reviewed-candidate",
       "licenseReview": "required",
-      "notes": "الصورة معنونة صراحة بإطلالة من القصر القديم إلى واحة بوسمغون؛ تحقق من صفحة الملف قبل التنزيل."
+      "notes": "صورة معاينة فعلية تُظهر الواحة والنخيل وإطلالة القصر. الترخيص يسمح بإعادة الاستخدام مع النسبة ورابط الترخيص وبيان التعديلات، وبشرط المشاركة بالمثل للأعمال المشتقة. لم تُنسخ بعد إلى أصول التطبيق.",
+      "author": "Bennaci mohammed salah eddine",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "2048x1536",
+      "capturedOrPublished": "2020-03-06",
+      "downloadedIntoRepository": false
     },
     {
       "id": "boussemghoun-old-ksar-gate",
@@ -43,9 +49,15 @@
       "title": "Bousshamoun Palace or the Palace of Happiness",
       "sourcePage": "https://commons.wikimedia.org/wiki/File:Bousshamoun_Palace_or_the_Palace_of_Happiness.jpg",
       "repository": "Wikimedia Commons",
-      "status": "candidate",
+      "status": "license-reviewed-candidate",
       "licenseReview": "required",
-      "notes": "صورة عامة لقصر بوسمغون؛ راجع وصف الملف وحقوقه قبل الاستخدام."
+      "notes": "الصفحة تصف الصورة لقصر بوسمغون وتذكر المؤلف والترخيص CC BY-SA 4.0. يجب إدراج النسبة ورابط الترخيص وبيان التعديلات والمشاركة بالمثل.",
+      "author": "Rachid Ayadi",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "2738x1825",
+      "capturedOrPublished": "2019-11-02",
+      "downloadedIntoRepository": false
     },
     {
       "id": "brezina-general-view",
@@ -73,9 +85,15 @@
       "title": "GOUR de Bent El-Khass.jpg",
       "sourcePage": "https://commons.wikimedia.org/wiki/Category:Views_of_El_Bayadh_Province",
       "repository": "Wikimedia Commons",
-      "status": "candidate",
+      "status": "license-reviewed-candidate",
       "licenseReview": "required",
-      "notes": "اسم الملف يطابق قور بنت الخس؛ يلزم فحص بيانات الترخيص والملف الأصلي."
+      "notes": "صفحة الملف تصرح بأنه El Khass, Brezina, Algeria وGour de Bent el Khass Brezina. الترخيص يسمح بإعادة الاستخدام مع النسبة ورابط الترخيص وبيان التعديلات والمشاركة بالمثل. يلزم إدخال الملف إلى أصول التطبيق بعد تنزيله.",
+      "author": "Aminodesign",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "5962x3975",
+      "capturedOrPublished": "2020-03-20",
+      "downloadedIntoRepository": false
     },
     {
       "id": "boussemghoun-village-view",
