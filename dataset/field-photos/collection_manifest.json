@@ -108,10 +108,12 @@
     {
       "filename": "1000078288.jpg",
       "sha256": "e8fdd200c7b6c94135b405ccf0a932488e90a6e46e556c4f6fb126be6ac10a1e",
-      "visualStatus": "unclassified_landscape",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "landscape_ain_ouarka",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Aerial gorge/valley view; exact location not confirmed"
+      "reviewNote": "User identified this landscape photograph as Ain Ouarka; recognition remains disabled pending image review and dataset validation.",
+      "locationNameAr": "عين ورقة",
+      "locationConfirmation": "User identified this photograph as Ain Ouarka on 2026-11-24."
     },
     {
       "filename": "1000078290.jpg",
@@ -127,10 +129,12 @@
     {
       "filename": "1000078293.jpg",
       "sha256": "be3679a1e1ec8ec77914a980f4d4a3b10c8801c42d8cf1d4e87e218e1ec7f1f6",
-      "visualStatus": "unclassified_landscape",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "landscape_ain_ouarka",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Aerial valley/rock view; exact location not confirmed"
+      "reviewNote": "User identified this landscape photograph as Ain Ouarka; recognition remains disabled pending image review and dataset validation.",
+      "locationNameAr": "عين ورقة",
+      "locationConfirmation": "User identified this photograph as Ain Ouarka on 2026-11-24."
     },
     {
       "filename": "1000078296.jpg",
