@@ -22,3 +22,20 @@ This first repository foundation establishes the Android/Compose project and the
 
 ## Content integrity
 Do not invent landmark history, coordinates, visitor ratings, opening hours or safety advice. Each published record must carry an internal editorial status: documented, oral account, or under investigation. Source records remain in the private administration workflow rather than being displayed as dated source links to visitors.
+
+## Offline catalogue foundation
+
+The app now has a typed landmark model and an asset-backed catalogue reader:
+- `app/src/main/java/dz/vista/elbayadh/data/Landmark.kt`
+- `app/src/main/java/dz/vista/elbayadh/data/OfflineCatalogue.kt`
+- `app/src/main/assets/content/landmarks.json`
+
+The catalogue envelope includes schema/content versions, the province identity,
+categories and landmark records. The current list is deliberately empty until
+the province's records, coordinates, images and audio are sourced and reviewed.
+See `CONTENT_CATALOGUE.md` before adding records.
+
+## Continuous Android build
+
+Every push to `main` runs the Android debug assembly workflow. A successful run
+publishes the APK as the `vista-el-bayadh-debug` workflow artifact.
