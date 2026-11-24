@@ -29,5 +29,6 @@ data class CatalogueSnapshot(
     val contentVersion: Int,
     val provinceId: String,
     val categories: List<CatalogueCategory>,
-    val landmarks: List<Landmark>
+    val landmarks: List<Landmark>,
+    val photosByLandmark: Map<String, List<String>> = emptyMap()
 )
