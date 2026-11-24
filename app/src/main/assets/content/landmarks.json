@@ -65,6 +65,66 @@
       "descriptionFr": "",
       "descriptionEn": "",
       "verification": "under_review"
+    },
+    {
+      "id": "el-bayadh-martyrs-square",
+      "categoryId": "ksour",
+      "nameAr": "ساحة الشهداء - مدينة البيض",
+      "nameFr": "Place des Martyrs - El Bayadh",
+      "nameEn": "Martyrs' Square - El Bayadh",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review",
+      "image": "recognition/references/el-bayadh-martyrs-square-01.jpg"
+    },
+    {
+      "id": "cheikh-bouamama-statue-el-bayadh",
+      "categoryId": "ksour",
+      "nameAr": "تمثال الشيخ بوعمامة",
+      "nameFr": "Statue du Cheikh Bouamama",
+      "nameEn": "Cheikh Bouamama Statue",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review",
+      "image": "recognition/references/cheikh-bouamama-statue-01.jpg"
+    },
+    {
+      "id": "rock-art-ksar-el-hamar",
+      "categoryId": "natural-sites",
+      "nameAr": "النقوش الصخرية بمنطقة البيض",
+      "nameFr": "Gravures rupestres de la région d'El Bayadh",
+      "nameEn": "Rock engravings of El Bayadh region",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review",
+      "image": "recognition/references/ksar-el-hamar-rock-art-01.jpg"
+    },
+    {
+      "id": "boussemghoun-oasis",
+      "categoryId": "ksour",
+      "nameAr": "واحة بوسمغون",
+      "nameFr": "Oasis de Boussemghoun",
+      "nameEn": "Boussemghoun Oasis",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review",
+      "image": "recognition/references/boussemghoun-oasis-01.jpg"
+    },
+    {
+      "id": "boussemghoun-old-mosque",
+      "categoryId": "ksour",
+      "nameAr": "المسجد العتيق بالقصر القديم - بوسمغون",
+      "nameFr": "Ancienne mosquée du vieux ksar - Boussemghoun",
+      "nameEn": "Old Mosque in the Ancient Ksar - Boussemghoun",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review",
+      "image": "recognition/references/boussemghoun-old-mosque-01.jpg"
     }
   ]
 }
