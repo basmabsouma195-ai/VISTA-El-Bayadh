@@ -6,7 +6,7 @@ import org.junit.Test
 
 class RecognitionPolicyTest {
     private val policy = RecognitionPolicy(
-        minimumConfidence = 0.70f,
+        minimumScore = 0.70f,
         minimumLeadOverSecond = 0.15f
     )
 
