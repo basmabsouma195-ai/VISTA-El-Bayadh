@@ -21,7 +21,7 @@ class OfflineCatalogue(context: Context) {
         val provinceId = root.optJSONObject("province")?.optString("id").orEmpty()
         require(provinceId.isNotBlank()) { "Catalogue province.id is missing" }
 
-        val localPhotosByLandmark = runCatching {
+        val recognitionPhotosByLandmark = runCatching {
             OfflineRecognitionImageIndex(appContext).load()
                 .filter { reference ->
                     runCatching {
@@ -30,6 +30,38 @@ class OfflineCatalogue(context: Context) {
                 }
                 .groupBy({ it.landmarkId }, { it.assetPath })
         }.getOrDefault(emptyMap())
+
+        // Visitor gallery photos are kept separate from the recognition index.
+        // A field photo can appear in a landmark profile without becoming a
+        // visual-recognition reference.
+        val fieldGalleryPhotosByLandmark = runCatching {
+            val galleryRaw = appContext.assets.open("content/field-photo-gallery.json")
+                .bufferedReader(Charsets.UTF_8)
+                .use { it.readText() }
+            val galleryImages = JSONObject(galleryRaw).optJSONArray("images")
+            buildMap<String, MutableList<String>> {
+                if (galleryImages != null) {
+                    for (index in 0 until galleryImages.length()) {
+                        val item = galleryImages.optJSONObject(index) ?: continue
+                        if (!item.optBoolean("galleryEnabled", false)) continue
+                        if (item.optBoolean("recognitionApproved", false)) continue
+                        val landmarkId = item.optString("landmarkId").trim()
+                        val assetPath = item.optString("assetPath").trim()
+                        if (landmarkId.isBlank() || assetPath.isBlank()) continue
+                        val assetExists = runCatching {
+                            appContext.assets.open(assetPath).use { it.read() }
+                        }.isSuccess
+                        if (assetExists) getOrPut(landmarkId) { mutableListOf() }.add(assetPath)
+                    }
+                }
+            }
+        }.getOrDefault(emptyMap())
+
+        val localPhotosByLandmark = (recognitionPhotosByLandmark.keys + fieldGalleryPhotosByLandmark.keys)
+            .associateWith { landmarkId ->
+                (fieldGalleryPhotosByLandmark[landmarkId].orEmpty() +
+                    recognitionPhotosByLandmark[landmarkId].orEmpty()).distinct()
+            }
         val localImageByLandmark = localPhotosByLandmark.mapValues { it.value.firstOrNull().orEmpty() }
 
         val categoriesJson = root.optJSONArray("categories")
