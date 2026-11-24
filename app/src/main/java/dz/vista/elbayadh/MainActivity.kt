@@ -819,9 +819,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                     }
                     Text(
-                        if (isArabic) { if (recognitionModelLoaded) "تم تحميل نموذج MobileNetV3 دون إنترنت. التعرّف معطّل حاليًا: نحتاج 20 صورة مرجعية و10 صور اختبار مستقلة لكل معلم، و100 مشهد مجهول، ثم معايرة ميدانية." else "تعذّر تحميل نموذج الرؤية المحلي؛ سيبقى الماسح الاحتياطي QR متاحًا." }
-                        else if (isFrench) { if (recognitionModelLoaded) "Modèle MobileNetV3 chargé hors ligne. Identification désactivée : 20 références et 10 images de test indépendantes par site, 100 scènes inconnues et une calibration terrain sont requises." else "Impossible de charger le modèle visuel local ; le lecteur QR reste disponible." }
-                        else { if (recognitionModelLoaded) "MobileNetV3 model loaded offline. Identification remains disabled: 20 reference and 10 independent test images per site, 100 unknown scenes, and field calibration are required." else "Could not load the local vision model; the QR fallback remains available." },
+                        if (isArabic) { if (recognitionModelLoaded && recognitionReady) "النموذج المحلي جاهز. التعرّف النهائي مفعّل بعد المعايرة." else if (recognitionModelLoaded) "النموذج محمّل دون إنترنت. يمكنك تجربة اقتراحات بصرية أولية، لكنها غير مؤكدة. يلزم جمع صور ميدانية واختبارها قبل اعتماد التعرّف النهائي." else "تعذّر تحميل نموذج الرؤية المحلي." }
+                        else if (isFrench) { if (recognitionModelLoaded && recognitionReady) "Modèle local prêt. Identification finale activée après calibration." else if (recognitionModelLoaded) "Modèle chargé hors ligne. Des suggestions visuelles préliminaires sont disponibles, sans garantie. Des photos terrain et des tests sont nécessaires avant validation." else "Impossible de charger le modèle visuel local." }
+                        else { if (recognitionModelLoaded && recognitionReady) "Local model ready. Final identification is enabled after calibration." else if (recognitionModelLoaded) "Model loaded offline. Preliminary visual suggestions are available but unverified. Field photos and testing are required before final validation." else "Could not load the local vision model." },
                         color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
                     )
                     recognitionStatus?.let { status ->
