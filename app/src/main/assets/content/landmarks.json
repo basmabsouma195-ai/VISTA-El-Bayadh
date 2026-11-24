@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 15,
+  "contentVersion": 16,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -39,6 +39,18 @@
       "titleAr": "المعالم التذكارية",
       "titleFr": "Monuments commémoratifs",
       "titleEn": "Memorial landmarks"
+    },
+    {
+      "id": "fortifications",
+      "titleAr": "الحصون والأبراج الدفاعية",
+      "titleFr": "Forts et tours défensives",
+      "titleEn": "Forts and defensive towers"
+    },
+    {
+      "id": "paleontological-sites",
+      "titleAr": "المواقع الأحفورية وآثار الديناصورات",
+      "titleFr": "Sites paléontologiques et traces de dinosaures",
+      "titleEn": "Paleontological sites and dinosaur tracks"
     }
   ],
   "landmarks": [
@@ -312,7 +324,7 @@
     },
     {
       "id": "bastion-bent-el-khas",
-      "categoryId": "ksour",
+      "categoryId": "fortifications",
       "nameAr": "حصن بنت الخس – بريزينة",
       "nameFr": "Bastion Bent El Khas – Brézina",
       "nameEn": "Bent El Khas Bastion – Brézina",
@@ -369,7 +381,7 @@
     },
     {
       "id": "dinosaur-footprints-el-bayadh",
-      "categoryId": "rock-art",
+      "categoryId": "paleontological-sites",
       "nameAr": "آثار بصمات الديناصورات – طريق الرقاصة",
       "nameFr": "Empreintes de dinosaures – route de Reggassa",
       "nameEn": "Dinosaur Footprints – Reggassa Road",
@@ -622,7 +634,7 @@
     },
     {
       "id": "sidi-hamza-tower",
-      "categoryId": "memorials",
+      "categoryId": "fortifications",
       "nameAr": "برج سيدي حمزة",
       "nameFr": "Tour de Sidi Hamza",
       "nameEn": "Sidi Hamza Tower",
