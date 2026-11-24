@@ -120,14 +120,13 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
         if (!isModelLoaded || previewVectors.isEmpty()) return@withContext emptyList()
         val query = runCatching { embedWith(runtime, image) }.getOrNull()
             ?: return@withContext emptyList()
-        previewVectors.map { (landmarkId, vectors) ->
+        val ranked = previewVectors.map { (landmarkId, vectors) ->
             RecognitionCandidate(
                 landmarkId = landmarkId,
                 score = vectors.maxOfOrNull { cosineSimilarity(query, it) } ?: -1f
             )
-        }.filter { it.score.isFinite() && it.score in -1f..1f }
-            .sortedByDescending { it.score }
-            .take(3)
+        }
+        PreviewSuggestionPolicy.filter(ranked)
     }
 
     override suspend fun recognize(image: Bitmap): RecognitionDecision = withContext(Dispatchers.Default) {
