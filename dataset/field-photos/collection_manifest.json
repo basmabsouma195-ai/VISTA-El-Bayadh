@@ -129,10 +129,13 @@
     {
       "filename": "1000078296.jpg",
       "sha256": "5bf6fde16498005fc721538a5b59d2f9376dac3216b06d5e15231a7cc81ebdd2",
-      "visualStatus": "unclassified_ksar",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "ksar_bent_khass",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Clay ksar complex; exact site not confirmed"
+      "reviewNote": "Location identified by user as Ksar Bent El Khass; recognition remains disabled pending image review and dataset validation.",
+      "landmarkId": "ksar-bent-khass",
+      "locationNameAr": "قصر بنت الخس",
+      "locationConfirmation": "User identified this photograph as Ksar Bent El Khass on 2026-11-24."
     },
     {
       "filename": "1000078299.jpg",
