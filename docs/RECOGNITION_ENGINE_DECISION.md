@@ -4,7 +4,7 @@ Status: engineering decision for a prototype; **not a production recognition cla
 
 ## Selected evaluation path
 
-Evaluate the MediaPipe Image Embedder MobileNetV3 Small model through the LiteRT Android runtime, with CPU inference as the baseline. The model produces a 1,024-dimensional image embedding from a 224 x 224 image and is approximately 4.12 MB (FP32). The model is ImageNet-pretrained, not trained on El Bayadh landmarks; similarity scores must therefore be treated as retrieval signals, not calibrated probabilities.
+Evaluate the MediaPipe Image Embedder MobileNetV3 Small model through the LiteRT Android runtime, with CPU inference as the baseline. The model produces a 1,024-dimensional image embedding from a 224 x 224 image and is approximately 4.12 MB (FP32). The model is ImageNet-pretrained, not trained on El Bayadh landmarks. Its model card cautions that fine-grained domains may be outside its training distribution; similarity scores must therefore be treated as retrieval signals, not calibrated probabilities.
 
 Model reference:
 - Model: https://huggingface.co/litert-community/MediaPipe-ImageEmbedder-MobileNet-V3-Small
@@ -23,7 +23,7 @@ References:
 ## Proposed runtime flow
 
 1. Decode a camera frame to a bounded RGB bitmap on a worker thread.
-2. Apply the model's documented input preprocessing exactly; verify tensor shape, type, and numeric range from the actual model before coding the adapter.
+2. Resize/crop to 224 x 224 RGB and divide each channel by 255. The published tensor specification is float32 `[1, 224, 224, 3]`, values 0..1 (mean 0, std 255); verify this against the pinned binary during integration.
 3. Run CPU inference; keep one interpreter instance and serialize access.
 4. L2-normalize embeddings and compare only against precomputed embeddings for locally bundled, verified field photographs.
 5. Aggregate multiple reference views per landmark. Do not allow one generic seed image to identify a landmark.
