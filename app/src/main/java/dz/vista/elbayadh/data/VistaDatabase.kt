@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Offline-first catalogue database. The bundled JSON is the install seed;
@@ -56,6 +58,8 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
         )""")
         db.execSQL("CREATE INDEX index_landmark_photos_landmark ON landmark_photos(landmark_id)")
         db.execSQL("CREATE TABLE catalogue_meta (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL)")
+        db.execSQL("""CREATE TABLE landmark_sources (id INTEGER PRIMARY KEY AUTOINCREMENT, landmark_id TEXT NOT NULL, title TEXT NOT NULL, url TEXT, publisher TEXT, note TEXT, FOREIGN KEY(landmark_id) REFERENCES landmarks(id))""")
+        db.execSQL("CREATE INDEX index_landmark_sources_landmark ON landmark_sources(landmark_id)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -74,6 +78,10 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
             )""")
             db.execSQL("CREATE INDEX IF NOT EXISTS index_landmark_photos_landmark ON landmark_photos(landmark_id)")
         }
+        if (oldVersion < 4) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS landmark_sources (id INTEGER PRIMARY KEY AUTOINCREMENT, landmark_id TEXT NOT NULL, title TEXT NOT NULL, url TEXT, publisher TEXT, note TEXT, FOREIGN KEY(landmark_id) REFERENCES landmarks(id))")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_landmark_sources_landmark ON landmark_sources(landmark_id)")
+        }
     }
 
     @Synchronized
@@ -86,6 +94,7 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
         val db = writableDatabase
         db.beginTransaction()
         try {
+            db.delete("landmark_sources", null, null)
             db.delete("landmark_photos", null, null)
             db.delete("landmarks", null, null)
             db.delete("categories", null, null)
@@ -115,6 +124,17 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
                     put("audio_fr", landmark.audioFr?.takeIf { !it.contains("://") })
                     put("audio_en", landmark.audioEn?.takeIf { !it.contains("://") })
                 })
+            }
+            snapshot.landmarks.forEach { landmark ->
+                landmark.sources.forEach { source ->
+                    db.insertOrThrow("landmark_sources", null, ContentValues().apply {
+                        put("landmark_id", landmark.id)
+                        put("title", source.title)
+                        put("url", source.url)
+                        put("publisher", source.publisher)
+                        put("note", source.note)
+                    })
+                }
             }
             snapshot.photosByLandmark.forEach { (landmarkId, paths) ->
                 paths.distinct().forEachIndexed { position, assetPath ->
@@ -188,6 +208,6 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
 
     companion object {
         private const val DATABASE_NAME = "vista_el_bayadh.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
     }
 }
