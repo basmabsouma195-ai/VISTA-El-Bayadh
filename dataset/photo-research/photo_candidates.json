@@ -219,6 +219,51 @@
       "capturedOrPublished": "2013-11-11",
       "downloadedIntoRepository": false,
       "notes": "صورة عامة لبلدية الغاسول وليست لمعلم محدد. صفحة الملف تؤكد المؤلف وCC0؛ تصلح كصورة تعريفية للبلدية بعد تنزيلها وفحص محتواها، ولا تربط بمحطة مردوفة أو أي موقع نقش صخري."
+    },
+    {
+      "id": "ksar-bent-el-khass-front-2016",
+      "landmarkId": "ksar-bent-khass",
+      "title": "قصر بنت الخص - الواجهة الأمامية",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:%D9%82%D8%B5%D8%B1_%D8%A8%D9%86%D8%AA_%D8%A7%D9%84%D8%AE%D8%B5.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Ouahab radja",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "4608x3456",
+      "capturedOrPublished": "2016-09-21",
+      "downloadedIntoRepository": false,
+      "notes": "صفحة الملف تصفها صراحة بأنها صورة قصر بنت الخص من الجهة الأمامية، وتذكر أنه يبعد 7 كلم عن دائرة بريزينة. مرشح قوي للصورة الرئيسية بعد تنزيله وفحصه؛ يجب إظهار النسبة ورابط الترخيص وبيان التعديلات والمشاركة بالمثل."
+    },
+    {
+      "id": "boualem-rock-engraving-ram-archival",
+      "landmarkId": null,
+      "title": "Boualem - نقوش صخرية (كبش)",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Boualem._Autre_b%C3%A9lier.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Michel-georges bernard",
+      "license": "CC BY-SA 3.0 (also GFDL 1.2+)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "dimensions": "2832x4016",
+      "capturedOrPublished": "circa 1972",
+      "downloadedIntoRepository": false,
+      "notes": "صورة أرشيفية لنقش كبش من منطقة البيض، واسم الملف يربطه ببوعلام؛ لا يوجد في وصف الملف ما يكفي لإثبات أنه محطة الكبش بوعلام نفسها. تبقى صورة مرجعية تاريخية عامة ولا تربط ببطاقة المعلم حتى مطابقة النقش."
+    },
+    {
+      "id": "el-bayadh-rock-art-ksar-el-hamar-1973",
+      "landmarkId": null,
+      "title": "Gravures rupestres de la région d'El Bayadh - Ksar El Hamar",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Gravures_rupestres_de_la_r%C3%A9gion_d%27El_Bayadh.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Michel-georges bernard",
+      "license": "CC BY-SA 3.0 (also GFDL 1.2+)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "dimensions": "637x407",
+      "capturedOrPublished": "1973",
+      "downloadedIntoRepository": false,
+      "notes": "ملف تاريخي يصف نقوشا صخرية من منطقة البيض وموقع Ksar el Hamar. دقته الأصلية منخفضة نسبيا (637x407)؛ يصلح للتوثيق التاريخي لا كصورة رئيسية عالية الجودة."
     }
   ]
 }
