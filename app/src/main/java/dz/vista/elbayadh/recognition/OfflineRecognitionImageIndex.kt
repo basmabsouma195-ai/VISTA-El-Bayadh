@@ -21,7 +21,10 @@ data class RecognitionReferenceImage(
     val attribution: String,
     val license: String,
     val sourcePage: String,
-    val licenseUrl: String
+    val licenseUrl: String,
+    val runtimeApproved: Boolean,
+    val verificationStatus: String,
+    val datasetRole: String
 )
 
 class OfflineRecognitionImageIndex(context: Context) {
@@ -42,6 +45,9 @@ class OfflineRecognitionImageIndex(context: Context) {
                 val item = images.optJSONObject(i) ?: continue
                 val path = item.optString("assetPath")
                 if (path.isBlank() || path.contains("://")) continue
+                // Seed-only web photos and provisional mappings are never inference references.
+                if (!item.optBoolean("runtimeApproved", false)) continue
+                if (item.optString("verificationStatus") != "verified") continue
                 add(
                     RecognitionReferenceImage(
                         id = item.optString("id"),
@@ -54,7 +60,10 @@ class OfflineRecognitionImageIndex(context: Context) {
                         attribution = item.optString("attribution"),
                         license = item.optString("license"),
                         sourcePage = item.optString("sourcePage"),
-                        licenseUrl = item.optString("licenseUrl")
+                        licenseUrl = item.optString("licenseUrl"),
+                        runtimeApproved = item.optBoolean("runtimeApproved", false),
+                        verificationStatus = item.optString("verificationStatus"),
+                        datasetRole = item.optString("datasetRole")
                     )
                 )
             }
