@@ -20,7 +20,7 @@ The Android/Compose app, offline catalogue reader, SQLite-backed catalogue stora
 
 **Visual landmark recognition is integrated but not validated for production.** The local embedding engine can rank experimental candidates from bundled reference photographs. Final automatic identification remains deliberately disabled until the field dataset and held-out calibration gates in `RECOGNITION_VALIDATION.md` are satisfied. The current three seed references are not enough to identify landmarks reliably. Do not present experimental suggestions as confirmed recognition.
 
-The current catalogue contains 23 records (content version 12): 8 marked `verified` and 15 marked `under_review`. These are editorial states, not a claim that all visitor information, access details or coordinates have been field-validated.
+The current catalogue contains 31 records (content version 17): 8 marked `verified` and 23 marked `under_review`. These are editorial states, not a claim that all visitor information, access details or coordinates have been field-validated.
 
 ## Scanner workflow
 
@@ -39,7 +39,7 @@ Do not invent landmark history, coordinates, visitor ratings, opening hours or s
 - `app/src/main/assets/recognition/references/` contains committed local references.
 - `dataset/recognition/source-manifest.json` records licensed seed-image sources.
 - `scripts/fetch_recognition_seed_images.py` downloads permitted seed images at build time and bundles them into the APK. The installed app does not need a network connection to read these bundled assets.
-- `dataset/field-photos/manifest.json` tracks user field photographs; provisional associations are not automatically included in the runtime index.
+- `dataset/field-photos/manifest.json` tracks 20 user-supplied field photographs: 19 have user-confirmed location assignments and one hotel sign was excluded. This inventory is editorial metadata only; it does not mean the original JPEG files have been copied into the APK. Signage and plaques are documentation images, not visual-recognition references. User-confirmed photos remain excluded from the recognition runtime until separately reviewed and validated.
 
 Seed images are single reference views, not a complete recognition dataset. Expand them with confirmed field photographs from multiple angles, distances and lighting conditions. Keep image attributions available offline.
 
