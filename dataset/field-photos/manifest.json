@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "description": "Inventory of user-supplied field photographs. Files are staged under incoming/ and only entries with an explicit landmarkId are copied into the APK image index.",
+  "images": [
+    {
+      "id": "field-photo-01",
+      "sourceFileName": "1000078185.jpg",
+      "fileName": "1000078185.webp",
+      "landmarkId": "ksar-bent-khass",
+      "reviewNote": "identified_by_nearby_official_site_sign",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-02",
+      "sourceFileName": "1000078186.jpg",
+      "fileName": "1000078186.webp",
+      "landmarkId": "ksar-bent-khass",
+      "reviewNote": "identified_by_nearby_official_site_sign",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-03",
+      "sourceFileName": "1000078254.jpg",
+      "fileName": "1000078254.webp",
+      "landmarkId": "ksar-bent-khass",
+      "reviewNote": "official_tourism_sign_visible",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-04",
+      "sourceFileName": "1000078259.jpg",
+      "fileName": "1000078259.webp",
+      "landmarkId": "ksar-bent-khass",
+      "reviewNote": "identified_by_nearby_official_site_sign",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-05",
+      "sourceFileName": "1000078252.jpg",
+      "fileName": "1000078252.webp",
+      "landmarkId": "gour-bent-el-khass",
+      "reviewNote": "directional_sign_visible",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-06",
+      "sourceFileName": "1000078262.jpg",
+      "fileName": "1000078262.webp",
+      "landmarkId": "gour-bent-el-khass",
+      "reviewNote": "directional_sign_visible",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-07",
+      "sourceFileName": "1000078257.jpg",
+      "fileName": "1000078257.webp",
+      "landmarkId": "gour-bent-el-khass",
+      "reviewNote": "same_rock_formation_group_pending_field_confirmation",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-08",
+      "sourceFileName": "1000078266.jpg",
+      "fileName": "1000078266.webp",
+      "landmarkId": "gour-bent-el-khass",
+      "reviewNote": "same_rock_formation_group_pending_field_confirmation",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-09",
+      "sourceFileName": "1000078269.jpg",
+      "fileName": "1000078269.webp",
+      "landmarkId": "gour-bent-el-khass",
+      "reviewNote": "same_rock_formation_group_pending_field_confirmation",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-10",
+      "sourceFileName": "1000078305.jpg",
+      "fileName": "1000078305.webp",
+      "landmarkId": "gour-bent-el-khass",
+      "reviewNote": "same_rock_formation_group_pending_field_confirmation",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-11",
+      "sourceFileName": "1000078279.jpg",
+      "fileName": "1000078279.webp",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "reviewNote": "official_tourism_sign_visible",
+      "source": "user_supplied_project_photograph",
+      "status": "provisional_landmark_mapping"
+    },
+    {
+      "id": "field-photo-12",
+      "sourceFileName": "1000078246.jpg",
+      "fileName": "1000078246.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_hotel_sign",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-13",
+      "sourceFileName": "1000078285.jpg",
+      "fileName": "1000078285.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_garden_scene",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-14",
+      "sourceFileName": "1000078288.jpg",
+      "fileName": "1000078288.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_aerial_valley",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-15",
+      "sourceFileName": "1000078290.jpg",
+      "fileName": "1000078290.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_architecture",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-16",
+      "sourceFileName": "1000078293.jpg",
+      "fileName": "1000078293.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_aerial_landscape",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-17",
+      "sourceFileName": "1000078296.jpg",
+      "fileName": "1000078296.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_ksar_scene",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-18",
+      "sourceFileName": "1000078299.jpg",
+      "fileName": "1000078299.webp",
+      "landmarkId": null,
+      "reviewNote": "possible_kef_el_melh_landscape_not_confirmed",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-19",
+      "sourceFileName": "1000078302.jpg",
+      "fileName": "1000078302.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_aerial_landscape",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    },
+    {
+      "id": "field-photo-20",
+      "sourceFileName": "1000078308.jpg",
+      "fileName": "1000078308.webp",
+      "landmarkId": null,
+      "reviewNote": "unassigned_ksar_or_village_scene",
+      "source": "user_supplied_project_photograph",
+      "status": "unassigned_pending_identification"
+    }
+  ]
+}
