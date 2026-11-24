@@ -58,6 +58,38 @@ class RecognitionPolicyTest {
     }
 
     @Test
+    fun previewPolicyRejectsWeakUnknownScene() {
+        assertTrue(
+            PreviewSuggestionPolicy.filter(
+                listOf(RecognitionCandidate("unrelated-site", 0.42f))
+            ).isEmpty()
+        )
+    }
+
+    @Test
+    fun previewPolicyRejectsAmbiguousTopCandidates() {
+        assertTrue(
+            PreviewSuggestionPolicy.filter(
+                listOf(
+                    RecognitionCandidate("site-a", 0.84f),
+                    RecognitionCandidate("site-b", 0.80f)
+                )
+            ).isEmpty()
+        )
+    }
+
+    @Test
+    fun previewPolicyKeepsClearStrongCandidate() {
+        val result = PreviewSuggestionPolicy.filter(
+            listOf(
+                RecognitionCandidate("site-a", 0.86f),
+                RecognitionCandidate("site-b", 0.65f)
+            )
+        )
+        assertEquals("site-a", result.firstOrNull()?.landmarkId)
+    }
+
+    @Test
     fun emptyCandidateSetIsUnknown() {
         assertEquals(RecognitionDecision.Unknown, policy.decide(emptyList()))
     }
