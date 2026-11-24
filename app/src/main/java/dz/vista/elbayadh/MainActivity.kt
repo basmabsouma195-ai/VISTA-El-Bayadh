@@ -516,7 +516,7 @@ private fun LandmarkDetailDialog(
         title = { Text(title, color = Forest, fontWeight = FontWeight.Bold) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                LandmarkThumbnail(landmark.image, title)
+                LandmarkThumbnail(landmark.image, title, large = true)
                 Spacer(Modifier.height(12.dp))
                 Text(
                     description.ifBlank {
@@ -570,7 +570,7 @@ private fun LandmarkDetailDialog(
 }
 
 @Composable
-private fun LandmarkThumbnail(assetPath: String?, description: String) {
+private fun LandmarkThumbnail(assetPath: String?, description: String, large: Boolean = false) {
     val context = LocalContext.current
     var bitmap by remember(assetPath) { mutableStateOf<Bitmap?>(null) }
 
@@ -605,7 +605,7 @@ private fun LandmarkThumbnail(assetPath: String?, description: String) {
         Image(
             bitmap = bitmap!!.asImageBitmap(),
             contentDescription = description,
-            modifier = Modifier.size(76.dp).clip(RoundedCornerShape(12.dp)),
+            modifier = (if (large) Modifier.fillMaxWidth().height(190.dp) else Modifier.size(76.dp)).clip(RoundedCornerShape(12.dp)),
             contentScale = ContentScale.Crop
         )
     }
