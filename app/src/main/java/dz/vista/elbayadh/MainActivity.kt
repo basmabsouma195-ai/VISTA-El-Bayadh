@@ -179,8 +179,7 @@ private fun VistaApp() {
                         when (selectedTab) {
                             0 -> HomeScreen(
                                 c, language, onLanguage = ::changeLanguage,
-                                searchQuery = searchQuery, onSearchChange = { searchQuery = it },
-                                onCategorySelected = { searchQuery = it }
+                                searchQuery = searchQuery, onSearchChange = { searchQuery = it }
                             )
                             1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
                             2 -> InfoScreen(c.scan, c.scanNote, Icons.Filled.CenterFocusStrong)
@@ -203,8 +202,7 @@ private fun HomeScreen(
     language: AppLanguage,
     onLanguage: (AppLanguage) -> Unit,
     searchQuery: String,
-    onSearchChange: (String) -> Unit,
-    onCategorySelected: (String) -> Unit
+    onSearchChange: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
         Box(
