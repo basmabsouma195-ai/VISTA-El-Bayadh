@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "scope": "El Bayadh Province, Algeria",
+  "sourceUrl": "https://m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
+  "sourceAuthority": "Ministère de la Culture et des Arts - Liste générale des biens culturels protégés",
+  "note": "This file records the ministry's published legal protection classifications. Do not infer that every heritage-map listing is legally classified or protected.",
+  "entries": [
+    {
+      "id": "merdoufa-rock-art",
+      "nameAr": "موقع النقوش الصخرية المردوفة",
+      "nameFr": "Site rupestre de Merdoufa",
+      "municipality": "الغاسول",
+      "classification": "inventory-general-immovable-cultural-property",
+      "measureDate": "2007-07-14",
+      "officialJournal": "رقم 60 بتاريخ 2007-09-26",
+      "period": "ما قبل التاريخ"
+    },
+    {
+      "id": "boualem-ram-rock-art",
+      "nameAr": "محطة النقش الصخري كبش بوعلام",
+      "nameFr": "Station rupestre du Belier Bou Alem",
+      "municipality": "بوعلام",
+      "classification": "classified-cultural-property",
+      "measureDate": "2015-12-03",
+      "officialJournal": "رقم 28 بتاريخ 2016-04-08",
+      "period": "ما قبل التاريخ"
+    },
+    {
+      "id": "bastion-bent-el-khas",
+      "nameAr": "حصن بنت الخص",
+      "nameFr": "Bastion Bent El Khas",
+      "municipality": "بريزينة",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 342"
+    },
+    {
+      "id": "catholic-chapel",
+      "nameAr": "مصلى الكاثوليك",
+      "nameFr": "Chapelle Catholique",
+      "municipality": "الأبيض سيدي الشيخ",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 344"
+    },
+    {
+      "id": "ksar-arbaouat",
+      "nameAr": "قصر أربوات",
+      "nameFr": "Kasr Arboit",
+      "municipality": "أربوات",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 343"
+    },
+    {
+      "id": "ksar-boussemghoun",
+      "nameAr": "قصر بوسمغون",
+      "nameFr": "Kasr Bousemghoune",
+      "municipality": "بوسمغون",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 347"
+    },
+    {
+      "id": "ksar-chellala-dhahrania",
+      "nameAr": "قصر الشلالة الظهرانية",
+      "nameFr": "Kasr Challala El Dhahrania",
+      "municipality": "الشلالة",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 346"
+    },
+    {
+      "id": "ksar-el-ghassoul",
+      "nameAr": "قصر الغاسول",
+      "nameFr": "Kasr El Ghassoul",
+      "municipality": "الغاسول",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 345"
+    },
+    {
+      "id": "mausoleum-sidi-cheikh",
+      "nameAr": "ضريح سيدي الشيخ",
+      "nameFr": "Mausolée Sidi Cheikh",
+      "municipality": "الأبيض سيدي الشيخ",
+      "classification": "supplementary-inventory",
+      "measureDate": "2016-04-05",
+      "decree": "قرار الوالي رقم 341",
+      "period": "وسيط"
+    }
+  ]
+}
