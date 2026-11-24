@@ -4,6 +4,8 @@ import json
 import pathlib
 import os
 import sys
+import time
+import urllib.error
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -16,15 +18,39 @@ RUNTIME_INDEX = ASSET_ROOT / "index.json"
 USER_AGENT = "VISTA-El-Bayadh-OpenImageDataset/1.0"
 
 def fetch(url):
-    request = urllib.request.Request(
-        url, headers={"User-Agent": USER_AGENT, "Accept": "image/*,*/*;q=0.8"}
-    )
-    with urllib.request.urlopen(request, timeout=60) as response:
-        payload = response.read()
-        content_type = response.headers.get("Content-Type", "")
-    if not content_type.lower().startswith("image/") or len(payload) < 1024:
-        raise RuntimeError(f"invalid image response ({content_type}, {len(payload)} bytes)")
-    return payload
+    # Wikimedia may temporarily rate-limit CI runners. Retry politely and
+    # honour Retry-After instead of silently producing a partial photo pack.
+    last_error = None
+    for attempt in range(5):
+        request = urllib.request.Request(
+            url, headers={"User-Agent": USER_AGENT, "Accept": "image/*,*/*;q=0.8"}
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                payload = response.read()
+                content_type = response.headers.get("Content-Type", "")
+            if not content_type.lower().startswith("image/") or len(payload) < 1024:
+                raise RuntimeError(f"invalid image response ({content_type}, {len(payload)} bytes)")
+            return payload
+        except urllib.error.HTTPError as exc:
+            last_error = exc
+            if exc.code not in (429, 500, 502, 503, 504) or attempt == 4:
+                raise
+            retry_after = exc.headers.get("Retry-After")
+            try:
+                delay = min(60, max(5, int(retry_after))) if retry_after else 8 * (attempt + 1)
+            except ValueError:
+                delay = 8 * (attempt + 1)
+            print(f"Temporary HTTP {exc.code}; retrying image fetch in {delay}s (attempt {attempt + 2}/5)")
+            time.sleep(delay)
+        except (TimeoutError, urllib.error.URLError) as exc:
+            last_error = exc
+            if attempt == 4:
+                raise
+            delay = 8 * (attempt + 1)
+            print(f"Temporary network error; retrying image fetch in {delay}s (attempt {attempt + 2}/5)")
+            time.sleep(delay)
+    raise RuntimeError(f"image fetch failed: {last_error}")
 
 def is_image(path):
     if not path.is_file() or path.stat().st_size < 1024:
