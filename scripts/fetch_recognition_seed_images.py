@@ -68,7 +68,8 @@ def main():
         field_data = json.loads(FIELD_MANIFEST.read_text(encoding="utf-8"))
         for item in field_data.get("images", []):
             landmark_id = item.get("landmarkId")
-            if not landmark_id:
+            # A provisional label is not enough for a runtime photo association.
+            if not landmark_id or not item.get("runtimeApproved", False):
                 continue
             staged = FIELD_INCOMING / item["sourceFileName"]
             if not is_image(staged):
