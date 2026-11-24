@@ -161,10 +161,12 @@
     {
       "filename": "1000078302.jpg",
       "sha256": "e8f19ec6df5ed3dfbfa8d709d8edc0e202c136e2b19eb8d85d22e524a63a0370",
-      "visualStatus": "unclassified_landscape",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "aerial_landscape_hammam_ain_ouarka",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Aerial landscape; exact location not confirmed"
+      "reviewNote": "User confirmed this aerial landscape photograph is from Hammam Ain Ouarka; recognition remains disabled pending image review and dataset validation.",
+      "locationNameAr": "حمّام عين ورقة",
+      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph is also from Hammam Ain Ouarka."
     },
     {
       "filename": "1000078305.jpg",
