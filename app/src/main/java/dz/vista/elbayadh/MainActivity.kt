@@ -639,6 +639,12 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         var disposed = false
         var boundProvider: ProcessCameraProvider? = null
         var boundPreview: Preview? = null
+        var boundAnalysis: ImageAnalysis? = null
+        val scanner = BarcodeScanning.getClient(
+            BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build()
+        )
+        val analyzerExecutor = Executors.newSingleThreadExecutor()
+        val processing = AtomicBoolean(false)
 
         if (hasCameraPermission) {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -649,13 +655,24 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         val preview = Preview.Builder().build().also {
                             it.surfaceProvider = previewView.surfaceProvider
                         }
-                        provider.bindToLifecycle(
-                            lifecycleOwner,
-                            CameraSelector.DEFAULT_BACK_CAMERA,
-                            preview
-                        )
+                        val analysis = ImageAnalysis.Builder()
+                            .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .build()
+                        analysis.setAnalyzer(analyzerExecutor) { proxy ->
+                            analyzeVistaQr(proxy, scanner, processing, landmarks,
+                                onFound = { found ->
+                                    if (!disposed && qrMatchedLandmark?.id != found.id) {
+                                        qrMatchedLandmark = found
+                                        qrMessage = null
+                                    }
+                                },
+                                onUnknown = { if (!disposed) qrMessage = it }
+                            )
+                        }
+                        provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis)
                         boundProvider = provider
                         boundPreview = preview
+                        boundAnalysis = analysis
                     }
                 }
             }, ContextCompat.getMainExecutor(context))
@@ -663,11 +680,13 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
 
         onDispose {
             disposed = true
+            boundAnalysis?.clearAnalyzer()
             val provider = boundProvider
             val preview = boundPreview
-            if (provider != null && preview != null) {
-                runCatching { provider.unbind(preview) }
-            }
+            val analysis = boundAnalysis
+            if (provider != null) runCatching { provider.unbind(*listOfNotNull(preview, analysis).toTypedArray()) }
+            scanner.close()
+            analyzerExecutor.shutdown()
         }
     }
 
