@@ -65,8 +65,9 @@ class DatasetValidatorContractTests(unittest.TestCase):
         self.assertIn("RECOGNITION GATE: NOT READY", output)
 
     def test_modified_file_fails_hash_integrity(self):
+        entry = self.pending()
+        self.write_manifest([entry])
         self.image.write_bytes(b"changed-after-registration")
-        self.write_manifest([self.pending()])
         with self.assertRaises(SystemExit):
             self.run_validator()
 
