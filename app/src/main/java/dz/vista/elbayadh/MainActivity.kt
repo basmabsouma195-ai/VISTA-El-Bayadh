@@ -252,6 +252,7 @@ private fun VistaApp() {
                         },
                         onDismiss = { selectedLandmark = null },
                         isFavorite = landmark.id in favoriteIds,
+                        photos = catalogue?.photosByLandmark?.get(landmark.id).orEmpty(),
                         onFavoriteToggle = { toggleFavorite(landmark.id) }
                     )
                 }
@@ -490,6 +491,7 @@ private fun LandmarkDetailDialog(
     language: CatalogueLanguage,
     onDismiss: () -> Unit,
     isFavorite: Boolean,
+    photos: List<String>,
     onFavoriteToggle: () -> Unit
 ) {
     val title = landmark.name(language)
@@ -517,6 +519,10 @@ private fun LandmarkDetailDialog(
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 LandmarkThumbnail(landmark.image, title, large = true)
+                photos.filter { it != landmark.image }.forEachIndexed { index, photo ->
+                    Spacer(Modifier.height(10.dp))
+                    LandmarkThumbnail(photo, "$title ${index + 2}", large = true)
+                }
                 Spacer(Modifier.height(12.dp))
                 Text(
                     description.ifBlank {
