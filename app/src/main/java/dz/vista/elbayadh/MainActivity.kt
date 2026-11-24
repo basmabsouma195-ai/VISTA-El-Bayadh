@@ -3,6 +3,7 @@ package dz.vista.elbayadh
 import android.os.Bundle
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -668,6 +669,24 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasCameraPermission = granted }
+    val galleryLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            recognitionScope.launch {
+                val selected = decodeGalleryImage(context, uri)
+                if (selected == null) {
+                    recognitionStatus = if (isArabic) "تعذّر فتح الصورة. جرّب صورة أخرى." else if (isFrench) "Impossible d’ouvrir cette image. Essayez-en une autre." else "Could not open this image. Try another photo."
+                } else {
+                    analyzeLandmarkPhoto(
+                        selected, recognitionEngine, recognitionReady, landmarks, language,
+                        onOpenLandmark = onOpenLandmark,
+                        onStatus = { recognitionStatus = it }
+                    )
+                }
+            }
+        }
+    }
     val previewView = remember(context) {
         PreviewView(context).apply {
             scaleType = PreviewView.ScaleType.FILL_CENTER
@@ -835,44 +854,11 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                 recognitionStatus = if (isArabic) "تعذّر التقاط صورة من الكاميرا." else if (isFrench) "Impossible de capturer l’image de la caméra." else "Could not capture a camera frame."
                             } else {
                                 recognitionScope.launch {
-                                    try {
-                                        if (recognitionReady) {
-                                            when (val result = recognitionEngine.recognize(snapshot)) {
-                                                is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
-                                                    val found = landmarks.firstOrNull { it.id == result.candidate.landmarkId }
-                                                    if (found != null) onOpenLandmark(found)
-                                                    else recognitionStatus = if (isArabic) "المعلم غير موجود في الموسوعة المحلية." else if (isFrench) "Ce site est absent du catalogue local." else "The matched site is missing from the local catalogue."
-                                                }
-                                                is dz.vista.elbayadh.recognition.RecognitionDecision.Ambiguous ->
-                                                    recognitionStatus = if (isArabic) "النتيجة غير حاسمة؛ اقترب أو غيّر زاوية التصوير." else if (isFrench) "Résultat non concluant ; rapprochez-vous ou changez d’angle." else "Inconclusive result; move closer or change angle."
-                                                dz.vista.elbayadh.recognition.RecognitionDecision.Unknown ->
-                                                    recognitionStatus = if (isArabic) "لم نتعرّف على هذا المشهد." else if (isFrench) "Scène non reconnue." else "Scene not recognized."
-                                                dz.vista.elbayadh.recognition.RecognitionDecision.ModelUnavailable ->
-                                                    recognitionStatus = if (isArabic) "محرك التعرّف غير جاهز." else if (isFrench) "Le moteur n’est pas prêt." else "Recognition engine is not ready."
-                                            }
-                                        } else {
-                                            val suggestions = recognitionEngine.suggestCandidates(snapshot)
-                                            val names = suggestions.mapNotNull { candidate ->
-                                                landmarks.firstOrNull { it.id == candidate.landmarkId }?.let { landmark ->
-                                                    landmark.name(when (language) {
-                                                        AppLanguage.Arabic -> CatalogueLanguage.AR
-                                                        AppLanguage.French -> CatalogueLanguage.FR
-                                                        AppLanguage.English -> CatalogueLanguage.EN
-                                                    })
-                                                }
-                                            }
-                                            recognitionStatus = if (names.isEmpty()) {
-                                                if (isArabic) "لم تتوفر اقتراحات لهذه الصورة." else if (isFrench) "Aucune suggestion disponible pour cette image." else "No suggestions available for this image."
-                                            } else {
-                                                val list = names.joinToString("، ")
-                                                if (isArabic) "اقتراحات تجريبية غير مؤكدة: $list. هذه ليست نتيجة تعرّف موثوقة بعد."
-                                                else if (isFrench) "Suggestions expérimentales non confirmées : $list. L’identification n’est pas encore validée."
-                                                else "Unverified experimental suggestions: $list. This is not a validated identification."
-                                            }
-                                        }
-                                    } finally {
-                                        if (!snapshot.isRecycled) snapshot.recycle()
-                                    }
+                                    analyzeLandmarkPhoto(
+                                        snapshot, recognitionEngine, recognitionReady, landmarks, language,
+                                        onOpenLandmark = onOpenLandmark,
+                                        onStatus = { recognitionStatus = it }
+                                    )
                                 }
                             }
                         },
@@ -882,6 +868,16 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         Text(
                             if (isArabic) "حلّل صورة المعلم بالكاميرا" else if (isFrench) "Analyser le site avec la caméra" else "Analyze landmark with camera",
                             color = Color.White
+                        )
+                    }
+                    OutlinedButton(
+                        enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
+                        onClick = { galleryLauncher.launch("image/*") },
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                    ) {
+                        Text(
+                            if (isArabic) "اختر صورة للمعلم من المعرض" else if (isFrench) "Choisir une photo depuis la galerie" else "Choose a landmark photo",
+                            color = Forest
                         )
                     }
                 }
@@ -913,6 +909,75 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 }
             }
         }
+    }
+}
+
+private suspend fun decodeGalleryImage(context: Context, uri: Uri): Bitmap? = withContext(Dispatchers.IO) {
+    runCatching {
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        context.contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it, null, bounds)
+        }
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return@withContext null
+        var sample = 1
+        while (maxOf(bounds.outWidth, bounds.outHeight) / (sample * 2) >= 1280) sample *= 2
+        val options = BitmapFactory.Options().apply { inSampleSize = sample }
+        context.contentResolver.openInputStream(uri)?.use {
+            BitmapFactory.decodeStream(it, null, options)
+        }
+    }.getOrNull()
+}
+
+private suspend fun analyzeLandmarkPhoto(
+    snapshot: Bitmap,
+    engine: MobileNetV3RecognitionEngine,
+    recognitionReady: Boolean,
+    landmarks: List<Landmark>,
+    language: AppLanguage,
+    onOpenLandmark: (Landmark) -> Unit,
+    onStatus: (String) -> Unit
+) {
+    val isArabic = language == AppLanguage.Arabic
+    val isFrench = language == AppLanguage.French
+    try {
+        if (recognitionReady) {
+            when (val result = engine.recognize(snapshot)) {
+                is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
+                    val found = landmarks.firstOrNull { it.id == result.candidate.landmarkId }
+                    if (found != null) onOpenLandmark(found)
+                    else onStatus(if (isArabic) "المعلم غير موجود في الموسوعة المحلية." else if (isFrench) "Ce site est absent du catalogue local." else "The matched site is missing from the local catalogue.")
+                }
+                is dz.vista.elbayadh.recognition.RecognitionDecision.Ambiguous ->
+                    onStatus(if (isArabic) "النتيجة غير حاسمة؛ جرّب صورة أو زاوية أخرى." else if (isFrench) "Résultat non concluant ; essayez une autre photo ou un autre angle." else "Inconclusive result; try another photo or angle.")
+                dz.vista.elbayadh.recognition.RecognitionDecision.Unknown ->
+                    onStatus(if (isArabic) "لم نتعرّف على هذا المشهد." else if (isFrench) "Scène non reconnue." else "Scene not recognized.")
+                dz.vista.elbayadh.recognition.RecognitionDecision.ModelUnavailable ->
+                    onStatus(if (isArabic) "محرك التعرّف غير جاهز." else if (isFrench) "Le moteur n’est pas prêt." else "Recognition engine is not ready.")
+            }
+        } else {
+            val suggestions = engine.suggestCandidates(snapshot)
+            val names = suggestions.mapNotNull { candidate ->
+                landmarks.firstOrNull { it.id == candidate.landmarkId }?.let { landmark ->
+                    landmark.name(when (language) {
+                        AppLanguage.Arabic -> CatalogueLanguage.AR
+                        AppLanguage.French -> CatalogueLanguage.FR
+                        AppLanguage.English -> CatalogueLanguage.EN
+                    })
+                }
+            }
+            onStatus(if (names.isEmpty()) {
+                if (isArabic) "لم تتوفر اقتراحات لهذه الصورة." else if (isFrench) "Aucune suggestion disponible pour cette image." else "No suggestions available for this image."
+            } else {
+                val list = names.joinToString("، ")
+                if (isArabic) "اقتراحات تجريبية غير مؤكدة: $list. هذه ليست نتيجة تعرّف موثوقة بعد."
+                else if (isFrench) "Suggestions expérimentales non confirmées : $list. L’identification n’est pas encore validée."
+                else "Unverified experimental suggestions: $list. This is not a validated identification."
+            })
+        }
+    } catch (_: Exception) {
+        onStatus(if (isArabic) "حدث خطأ أثناء تحليل الصورة." else if (isFrench) "Une erreur est survenue pendant l’analyse." else "An error occurred while analyzing the image.")
+    } finally {
+        if (!snapshot.isRecycled) snapshot.recycle()
     }
 }
 
