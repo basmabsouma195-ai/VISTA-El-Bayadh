@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Research inventory of candidate public photographs for VISTA El Bayadh. This is not a runtime image index.",
+  "policy": {
+    "runtimeUse": "Only add a downloaded image after checking its individual file page, license, attribution requirements, resolution, and landmark match.",
+    "recognition": "Candidate photographs are not approved recognition references. Field capture and human review are required.",
+    "unknownLocation": "Do not assign a photograph to a landmark when its location is uncertain."
+  },
+  "candidates": [
+    {
+      "id": "boussemghoun-old-ksar-overlook",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "title": "اطلالة من القصر الى واحة بوسمغون",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:اطلالة_من_القصر_الى_واحة_بوسمغون-_القصر_القديم-_بوسمغون-_ولاية_البيض-_الجزائر.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "الصورة معنونة صراحة بإطلالة من القصر القديم إلى واحة بوسمغون؛ تحقق من صفحة الملف قبل التنزيل."
+    },
+    {
+      "id": "boussemghoun-old-ksar-gate",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "title": "مدخل القصر القديم - بوسمغون",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:مدخل_القصر_القديم_-_بوسمغون_-_ولاية_البيض-_الجزائر.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "ملف موصوف بأنه مدخل القصر القديم في بوسمغون."
+    },
+    {
+      "id": "boussemghoun-old-ksar-oasis",
+      "landmarkId": "boussemghoun-oasis",
+      "title": "بين الواحة والقصر القديم - بوسمغون",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:بين_الواحة_و_القصر_القصر_القديم_-_بوسمغون_-_ولاية_البيض-_الجزائر.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "صورة للقصر والواحة معاً؛ يجب تحديد إن كانت أنسب لبطاقة الواحة أو القصر."
+    },
+    {
+      "id": "boussemghoun-palace-general",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "title": "Bousshamoun Palace or the Palace of Happiness",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Bousshamoun_Palace_or_the_Palace_of_Happiness.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "صورة عامة لقصر بوسمغون؛ راجع وصف الملف وحقوقه قبل الاستخدام."
+    },
+    {
+      "id": "brezina-general-view",
+      "landmarkId": "gour-brizina",
+      "title": "BREZINA 1.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Brezina,_Algeria",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "مرشح من فئة بريزينة؛ لا يعتمد كصورة للقور تحديداً قبل معاينة الصورة."
+    },
+    {
+      "id": "el-ghour-landscape",
+      "landmarkId": "gour-brizina",
+      "title": "El-Gorre.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Views_of_El_Bayadh_Province",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "مرشح مصنف ضمن مناظر ولاية البيض؛ يلزم التحقق من أنه يمثل القور المقصود."
+    },
+    {
+      "id": "gour-bent-el-khass-landscape",
+      "landmarkId": "gour-bent-el-khass",
+      "title": "GOUR de Bent El-Khass.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Views_of_El_Bayadh_Province",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "اسم الملف يطابق قور بنت الخس؛ يلزم فحص بيانات الترخيص والملف الأصلي."
+    },
+    {
+      "id": "boussemghoun-village-view",
+      "landmarkId": "boussemghoun-oasis",
+      "title": "Boussemghoune.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Views_of_El_Bayadh_Province",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "منظر لبوسمغون؛ لا يُفترض أنه يصور القصر أو الواحة تحديداً دون معاينة."
+    },
+    {
+      "id": "arbaouat-village",
+      "landmarkId": "ksar-arbaouat",
+      "title": "Arbaouat Fougani اربوات الفوقاني.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Villages_in_El_Bayadh_Province",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "مرشح بصري لأربوات الفوقاني؛ لا يثبت وحده أنه صورة القصر العتيق."
+    },
+    {
+      "id": "brezina-village-el-faraa",
+      "landmarkId": "rock-art-khashim",
+      "title": "Village El Faraa - Brezina قرية الفرع - بريزينة.jpg",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Villages_in_El_Bayadh_Province",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "صورة للقرية التي تقع فيها محطة الخشيم وفق بطاقة التراث؛ ليست صورة للنقوش نفسها."
+    },
+    {
+      "id": "gouiret-lahbar-landscape",
+      "landmarkId": null,
+      "title": "Gouiret Lahbar قويرة لحبار",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:Road_signs_in_El_Bayadh_Province",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "الملفات المصنفة تحت اسم قويرة لحبار تحتاج إلى تحديد طبيعة المعلم ومطابقة الصورة."
+    },
+    {
+      "id": "el-bayadh-city-views",
+      "landmarkId": null,
+      "title": "El Bayadh city views",
+      "sourcePage": "https://commons.wikimedia.org/wiki/Category:El_Bayadh",
+      "repository": "Wikimedia Commons",
+      "status": "candidate",
+      "licenseReview": "required",
+      "notes": "مصدر لصور المدينة والمباني والشوارع؛ لا تُربط بمعلم محدد إلا بعد فحص كل صورة."
+    }
+  ]
+}
