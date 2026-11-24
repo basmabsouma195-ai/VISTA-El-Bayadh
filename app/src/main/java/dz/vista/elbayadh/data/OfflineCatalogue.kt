@@ -58,12 +58,20 @@ class OfflineCatalogue(context: Context) {
             }
         }
 
-        return CatalogueSnapshot(
+        val bundledSnapshot = CatalogueSnapshot(
             schemaVersion = root.optInt("schemaVersion", 1),
             contentVersion = root.optInt("contentVersion", 1),
             provinceId = provinceId,
             categories = categories,
             landmarks = landmarks
         )
+        // Seed once from APK assets, then serve catalogue data from local SQLite.
+        val database = VistaDatabase(appContext)
+        return try {
+            database.seedIfNeeded(bundledSnapshot)
+            database.readCatalogue(bundledSnapshot)
+        } finally {
+            database.close()
+        }
     }
 }
