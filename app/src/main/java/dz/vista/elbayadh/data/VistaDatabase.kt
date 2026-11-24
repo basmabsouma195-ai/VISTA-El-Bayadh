@@ -46,6 +46,15 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
             )"""
         )
         db.execSQL("CREATE INDEX index_landmarks_category ON landmarks(category_id)")
+        db.execSQL("""CREATE TABLE landmark_photos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            landmark_id TEXT NOT NULL,
+            asset_path TEXT NOT NULL,
+            position INTEGER NOT NULL DEFAULT 0,
+            UNIQUE(landmark_id, asset_path),
+            FOREIGN KEY(landmark_id) REFERENCES landmarks(id)
+        )""")
+        db.execSQL("CREATE INDEX index_landmark_photos_landmark ON landmark_photos(landmark_id)")
         db.execSQL("CREATE TABLE catalogue_meta (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL)")
     }
 
@@ -53,6 +62,17 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
         // Versioned migrations are added here; never erase visitor data on upgrade.
         if (oldVersion < 2) {
             db.execSQL("CREATE TABLE IF NOT EXISTS catalogue_meta (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL)")
+        }
+        if (oldVersion < 3) {
+            db.execSQL("""CREATE TABLE IF NOT EXISTS landmark_photos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                landmark_id TEXT NOT NULL,
+                asset_path TEXT NOT NULL,
+                position INTEGER NOT NULL DEFAULT 0,
+                UNIQUE(landmark_id, asset_path),
+                FOREIGN KEY(landmark_id) REFERENCES landmarks(id)
+            )""")
+            db.execSQL("CREATE INDEX IF NOT EXISTS index_landmark_photos_landmark ON landmark_photos(landmark_id)")
         }
     }
 
@@ -66,6 +86,7 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
         val db = writableDatabase
         db.beginTransaction()
         try {
+            db.delete("landmark_photos", null, null)
             db.delete("landmarks", null, null)
             db.delete("categories", null, null)
             snapshot.categories.forEach { category ->
@@ -94,6 +115,17 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
                     put("audio_fr", landmark.audioFr?.takeIf { !it.contains("://") })
                     put("audio_en", landmark.audioEn?.takeIf { !it.contains("://") })
                 })
+            }
+            snapshot.photosByLandmark.forEach { (landmarkId, paths) ->
+                paths.distinct().forEachIndexed { position, assetPath ->
+                    if (!assetPath.contains("://") && assetPath.startsWith("recognition/")) {
+                        db.insertOrThrow("landmark_photos", null, ContentValues().apply {
+                            put("landmark_id", landmarkId)
+                            put("asset_path", assetPath)
+                            put("position", position)
+                        })
+                    }
+                }
             }
             db.execSQL(
                 "INSERT OR REPLACE INTO catalogue_meta(key,value) VALUES('content_version',?)",
@@ -141,12 +173,21 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
             contentVersion = version,
             provinceId = province,
             categories = categories.ifEmpty { fallback.categories },
-            landmarks = landmarks.ifEmpty { fallback.landmarks }
+            landmarks = landmarks.ifEmpty { fallback.landmarks },
+            photosByLandmark = buildMap {
+                db.rawQuery("SELECT landmark_id,asset_path FROM landmark_photos ORDER BY landmark_id,position", null).use { c ->
+                    while (c.moveToNext()) {
+                        val id = c.getString(0)
+                        val path = c.getString(1)
+                        put(id, get(id).orEmpty() + path)
+                    }
+                }
+            }.ifEmpty { fallback.photosByLandmark }
         )
     }
 
     companion object {
         private const val DATABASE_NAME = "vista_el_bayadh.db"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
     }
 }
