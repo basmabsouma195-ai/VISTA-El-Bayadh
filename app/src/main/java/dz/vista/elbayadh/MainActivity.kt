@@ -653,6 +653,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     var recognitionModelLoaded by remember { mutableStateOf(false) }
     var recognitionReady by remember { mutableStateOf(false) }
     var recognitionStatus by remember { mutableStateOf<String?>(null) }
+    var suggestedLandmarks by remember { mutableStateOf<List<Landmark>>(emptyList()) }
     val recognitionScope = rememberCoroutineScope()
     LaunchedEffect(recognitionEngine) {
         recognitionReady = recognitionEngine.prepare()
@@ -681,6 +682,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     analyzeLandmarkPhoto(
                         selected, recognitionEngine, recognitionReady, landmarks, language,
                         onOpenLandmark = onOpenLandmark,
+                        onSuggestions = { suggestedLandmarks = it },
                         onStatus = { recognitionStatus = it }
                     )
                 }
@@ -846,6 +848,19 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     recognitionStatus?.let { status ->
                         Text(status, color = Forest, fontSize = 11.sp, lineHeight = 16.sp, modifier = Modifier.padding(top = 6.dp))
                     }
+                    suggestedLandmarks.forEachIndexed { index, candidate ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth().padding(top = 7.dp).clickable { onOpenLandmark(candidate) },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White)
+                        ) {
+                            Column(Modifier.fillMaxWidth().padding(12.dp)) {
+                                Text(if (isArabic) "مرشح ${index + 1}" else if (isFrench) "Candidat ${index + 1}" else "Candidate ${index + 1}", color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(candidate.name(when (language) { AppLanguage.Arabic -> CatalogueLanguage.AR; AppLanguage.French -> CatalogueLanguage.FR; AppLanguage.English -> CatalogueLanguage.EN }), color = Forest, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                Text(if (isArabic) "اقتراح تجريبي — اضغط لفتح البطاقة، وليس تأكيداً لهوية الصورة." else if (isFrench) "Suggestion expérimentale — appuyez pour ouvrir la fiche, sans confirmer l’identité de l’image." else "Experimental suggestion — tap to open the profile; this does not confirm the image identity.", color = Muted, fontSize = 10.sp)
+                            }
+                        }
+                    }
                     Button(
                         enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
                         onClick = {
@@ -857,6 +872,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                     analyzeLandmarkPhoto(
                                         snapshot, recognitionEngine, recognitionReady, landmarks, language,
                                         onOpenLandmark = onOpenLandmark,
+                                        onSuggestions = { suggestedLandmarks = it },
                                         onStatus = { recognitionStatus = it }
                                     )
                                 }
@@ -935,11 +951,13 @@ private suspend fun analyzeLandmarkPhoto(
     landmarks: List<Landmark>,
     language: AppLanguage,
     onOpenLandmark: (Landmark) -> Unit,
+    onSuggestions: (List<Landmark>) -> Unit,
     onStatus: (String) -> Unit
 ) {
     val isArabic = language == AppLanguage.Arabic
     val isFrench = language == AppLanguage.French
     try {
+        onSuggestions(emptyList())
         if (recognitionReady) {
             when (val result = engine.recognize(snapshot)) {
                 is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
@@ -956,14 +974,14 @@ private suspend fun analyzeLandmarkPhoto(
             }
         } else {
             val suggestions = engine.suggestCandidates(snapshot)
-            val names = suggestions.mapNotNull { candidate ->
-                landmarks.firstOrNull { it.id == candidate.landmarkId }?.let { landmark ->
-                    landmark.name(when (language) {
-                        AppLanguage.Arabic -> CatalogueLanguage.AR
-                        AppLanguage.French -> CatalogueLanguage.FR
-                        AppLanguage.English -> CatalogueLanguage.EN
-                    })
-                }
+            val matchedLandmarks = suggestions.mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
+            onSuggestions(matchedLandmarks)
+            val names = matchedLandmarks.map { landmark ->
+                landmark.name(when (language) {
+                    AppLanguage.Arabic -> CatalogueLanguage.AR
+                    AppLanguage.French -> CatalogueLanguage.FR
+                    AppLanguage.English -> CatalogueLanguage.EN
+                })
             }
             onStatus(if (names.isEmpty()) {
                 if (isArabic) "لم تتوفر اقتراحات لهذه الصورة." else if (isFrench) "Aucune suggestion disponible pour cette image." else "No suggestions available for this image."
