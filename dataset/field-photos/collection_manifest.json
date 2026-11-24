@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "collection": "VISTA El Bayadh - user supplied field photo intake",
+  "description": "Original user-supplied photographs gathered from the user's ChatGPT Library on 2026-11-24. Visual notes are preliminary triage only. None of these files is approved for recognition runtime or dataset counts.",
+  "source": "User-uploaded photographs",
+  "reviewPolicy": "Only signage text is transcribed as visible. A sign identifies the sign's named subject, not necessarily the exact framing or surrounding scene. All other location assignments require independent confirmation.",
+  "images": [
+    {
+      "filename": "1000078185.jpg",
+      "sha256": "09d9ff87618807c3a7f2c79221f5a12a798b54675944978452863741c9f41064",
+      "visualStatus": "unclassified_structure",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Clay wall/building; exact site not confirmed"
+    },
+    {
+      "filename": "1000078186.jpg",
+      "sha256": "2da76663bc83ec4892fe3bd47a7bcd86048e076cab87a0f3b09adb9775c4fbb5",
+      "visualStatus": "unclassified_structure",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Old clay building entrance; exact site not confirmed"
+    },
+    {
+      "filename": "1000078246.jpg",
+      "sha256": "9e928ce5ebff011dbee54894df677c75e27f8790fa30094bc093d1a75e16e03b",
+      "visualStatus": "non_landmark_sign",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Hotel sign; excluded from landmark recognition"
+    },
+    {
+      "filename": "1000078252.jpg",
+      "sha256": "6c9bbdf9f8f8446cf08b2468dedbf0cf96215a0d67d4b3cd526772198d53f280",
+      "visualStatus": "signage_reference",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Road sign reads Gour Ben El Khas / قور بنت الخس; signage only"
+    },
+    {
+      "filename": "1000078254.jpg",
+      "sha256": "1ec7bfc5d6454144f06cf2151ee0f41d9bb2b127ac204c7901a8fc71cc557a52",
+      "visualStatus": "signage_reference",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Tourism directorate sign reads Ksar Bent Khass / قصر بنت الخس"
+    },
+    {
+      "filename": "1000078257.jpg",
+      "sha256": "8d38c4432ee1e9c8b1495b9b8dd26099c5470db4ea340037bfa0428b413174c0",
+      "visualStatus": "unclassified_rock_formation",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+    },
+    {
+      "filename": "1000078262.jpg",
+      "sha256": "6d18d1ca8ef0c18f2dacf48d7defe66fd0d3355ffdfbc0e0084f61d3e034c135",
+      "visualStatus": "signage_reference",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Road sign reads Gour Ben El Khas / قور بنت الخس; signage only"
+    },
+    {
+      "filename": "1000078266.jpg",
+      "sha256": "97475d2e0d433ca2d3c2467f09951d5b3d3f6cb392c0355c32b64a5eb89b47da",
+      "visualStatus": "unclassified_rock_formation",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+    },
+    {
+      "filename": "1000078269.jpg",
+      "sha256": "329eab77ca0ed659a52e0089bb2aedbdd4aeb0643536d19b379558669524a7b9",
+      "visualStatus": "unclassified_rock_formation",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+    },
+    {
+      "filename": "1000078279.jpg",
+      "sha256": "0e61c5ba4db015ff9575f89ee5df6ecb48528dde1720769605c48a851ce44e45",
+      "visualStatus": "signage_reference",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Heritage plaque reads Ksar Boussemghoun / Zaouiat Sidi Ahmed Tidjani"
+    },
+    {
+      "filename": "1000078285.jpg",
+      "sha256": "7e00f21ce96dfe68f648b159574b202407d11078126ec3ac381032e7cd27196c",
+      "visualStatus": "unclassified_oasis_view",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Oasis walkway; exact site not confirmed"
+    },
+    {
+      "filename": "1000078288.jpg",
+      "sha256": "e8fdd200c7b6c94135b405ccf0a932488e90a6e46e556c4f6fb126be6ac10a1e",
+      "visualStatus": "unclassified_landscape",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Aerial gorge/valley view; exact location not confirmed"
+    },
+    {
+      "filename": "1000078290.jpg",
+      "sha256": "dc7211c5c8de19209a8f01b2ec51583b9caf86d3710b62b4b5e7730df4529221",
+      "visualStatus": "unclassified_architecture",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Arched passage and Arabic signs; exact site not confirmed"
+    },
+    {
+      "filename": "1000078293.jpg",
+      "sha256": "be3679a1e1ec8ec77914a980f4d4a3b10c8801c42d8cf1d4e87e218e1ec7f1f6",
+      "visualStatus": "unclassified_landscape",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Aerial valley/rock view; exact location not confirmed"
+    },
+    {
+      "filename": "1000078296.jpg",
+      "sha256": "5bf6fde16498005fc721538a5b59d2f9376dac3216b06d5e15231a7cc81ebdd2",
+      "visualStatus": "unclassified_ksar",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Clay ksar complex; exact site not confirmed"
+    },
+    {
+      "filename": "1000078299.jpg",
+      "sha256": "3608bf45d94d20bd4a19ca5ceac2455b913bdddb2f7a8873207d8ffdfa0ffd51",
+      "visualStatus": "unclassified_landscape",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Mountain and wetland/pond view; exact site not confirmed"
+    },
+    {
+      "filename": "1000078302.jpg",
+      "sha256": "e8f19ec6df5ed3dfbfa8d709d8edc0e202c136e2b19eb8d85d22e524a63a0370",
+      "visualStatus": "unclassified_landscape",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Aerial landscape; exact location not confirmed"
+    },
+    {
+      "filename": "1000078305.jpg",
+      "sha256": "0ee07446a04b07175f4ce4ace984838fe2145b570c3061d6aaa6edaefe61d3a4",
+      "visualStatus": "unclassified_rock_formation",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+    },
+    {
+      "filename": "1000078308.jpg",
+      "sha256": "c7cf4b9567ecd3fca5f98521d785422c0ea3b8b56fb29ce39460a3d697a6c9a1",
+      "visualStatus": "unclassified_ksar_landscape",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Ksar rooftops and mountain panorama; exact site not confirmed"
+    },
+    {
+      "filename": "1000078259.jpg",
+      "sha256": "1c9aab156d158760c8b2552355f827bbf0943909dae13bac1d44666b2247e8c5",
+      "visualStatus": "unclassified_architecture",
+      "reviewStatus": "needs_human_location_confirmation",
+      "recognitionApproved": false,
+      "reviewNote": "Clay archway/courtyard; exact site not confirmed"
+    }
+  ]
+}
