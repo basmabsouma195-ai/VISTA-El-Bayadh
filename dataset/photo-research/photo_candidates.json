@@ -204,6 +204,21 @@
       "capturedOrPublished": "2017-04-09",
       "downloadedIntoRepository": false,
       "notes": "صورة عامة للبلدة وليست لمعلم مفرد؛ صفحة الملف تضعها في الملكية العامة عبر CC0."
+    },
+    {
+      "id": "el-ghassoul-town-view-2016",
+      "landmarkId": null,
+      "title": "El Ghassoul الغاسول",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:El_Ghassoul_%D8%A7%D9%84%D8%BA%D8%A7%D8%B3%D9%88%D9%84.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Habib kaki",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "dimensions": "3000x1688",
+      "capturedOrPublished": "2013-11-11",
+      "downloadedIntoRepository": false,
+      "notes": "صورة عامة لبلدية الغاسول وليست لمعلم محدد. صفحة الملف تؤكد المؤلف وCC0؛ تصلح كصورة تعريفية للبلدية بعد تنزيلها وفحص محتواها، ولا تربط بمحطة مردوفة أو أي موقع نقش صخري."
     }
   ]
 }
