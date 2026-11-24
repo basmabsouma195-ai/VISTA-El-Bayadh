@@ -16,8 +16,8 @@ interface LandmarkRecognitionEngine {
 
 data class RecognitionCandidate(
     val landmarkId: String,
-    /** Calibrated model confidence in the inclusive range 0.0..1.0. */
-    val confidence: Float
+    /** Raw cosine-similarity score; never display this as a probability. */
+    val score: Float
 )
 
 sealed interface RecognitionDecision {
@@ -32,11 +32,11 @@ sealed interface RecognitionDecision {
  * held-out El Bayadh image set before a production model can use this policy.
  */
 data class RecognitionPolicy(
-    val minimumConfidence: Float,
+    val minimumScore: Float,
     val minimumLeadOverSecond: Float
 ) {
     init {
-        require(minimumConfidence in 0f..1f)
+        require(minimumScore in -1f..1f)
         require(minimumLeadOverSecond in 0f..1f)
     }
 
@@ -44,19 +44,19 @@ data class RecognitionPolicy(
         if (candidates.isEmpty()) return RecognitionDecision.Unknown
         if (candidates.any {
                 it.landmarkId.isBlank() ||
-                    !it.confidence.isFinite() ||
-                    it.confidence !in 0f..1f
+                    !it.score.isFinite() ||
+                    it.score !in -1f..1f
             }
         ) return RecognitionDecision.Unknown
 
         val ranked = candidates
             .distinctBy { it.landmarkId }
-            .sortedByDescending { it.confidence }
+            .sortedByDescending { it.score }
         val best = ranked.firstOrNull() ?: return RecognitionDecision.Unknown
-        if (best.confidence < minimumConfidence) return RecognitionDecision.Unknown
+        if (best.score < minimumScore) return RecognitionDecision.Unknown
 
-        val secondConfidence = ranked.getOrNull(1)?.confidence ?: 0f
-        if (best.confidence - secondConfidence < minimumLeadOverSecond) {
+        val secondConfidence = ranked.getOrNull(1)?.score ?: -1f
+        if (best.score - secondConfidence < minimumLeadOverSecond) {
             return RecognitionDecision.Ambiguous(ranked.take(3))
         }
         return RecognitionDecision.Match(best)
