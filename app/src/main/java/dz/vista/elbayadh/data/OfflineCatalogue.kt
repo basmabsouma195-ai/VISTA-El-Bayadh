@@ -1,7 +1,7 @@
 package dz.vista.elbayadh.data
 
 import android.content.Context
-import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 
 /**
@@ -17,10 +17,11 @@ class OfflineCatalogue(context: Context) {
         val raw = appContext.assets.open("content/landmarks.json")
             .bufferedReader(Charsets.UTF_8)
             .use { it.readText() }
-        val root = JSONArray(raw)
-        return buildList(root.length()) {
-            for (index in 0 until root.length()) {
-                val item = root.optJSONObject(index) ?: continue
+        val root = JSONObject(raw)
+        val records = root.optJSONArray("landmarks") ?: return emptyList()
+        return buildList(records.length()) {
+            for (index in 0 until records.length()) {
+                val item = records.optJSONObject(index) ?: continue
                 runCatching { Landmark.fromJson(item) }.getOrNull()?.let(::add)
             }
         }
