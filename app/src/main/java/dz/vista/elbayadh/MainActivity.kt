@@ -735,7 +735,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         }
     }
 
-    Column(Modifier.fillMaxSize().background(Ivory).padding(16.dp)) {
+    Column(Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState()).padding(16.dp)) {
         qrMatchedLandmark?.let { found ->
             AlertDialog(
                 onDismissRequest = { qrMatchedLandmark = null },
@@ -764,9 +764,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            if (isArabic) "يُحمّل VISTA نموذج الرؤية محليًا. سيبقى تحديد هوية المعلم معطّلًا حتى تكتمل الصور المرجعية والمعايرة الميدانية."
-            else if (isFrench) "VISTA charge le modèle visuel local. L’identification reste désactivée jusqu’à la constitution des références et à la calibration sur le terrain."
-            else "VISTA loads its offline vision model. Landmark identification stays disabled until the reference set and field calibration are complete.",
+            if (isArabic) "وجّه الكاميرا نحو المعلم ثم اضغط زر التحليل أسفل المعاينة. النتائج الحالية اقتراحات تجريبية غير مؤكدة."
+            else if (isFrench) "Dirigez la caméra vers le site puis appuyez sur le bouton d’analyse sous l’aperçu. Les résultats actuels sont expérimentaux."
+            else "Point the camera at the landmark, then tap the analysis button below the preview. Current results are experimental suggestions.",
             color = Muted, fontSize = 13.sp, lineHeight = 20.sp
         )
         Spacer(Modifier.height(14.dp))
@@ -777,7 +777,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         qrMessage?.let { Text(it, color = Muted, fontSize = 11.sp) }
         if (hasCameraPermission) {
             AndroidView(
-                modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(22.dp)),
+                modifier = Modifier.fillMaxWidth().height(260.dp).clip(RoundedCornerShape(22.dp)),
                 factory = { previewView }
             )
             Spacer(Modifier.height(12.dp))
