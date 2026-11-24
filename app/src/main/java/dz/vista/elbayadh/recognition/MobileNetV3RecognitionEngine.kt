@@ -24,6 +24,8 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
     private var interpreter: Interpreter? = null
     private val inferenceLock = Any()
     private var referenceVectors: Map<String, List<FloatArray>> = emptyMap()
+    // Experimental candidate suggestions may use the small seed set, but are never treated as verified matches.
+    private var previewVectors: Map<String, List<FloatArray>> = emptyMap()
     private var minimumSimilarity = 1f
     private var minimumLead = 1f
     private var calibrated = false
@@ -58,17 +60,24 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
 
             val references = index.load()
             val grouped = references.groupBy { it.landmarkId }
-            // One photo is not enough to represent a real site from varied angles.
-            if (grouped.isEmpty() || grouped.values.any { it.size < MIN_REFERENCES_PER_LANDMARK }) {
-                return@withContext false
-            }
+            if (grouped.isEmpty()) return@withContext false
 
+            // Build a local experimental index even when it is too small for production recognition.
             val vectors = grouped.mapValues { (_, images) ->
                 images.mapNotNull { reference ->
                     index.decodePreview(reference, 640)?.useBitmap { bitmap -> embed(bitmap) }
                 }
-            }
-            if (vectors.values.any { it.size < MIN_REFERENCES_PER_LANDMARK }) return@withContext false
+            }.filterValues { it.isNotEmpty() }
+            previewVectors = vectors
+
+            // Production matching remains blocked until each landmark has a sufficiently varied reference set.
+            if (grouped.isEmpty() ||
+                grouped.values.any { it.size < MIN_REFERENCES_PER_LANDMARK } ||
+                vectors.any { (id, values) ->
+                    values.size < (grouped[id]?.size ?: Int.MAX_VALUE) ||
+                        values.size < MIN_REFERENCES_PER_LANDMARK
+                }
+            ) return@withContext false
 
             val calibration = runCatching {
                 appContext.assets.open(CALIBRATION_ASSET).bufferedReader().use { JSONObject(it.readText()) }
@@ -94,6 +103,25 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
             close()
             false
         }
+    }
+
+    /**
+     * Returns ranked experimental suggestions from the available seed images.
+     * These scores are raw embedding similarities, not probabilities or verified identifications.
+     */
+    suspend fun suggestCandidates(image: Bitmap): List<RecognitionCandidate> = withContext(Dispatchers.Default) {
+        val runtime = interpreter ?: return@withContext emptyList()
+        if (!isModelLoaded || previewVectors.isEmpty()) return@withContext emptyList()
+        val query = runCatching { embedWith(runtime, image) }.getOrNull()
+            ?: return@withContext emptyList()
+        previewVectors.map { (landmarkId, vectors) ->
+            RecognitionCandidate(
+                landmarkId = landmarkId,
+                score = vectors.maxOfOrNull { cosineSimilarity(query, it) } ?: -1f
+            )
+        }.filter { it.score.isFinite() && it.score in -1f..1f }
+            .sortedByDescending { it.score }
+            .take(3)
     }
 
     override suspend fun recognize(image: Bitmap): RecognitionDecision = withContext(Dispatchers.Default) {
@@ -151,6 +179,7 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
         interpreter?.close()
         interpreter = null
         referenceVectors = emptyMap()
+        previewVectors = emptyMap()
         calibrated = false
         isModelLoaded = false
     }
