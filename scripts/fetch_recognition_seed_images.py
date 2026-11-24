@@ -16,13 +16,13 @@ USER_AGENT = "VISTA-El-Bayadh-OpenImageDataset/1.0"
 
 def fetch(url):
     last_error = None
-    for attempt in range(5):
+    for attempt in range(4):
         request = urllib.request.Request(
             url,
             headers={"User-Agent": USER_AGENT, "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"},
         )
         try:
-            with urllib.request.urlopen(request, timeout=60) as response:
+            with urllib.request.urlopen(request, timeout=20) as response:
                 payload = response.read()
                 content_type = response.headers.get("Content-Type", "")
             if not content_type.lower().startswith("image/") or len(payload) < 1024:
@@ -30,7 +30,7 @@ def fetch(url):
             return payload
         except Exception as exc:
             last_error = exc
-            if attempt < 4:
+            if attempt < 3:
                 delay = min(30, 2 ** attempt)
                 print(f"Download attempt {attempt + 1} failed; retrying in {delay}s: {exc}", file=sys.stderr)
                 time.sleep(delay)
