@@ -104,10 +104,13 @@
     {
       "filename": "1000078279.jpg",
       "sha256": "0e61c5ba4db015ff9575f89ee5df6ecb48528dde1720769605c48a851ce44e45",
-      "visualStatus": "signage_reference",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "heritage_plaque_ksar_boussemghoun_zaouia",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Heritage plaque reads Ksar Boussemghoun / Zaouiat Sidi Ahmed Tidjani"
+      "reviewNote": "User confirmed this heritage plaque belongs to Ksar Boussemghoun / Zaouiat Sidi Ahmed Tidjani; signage/plaque reference only, not a visual recognition reference.",
+      "landmarkId": "ksar-boussemghoun",
+      "locationNameAr": "قصر بوسمغون – زاوية سيدي أحمد التيجاني",
+      "locationConfirmation": "User confirmed on 2026-11-24 that this plaque identifies Ksar Boussemghoun."
     },
     {
       "filename": "1000078285.jpg",
