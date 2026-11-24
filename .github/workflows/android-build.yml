@@ -48,6 +48,7 @@ jobs:
         run: python3 scripts/validate_offline_catalogue.py
       - name: Validate field recognition dataset readiness
         run: |
+          python3 -m py_compile scripts/register_field_photo.py scripts/verify_field_photo.py scripts/validate_recognition_dataset.py
           python3 scripts/validate_recognition_dataset.py
           python3 -m unittest scripts/test_recognition_dataset_validator.py
       - name: Run recognition policy unit tests
