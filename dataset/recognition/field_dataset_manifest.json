@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "description": "Field-captured dataset manifest for VISTA landmark recognition. Only explicitly verified entries can become reference images. Keep evaluation sessions separate from reference sessions.",
+  "images": []
+}
