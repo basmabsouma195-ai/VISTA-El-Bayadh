@@ -455,6 +455,48 @@ private fun ScannerScreen(language: AppLanguage) {
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasCameraPermission = granted }
+    val previewView = remember(context) {
+        PreviewView(context).apply {
+            scaleType = PreviewView.ScaleType.FILL_CENTER
+            implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+        }
+    }
+
+    DisposableEffect(previewView, lifecycleOwner, hasCameraPermission) {
+        var disposed = false
+        var boundProvider: ProcessCameraProvider? = null
+        var boundPreview: Preview? = null
+
+        if (hasCameraPermission) {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+            cameraProviderFuture.addListener({
+                if (!disposed) {
+                    runCatching {
+                        val provider = cameraProviderFuture.get()
+                        val preview = Preview.Builder().build().also {
+                            it.surfaceProvider = previewView.surfaceProvider
+                        }
+                        provider.bindToLifecycle(
+                            lifecycleOwner,
+                            CameraSelector.DEFAULT_BACK_CAMERA,
+                            preview
+                        )
+                        boundProvider = provider
+                        boundPreview = preview
+                    }
+                }
+            }, ContextCompat.getMainExecutor(context))
+        }
+
+        onDispose {
+            disposed = true
+            val provider = boundProvider
+            val preview = boundPreview
+            if (provider != null && preview != null) {
+                runCatching { provider.unbind(preview) }
+            }
+        }
+    }
 
     Column(Modifier.fillMaxSize().background(Ivory).padding(16.dp)) {
         Text(
@@ -472,31 +514,7 @@ private fun ScannerScreen(language: AppLanguage) {
         if (hasCameraPermission) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(22.dp)),
-                factory = { viewContext ->
-                    PreviewView(viewContext).apply {
-                        scaleType = PreviewView.ScaleType.FILL_CENTER
-                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
-                    }
-                },
-                update = { previewView ->
-                    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-                    cameraProviderFuture.addListener({
-                        val cameraProvider = cameraProviderFuture.get()
-                        val preview = Preview.Builder().build().also {
-                            it.surfaceProvider = previewView.surfaceProvider
-                        }
-                        try {
-                            cameraProvider.unbindAll()
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                CameraSelector.DEFAULT_BACK_CAMERA,
-                                preview
-                            )
-                        } catch (_: Exception) {
-                            // Keep the scanner screen stable if the device camera cannot bind.
-                        }
-                    }, ContextCompat.getMainExecutor(context))
-                }
+                factory = { previewView }
             )
             Spacer(Modifier.height(12.dp))
             Card(
