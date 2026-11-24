@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 8,
+  "contentVersion": 9,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -61,10 +61,18 @@
       "nameAr": "قور بريزينة",
       "nameFr": "Gours de Brizina",
       "nameEn": "Brizina Gours",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "تُستعمل تسمية قور بريزينة للإشارة إلى التشكيلات الجبلية والرملية المميزة في محيط بريزينة بولاية البيض. وتصف تقارير محلية المنطقة بأنها سلسلة من التلال والتكوينات ذات الألوان الحمراء، يقصدها الزوار للتنزه والتخييم ومشاهدة المناظر الطبيعية. هذه بطاقة تعريف عام بالمنطقة وليست تحديداً لمعلم واحد أو مسار ميداني آمن؛ ينبغي التحقق من نقطة الزيارة والطريق محلياً.",
+      "descriptionFr": "L’appellation Gours de Brézina désigne les reliefs et formations sableuses caractéristiques des environs de Brézina, dans la wilaya d’El Bayadh. Des reportages locaux décrivent une succession de collines et de formations aux teintes rouges, fréquentées pour les promenades, le camping et l’observation des paysages. Cette fiche présente la zone dans son ensemble et non un point unique ni un itinéraire sécurisé ; l’accès et le trajet doivent être confirmés localement.",
+      "descriptionEn": "The name Brézina Gours refers to the distinctive hills and sandy formations around Brézina in El Bayadh Province. Local reporting describes a chain of reddish landforms visited for walking, camping, and landscape viewing. This entry describes the wider area rather than a single pinpoint attraction or a verified safe route; visitors should confirm access and the route locally.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "جبال القور ببريزينة – الجمهورية",
+          "url": "https://eldjoumhouria.dz/article/31851/",
+          "publisher": "جريدة الجمهورية، 4 ديسمبر 2024",
+          "note": "تقرير محلي يصف جبال القور وموقعها العام والزيارة السياحية."
+        }
+      ]
     },
     {
       "id": "kef-el-melh",
@@ -167,10 +175,18 @@
       "nameAr": "قور بنت الخس",
       "nameFr": "Gour Bent El Khass",
       "nameEn": "Gour Bent El Khass",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "تقع منطقة قور بنت الخس ببلدية بريزينة جنوب ولاية البيض. تصفها بطاقة خريطة التراث الثقافي الجزائري بأنها منطقة طبيعية تجمع بين الجبال الرملية ورمال الصحراء، وتحدد موقعها في منطقة القور ببلدية ودائرة بريزينة. لا ينبغي الخلط بين هذا الموقع الطبيعي وبين حصن بنت الخس، وهو معلم تراثي منفصل قريب منه.",
+      "descriptionFr": "La région de Gour Bent El Khass se trouve dans la commune de Brézina, au sud de la wilaya d’El Bayadh. La Carte du patrimoine culturel algérien la décrit comme un site naturel associant reliefs sableux et dunes désertiques, situé dans la région des Gours. Ce site naturel ne doit pas être confondu avec le Bastion Bent El Khass, un élément patrimonial distinct situé à proximité.",
+      "descriptionEn": "The Gour Bent El Khass area lies in Brézina municipality, south of El Bayadh Province. The Algerian Cultural Heritage Map describes it as a natural landscape combining sandy hills and desert sands, located in the Gours area. It should not be confused with the nearby Bastion of Bent El Khass, a separate heritage structure.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "قور بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1404",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "يوثق الاسم والموقع والوصف الطبيعي العام، ويميزه عن الحصن القريب."
+        }
+      ]
     },
     {
       "id": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
@@ -294,6 +310,44 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/777",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر يذكر اكتشاف 2004 والتأريخ المنسوب إلى دراسة أولية."
+        }
+      ]
+    },
+    {
+      "id": "grotte-brezina",
+      "categoryId": "natural-sites",
+      "nameAr": "مغارة بريزينة",
+      "nameFr": "Grotte de Brézina",
+      "nameEn": "Brézina Cave",
+      "descriptionAr": "تقع مغارة بريزينة في منطقة القور، على مسافة تقارب 16 كلم شمال شرق مدينة بريزينة وعلى ارتفاع يقدّر بنحو 956 متراً، وفق بطاقة خريطة التراث الثقافي الجزائري. تذكر البطاقة أبحاثاً أثرية أُجريت بالمنطقة سنة 1910، واكتشاف المغارة بصورتها المعروفة سنة 2003 على يد شباب من بريزينة. وتصف تجاويف وغرفاً طبيعية وتكوينات كلسية، مع بقايا عظام وأدوات حجرية وردت في التقرير. الأبعاد والتفاصيل الداخلية تحتاج إلى معاينة مختصة، ولا ينبغي دخول المغارة دون مرافقة وإذن محلي.",
+      "descriptionFr": "La grotte de Brézina se trouve dans la région des Gours, à environ 16 km au nord-est de la ville de Brézina et à une altitude estimée à 956 m, selon la Carte du patrimoine culturel algérien. La fiche mentionne des recherches archéologiques menées dans la région en 1910 et la découverte de la grotte dans sa forme connue en 2003 par des jeunes de Brézina. Elle décrit des salles naturelles, des formations calcaires, ainsi que des restes osseux et des outils lithiques signalés dans le récit. Les dimensions et détails internes nécessitent une vérification spécialisée ; l’accès exige un accompagnement et une autorisation locale.",
+      "descriptionEn": "Brézina Cave lies in the Gours area, about 16 km northeast of Brézina town at an estimated elevation of 956 m, according to the Algerian Cultural Heritage Map. The record refers to archaeological work in the area in 1910 and the cave’s rediscovery in its known form by local young people in 2003. It describes natural chambers and limestone formations, as well as reported bone remains and stone tools. Internal dimensions and details require specialist verification; entry requires local permission and an experienced guide.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "مغارة بريزينة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/928",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "المصدر الأساسي للموقع والوصف العام والرواية التاريخية؛ تفاصيل السلامة تتطلب تأكيداً محلياً."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-khashim",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري الخشيم",
+      "nameFr": "Station rupestre de Khashim",
+      "nameEn": "Khashim Rock Art Station",
+      "descriptionAr": "تقع محطة النقش الصخري الخشيم على بعد نحو 20 كلم شمال غرب بريزينة، بقرية الفرع في بلدية بريزينة. تصف بطاقة خريطة التراث الثقافي الجزائري نقوشاً لحيوانات منها الغزلان والأبقار الوحشية والنعام وأشكال حيوانية أخرى، موزعة على صخور سطحية وكتل صخرية متفاوتة الحجم. تُنسب هذه التفاصيل إلى وصف البطاقة، ولا نضيف تأريخاً محدداً أو تفسيراً رمزياً غير مثبت فيها.",
+      "descriptionFr": "La station rupestre de Khashim se situe à environ 20 km au nord-ouest de Brézina, au village d’El Fer’a, dans la commune de Brézina. La Carte du patrimoine culturel algérien décrit des gravures représentant notamment des gazelles, des bovins sauvages, des autruches et d’autres formes animales, sur des roches affleurantes et des blocs de tailles variées. Ces éléments sont rapportés selon la fiche, sans leur attribuer une datation précise ni une interprétation symbolique non établie.",
+      "descriptionEn": "Khashim Rock Art Station is located about 20 km northwest of Brézina, in El Fer’a village, Brézina municipality. The Algerian Cultural Heritage Map describes engravings depicting gazelles, wild cattle, ostriches, and other animal forms on exposed rock surfaces and blocks of varying size. These details are attributed to the heritage record; no specific date or unsupported symbolic interpretation is added.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "محطة النقش الصخري الخشيم – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "يوثق الموقع والوصف المنشور للنقوش والموضوعات المصورة."
         }
       ]
     }
