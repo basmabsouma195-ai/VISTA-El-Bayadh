@@ -5,7 +5,6 @@ import os
 import pathlib
 import sys
 import time
-import urllib.error
 import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
