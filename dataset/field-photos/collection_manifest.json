@@ -49,10 +49,13 @@
     {
       "filename": "1000078254.jpg",
       "sha256": "1ec7bfc5d6454144f06cf2151ee0f41d9bb2b127ac204c7901a8fc71cc557a52",
-      "visualStatus": "signage_reference",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "signage_reference_ksar_bent_khass",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Tourism directorate sign reads Ksar Bent Khass / قصر بنت الخس"
+      "reviewNote": "User confirmed this tourism sign refers to Ksar Bent El Khass; retain as a signage reference, not a visual recognition reference.",
+      "landmarkId": "ksar-bent-khass",
+      "locationNameAr": "قصر بنت الخس",
+      "locationConfirmation": "User confirmed on 2026-11-24 that this sign identifies Ksar Bent El Khass."
     },
     {
       "filename": "1000078257.jpg",
