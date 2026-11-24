@@ -292,7 +292,7 @@ private fun HomeScreen(
 @Composable
 private fun CategoryCard(title: String, brush: Brush, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier.height(112.dp).clickable { /* category selection is wired by the parent in the next content module */ },
+        modifier = modifier.height(112.dp),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = Forest),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
