@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 11,
+  "contentVersion": 12,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -415,6 +415,82 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق الموقع والوصف المنشور للنقوش والموضوعات المصورة."
+        }
+      ]
+    },
+    {
+      "id": "ksar-chalala",
+      "categoryId": "ksour",
+      "nameAr": "قصر الشلالة الظهرانية",
+      "nameFr": "Ksar de Chellala Dhahrania",
+      "nameEn": "Chellala Dhahrania Ksar",
+      "descriptionAr": "يقع قصر الشلالة الظهرانية ضمن جبال القصور شرق ولاية البيض، وتصفه بطاقة التراث بأنه قرية محصنة بسور وأبراج، تتصل أحياؤها وأزقتها بساحات داخلية ومسجد. وتشير البطاقة إلى ارتباط القصر بالينابيع والبساتين التي كانت مورداً أساسياً للسكان. أما رواية تأسيسه المنسوبة إلى سنة 1180م فهي رواية شفوية واردة في المصدر وليست تاريخاً أثرياً محسوماً.",
+      "descriptionFr": "Le ksar de Chellala Dhahrania se situe dans les monts des Ksour, à l’est de la wilaya d’El Bayadh. La fiche patrimoniale le décrit comme un village fortifié par une enceinte et des tours, avec des quartiers et ruelles organisés autour d’espaces collectifs et d’une mosquée. Elle souligne aussi le rôle des sources et des jardins dans la vie locale. La date de fondation vers 1180, rapportée par la tradition orale, n’est pas une datation archéologique définitivement établie.",
+      "descriptionEn": "Chellala Dhahrania Ksar lies in the Ksour Mountains east of El Bayadh Province. Its heritage record describes a fortified village with a wall and towers, neighbourhoods and lanes arranged around communal spaces and a mosque. Springs and gardens are noted as important to local life. The reported foundation date around 1180 comes from oral tradition and is not a firmly established archaeological date.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "قصر الشلالة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/557",
+          "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
+          "note": "الوصف العمراني والينابيع والأحياء؛ تاريخ التأسيس وارد كرواية شفوية."
+        }
+      ]
+    },
+    {
+      "id": "ksar-arbaouat",
+      "categoryId": "ksour",
+      "nameAr": "قصر أربوات العتيق",
+      "nameFr": "Vieux ksar d’Arbaouat",
+      "nameEn": "Old Ksar of Arbaouat",
+      "descriptionAr": "يقع قصر أربوات العتيق ببلدية أربوات التابعة لدائرة الأبيض سيدي الشيخ. وتصفه بطاقة خريطة التراث بقصر مبني بالطين ومسقوف بجريد النخيل وجذوعه، يتكون من أربعة أحياء تتصل أزقتها بالرحبة المركزية. وتوثق البطاقة وجود المسجد العتيق وزاوية سيدي معمر بالعالية والدكاكين، إلى جانب أنشطة فلاحية وحرفية وتجارية. ويرد تاريخ تأسيسه نحو سنة 1600م في البطاقة، ويظل منسوباً إلى المصدر التراثي.",
+      "descriptionFr": "Le vieux ksar d’Arbaouat se trouve dans la commune d’Arbaouat, daïra d’El Abiodh Sidi Cheikh. Sa fiche patrimoniale décrit des maisons en terre couvertes de palmes et de troncs de palmier, réparties en quatre quartiers reliés à la rahba centrale. Elle mentionne la vieille mosquée, la zaouïa de Sidi Maamar Belalia, des boutiques ainsi que des activités agricoles, artisanales et commerciales. La date de fondation vers 1600 est rapportée par la fiche patrimoniale et lui est attribuée.",
+      "descriptionEn": "The Old Ksar of Arbaouat is located in Arbaouat municipality, within the El Abiodh Sidi Cheikh district. Its heritage record describes earthen houses roofed with palm fronds and trunks, arranged in four quarters connected to a central communal square. It records the old mosque, the Sidi Maamar Belalia zaouia, shops, and agricultural, craft, and trading activities. The approximate foundation date of 1600 is attributed to the heritage record.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "قصر أربوات – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/354",
+          "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
+          "note": "بطاقة تعريف القصر وعناصره المعمارية والاجتماعية وتاريخ التأسيس المنقول."
+        }
+      ]
+    },
+    {
+      "id": "sidi-cheikh-mausoleum",
+      "categoryId": "religious-heritage",
+      "nameAr": "ضريح سيدي الشيخ – الأبيض سيدي الشيخ",
+      "nameFr": "Mausolée de Sidi Cheikh – El Abiodh Sidi Cheikh",
+      "nameEn": "Sidi Cheikh Mausoleum – El Abiodh Sidi Cheikh",
+      "descriptionAr": "يقع ضريح سيدي الشيخ في بلدية الأبيض سيدي الشيخ، التي تبعد نحو 120 كلم عن مدينة البيض. وتصف بطاقة مديرية الثقافة قاعة الضريح بعناصرها المعمارية، ومنها القبة الرئيسية والقباب الصغيرة والزليج والجص الملون، كما تذكر المقبرة والمرافق المحيطة به. وتورد البطاقة تسجيل المعلم في قائمة الجرد الإضافي بقرار مؤرخ في 5 أفريل 2016. تُعرض التفاصيل المعمارية بوصفها منقولة عن بطاقة التراث.",
+      "descriptionFr": "Le mausolée de Sidi Cheikh se trouve dans la commune d’El Abiodh Sidi Cheikh, à environ 120 km de la ville d’El Bayadh. La fiche de la Direction de la culture décrit la salle du mausolée, notamment sa coupole principale, ses petites coupoles, les carreaux de zellige et le plâtre coloré, ainsi que le cimetière et les espaces annexes. Elle indique une inscription à l’inventaire supplémentaire par décision du 5 avril 2016. Les détails architecturaux sont attribués à cette fiche patrimoniale.",
+      "descriptionEn": "The Sidi Cheikh Mausoleum is located in El Abiodh Sidi Cheikh municipality, about 120 km from El Bayadh city. The Culture Directorate’s heritage record describes the mausoleum chamber, including its main dome, smaller domes, zellige tiles, and coloured plaster, as well as the cemetery and surrounding facilities. It records the monument’s inclusion on the supplementary inventory by a decision dated 5 April 2016. Architectural details are attributed to that heritage record.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "ضريح سيدي عبد القادر بن محمد المكنى سيدي الشيخ",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/435",
+          "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
+          "note": "بطاقة مديرية الثقافة لموقع الضريح ووصفه المعماري وتسجيله في الجرد الإضافي."
+        }
+      ]
+    },
+    {
+      "id": "ksar-ain-hachifa",
+      "categoryId": "ksour",
+      "nameAr": "قصر عين حشيفة – الشلالة القبلية",
+      "nameFr": "Ksar Aïn Hachifa – Chellala Qibliya",
+      "nameEn": "Aïn Hachifa Ksar – Chellala Qibliya",
+      "descriptionAr": "يقع قصر عين حشيفة على بعد نحو خمسة كيلومترات شرق الشلالة القبلية، ببلدية الشلالة في ولاية البيض. شُيّد فوق مرتفع بجوار عين ماء كانت تُستغل لسقي السكان والماشية والبساتين. وتوثق بطاقة التراث ارتباطه بأحداث الثورة التحريرية سنة 1956، حين تعرض للقصف بسبب استعماله قاعدة خلفية للثوار وفق الشهادات المحلية التي تنقلها البطاقة. لا تحدد البطاقة تاريخ البناء بدقة، وتعرض تقديره للقرن التاسع عشر باعتباره استنتاجاً لا تاريخاً موثقاً.",
+      "descriptionFr": "Le ksar d’Aïn Hachifa se trouve à environ cinq kilomètres à l’est de Chellala Qibliya, dans la commune de Chellala, wilaya d’El Bayadh. Il est construit sur une hauteur près d’une source autrefois utilisée pour l’approvisionnement des habitants, du bétail et des jardins. La fiche patrimoniale relie le site aux événements de la guerre de libération en 1956 et rapporte qu’il fut bombardé parce qu’il servait de base arrière aux combattants, selon des témoignages locaux. La date de construction n’est pas précisément établie ; l’hypothèse du XIXe siècle est présentée comme une déduction.",
+      "descriptionEn": "Aïn Hachifa Ksar lies about five kilometres east of Chellala Qibliya, in Chellala municipality, El Bayadh Province. It was built on elevated ground beside a spring once used by residents, livestock, and gardens. Its heritage record connects the site with the 1956 liberation-war events and reports that it was shelled because it served as a rear base for resistance fighters, based on local testimony cited in the record. The construction date is not firmly known; the suggested nineteenth-century date is an inference rather than a documented fact.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "قصر عين حشيفة بالشلالة القبلية",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/234",
+          "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
+          "note": "الموقع والوصف والأحداث المنقولة عن الشهادات المحلية؛ تاريخ البناء تقديري."
         }
       ]
     }
