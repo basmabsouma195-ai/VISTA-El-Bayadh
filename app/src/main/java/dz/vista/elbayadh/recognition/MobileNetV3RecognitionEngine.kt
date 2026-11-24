@@ -68,7 +68,13 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
                     index.decodePreview(reference, 640)?.useBitmap { bitmap -> embed(bitmap) }
                 }
             }.filterValues { it.isNotEmpty() }
-            previewVectors = vectors
+            val galleryPreviewGrouped = index.loadPreview().groupBy { it.landmarkId }
+            val galleryPreviewVectors = galleryPreviewGrouped.mapValues { (_, images) ->
+                images.mapNotNull { reference ->
+                    index.decodePreview(reference, 640)?.useBitmap { bitmap -> embed(bitmap) }
+                }
+            }.filterValues { it.isNotEmpty() }
+            previewVectors = galleryPreviewVectors
 
             // Production matching remains blocked until each landmark has a sufficiently varied reference set.
             if (grouped.isEmpty() ||
