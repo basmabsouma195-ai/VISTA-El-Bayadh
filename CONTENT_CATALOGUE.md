@@ -53,3 +53,20 @@ Content version **12** contains **23 landmark records** focused on El Bayadh Pro
 The catalogue covers ksour and historic buildings, natural formations and caves, rock-art heritage, dinosaur traces and religious heritage. Examples include Ksar Mechria Sughra, Ksar Ghassoul, Ksar Stitten, Ksar Chellala Dhahrania, Ksar Arbaouat, Aïn Hachifa Ksar, the Sidi Cheikh mausoleum, Gour Bent El Khass, Brézina Gours, Kef El Melh and Boussemghoun heritage sites.
 
 The 15 `under_review` entries remain provisional. Do not silently promote them to verified, infer precise locations from approximate research coordinates, or present oral accounts as established dates. Before publication, review the cited source against the exact landmark and add confirmed field observations where needed.
+
+
+## Recognition image pack (current build)
+
+The runtime index contains the three field photographs that are already committed
+and one reusable Commons reference image for the Cheikh Bouamama statue. The
+build workflow attempts to fetch the remaining licensed seed images and packages
+successful downloads into the APK. External hosts can rate-limit CI, so a build
+may succeed with a partial image pack; check the workflow log and the generated
+APK before describing a photo as bundled. The runtime index is generated during
+the build and is not itself a guarantee that a trained visual recognizer exists.
+
+The current image references are seed material only. A single photograph per
+place is not enough for reliable landmark recognition. Each target landmark
+still needs several distinct real-world viewpoints, plus a separate unknown-scene
+evaluation set. The current Android scanner supports camera preview and optional
+QR reading; visual landmark matching is not yet implemented.
