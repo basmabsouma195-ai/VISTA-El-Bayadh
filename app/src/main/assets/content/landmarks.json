@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "contentVersion": 1,
+  "province": {
+    "id": "DZ-32",
+    "name": {
+      "ar": "ولاية البيض",
+      "fr": "Wilaya d'El Bayadh",
+      "en": "El Bayadh Province"
+    }
+  },
+  "categories": [],
+  "landmarks": []
+}
