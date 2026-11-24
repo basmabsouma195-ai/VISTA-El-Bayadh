@@ -1,12 +1,13 @@
 package dz.vista.elbayadh.data
 
 import android.content.Context
+import dz.vista.elbayadh.recognition.OfflineRecognitionImageIndex
 import org.json.JSONObject
 import java.io.IOException
 
 /**
- * Reads the bundled catalogue only. Loading this data never makes a network
- * request, so the same content is available in airplane mode.
+ * Reads the bundled catalogue and its optional local image index only.
+ * No network access is used for catalogue or image loading.
  */
 class OfflineCatalogue(context: Context) {
     private val appContext = context.applicationContext
@@ -19,6 +20,17 @@ class OfflineCatalogue(context: Context) {
         val root = JSONObject(raw)
         val provinceId = root.optJSONObject("province")?.optString("id").orEmpty()
         require(provinceId.isNotBlank()) { "Catalogue province.id is missing" }
+
+        val localImageByLandmark = runCatching {
+            OfflineRecognitionImageIndex(appContext).load()
+                .filter { reference ->
+                    // An index entry is usable only when its packaged file really exists.
+                    runCatching {
+                        appContext.assets.open(reference.assetPath).use { it.read() }
+                    }.isSuccess
+                }
+                .associate { it.landmarkId to it.assetPath }
+        }.getOrDefault(emptyMap())
 
         val categoriesJson = root.optJSONArray("categories")
         val categories = buildList {
@@ -36,7 +48,12 @@ class OfflineCatalogue(context: Context) {
             if (landmarksJson != null) {
                 for (index in 0 until landmarksJson.length()) {
                     val item = landmarksJson.optJSONObject(index) ?: continue
-                    runCatching { Landmark.fromJson(item) }.getOrNull()?.let(::add)
+                    runCatching {
+                        Landmark.fromJson(item).copy(
+                            // Only the packaged index may supply a runtime image.
+                            image = localImageByLandmark[ item.optString("id") ]
+                        )
+                    }.getOrNull()?.let(::add)
                 }
             }
         }
