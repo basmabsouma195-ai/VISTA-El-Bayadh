@@ -32,14 +32,18 @@ jobs:
       - name: Restore offline recognition image cache
         uses: actions/cache@v4
         with:
-          path: app/src/main/assets/recognition/references
-          key: vista-recognition-seed-v2-${{ hashFiles('dataset/recognition/source-manifest.json') }}
+          path: |
+            app/src/main/assets/recognition/references
+            app/src/main/assets/recognition/mobilenet_v3_small.tflite
+          key: vista-recognition-seed-v3-${{ hashFiles('dataset/recognition/source-manifest.json', 'scripts/fetch_recognition_model.py') }}
           restore-keys: |
-            vista-recognition-seed-v2-
+            vista-recognition-seed-v3-
       - name: Bundle offline recognition image assets
         env:
           VISTA_FETCH_REMOTE_SEED_IMAGES: 'false'
         run: python3 scripts/fetch_recognition_seed_images.py
+      - name: Fetch and verify pinned MobileNetV3 model
+        run: python3 scripts/fetch_recognition_model.py
       - name: Validate offline catalogue and local image index
         run: python3 scripts/validate_offline_catalogue.py
       - name: Run recognition policy unit tests
