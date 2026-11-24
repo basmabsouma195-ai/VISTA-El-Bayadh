@@ -74,7 +74,9 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
                 appContext.assets.open(CALIBRATION_ASSET).bufferedReader().use { JSONObject(it.readText()) }
             }.getOrNull() ?: return@withContext false
             if (calibration.optInt("schemaVersion") != 1 ||
-                calibration.optBoolean("validatedOnHeldOutElBayadhSet") != true
+                calibration.optBoolean("validatedOnHeldOutElBayadhSet") != true ||
+                calibration.optInt("heldOutImagesPerLandmark", 0) < MIN_EVALUATION_PER_LANDMARK ||
+                calibration.optInt("heldOutUnknownSceneImages", 0) < MIN_UNKNOWN_SCENES
             ) return@withContext false
 
             val minScore = calibration.optDouble("minimumCosineSimilarity", Double.NaN).toFloat()
@@ -158,7 +160,9 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
         const val CALIBRATION_ASSET = "recognition/calibration.json"
         const val EMBEDDING_SIZE = 1024
         const val INPUT_SIZE = 224
-        const val MIN_REFERENCES_PER_LANDMARK = 3
+        const val MIN_REFERENCES_PER_LANDMARK = 20
+        const val MIN_EVALUATION_PER_LANDMARK = 10
+        const val MIN_UNKNOWN_SCENES = 100
 
         fun cosineSimilarity(a: FloatArray, b: FloatArray): Float {
             if (a.isEmpty() || a.size != b.size) return -1f
