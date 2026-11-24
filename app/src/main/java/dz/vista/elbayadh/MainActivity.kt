@@ -159,6 +159,28 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+private fun WelcomeScreen(language: AppLanguage, onStart: () -> Unit) {
+    val ar = language == AppLanguage.Arabic
+    val fr = language == AppLanguage.French
+    Box(Modifier.fillMaxSize().background(ForestDeep)) {
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                LandmarkThumbnail("field-photos/ksar-bent-khass/architecture/1000078259.jpg", "Ksar Bent Khass", large = true)
+                Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, ForestDeep.copy(alpha = 0.96f)))))
+                Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 26.dp, vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("VISTA", color = Gold, fontSize = 38.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
+                    Text("EL BAYADH", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Medium, letterSpacing = 4.sp)
+                    Text("البيض فيستا", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+                    Text(if (ar) "دليلك السياحي الذكي لولاية البيض" else if (fr) "Votre guide touristique intelligent d’El Bayadh" else "Your smart tourism guide to El Bayadh", color = Color(0xFFE8DDCB), fontSize = 14.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 8.dp))
+                }
+            }
+            Button(onClick = onStart, modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp, vertical = 26.dp).height(54.dp), shape = RoundedCornerShape(28.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Gold)) {
+                Text(if (ar) "ابدأ" else if (fr) "Commencer" else "Get started", color = ForestDeep, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+@Composable
 private fun VistaApp() {
     val context = androidx.compose.ui.platform.LocalContext.current
     val preferences = remember { context.getSharedPreferences("vista_preferences", Context.MODE_PRIVATE) }
@@ -172,6 +194,7 @@ private fun VistaApp() {
         )
     }
     var selectedTab by remember { mutableIntStateOf(0) }
+    var showWelcome by remember { mutableStateOf(!preferences.getBoolean("welcome_completed", false)) }
     val tripStore = remember { TripPlansStore(context) }
     val favoritesStore = remember { FavoritesStore(context) }
     val catalogue = remember { runCatching { OfflineCatalogue(context).load() }.getOrNull() }
@@ -193,7 +216,9 @@ private fun VistaApp() {
     MaterialTheme {
         CompositionLocalProvider(LocalLayoutDirection provides direction) {
             Surface(modifier = Modifier.fillMaxSize(), color = Ivory) {
-                androidx.compose.material3.Scaffold(
+                if (showWelcome) {
+                    WelcomeScreen(language, onStart = { preferences.edit().putBoolean("welcome_completed", true).apply(); showWelcome = false })
+                } else androidx.compose.material3.Scaffold(
                     containerColor = Ivory,
                     bottomBar = {
                         NavigationBar(containerColor = Color.White, tonalElevation = 8.dp) {
@@ -225,7 +250,7 @@ private fun VistaApp() {
                     ) {
                         when (selectedTab) {
                             0 -> HomeScreen(
-                                c, language, onLanguage = ::changeLanguage,
+                                c, language,
                                 searchQuery = searchQuery, onSearchChange = { searchQuery = it },
                                 onOpenScanner = { selectedTab = 2 },
                                 landmarks = catalogue?.landmarks.orEmpty(), photosByLandmark = catalogue?.photosByLandmark.orEmpty(), favoriteIds = favoriteIds,
@@ -266,7 +291,7 @@ private fun VistaApp() {
 
 @Composable
 private fun HomeScreen(
-    c: Copy, language: AppLanguage, onLanguage: (AppLanguage) -> Unit,
+    c: Copy, language: AppLanguage,
     searchQuery: String, onSearchChange: (String) -> Unit, onOpenScanner: () -> Unit,
     landmarks: List<Landmark>, photosByLandmark: Map<String, List<String>>,
     favoriteIds: Set<String>, onFavoriteToggle: (String) -> Unit, onOpenLandmark: (Landmark) -> Unit
@@ -286,7 +311,6 @@ private fun HomeScreen(
                         Text("EL BAYADH", color = Color.White, fontSize = 11.sp, letterSpacing = 4.sp)
                         Text(if (ar) "دليلك السياحي الذكي لولاية البيض" else if (fr) "Guide touristique intelligent d’El Bayadh" else "Smart tourism guide to El Bayadh", color = Color(0xFFE8DDCB), fontSize = 11.sp)
                     }
-                    LanguagePicker(language, onLanguage)
                 }
                 Spacer(Modifier.height(22.dp))
                 Text(c.welcome, color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Bold)
@@ -363,8 +387,7 @@ private fun HomeScreen(
                     }
                     Spacer(Modifier.width(14.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(if (ar) "اكتشف بالكاميرا" else if (fr) "Découvrez avec la caméra" else "Discover with your camera", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-                        Text(if (ar) "امسح رمز QR أو صوّر المعلم مباشرة، حتى دون رمز." else if (fr) "Scannez un QR ou photographiez directement le site." else "Scan a QR code or photograph a landmark directly.", color = Color(0xFFE8DDCB), fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 4.dp))
+                        Text(if (ar) "اكتشف من هنا" else if (fr) "Découvrez ici" else "Discover here", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
