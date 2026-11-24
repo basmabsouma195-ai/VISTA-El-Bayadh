@@ -31,9 +31,9 @@
       "filename": "1000078246.jpg",
       "sha256": "9e928ce5ebff011dbee54894df677c75e27f8790fa30094bc093d1a75e16e03b",
       "visualStatus": "non_landmark_sign",
-      "reviewStatus": "needs_human_location_confirmation",
+      "reviewStatus": "user_excluded",
       "recognitionApproved": false,
-      "reviewNote": "Hotel sign; excluded from landmark recognition"
+      "reviewNote": "User requested exclusion on 2026-11-24; hotel sign is not part of the landmark photo collection."
     },
     {
       "filename": "1000078252.jpg",
