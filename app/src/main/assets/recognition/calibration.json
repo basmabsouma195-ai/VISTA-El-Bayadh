@@ -1,6 +1,8 @@
 {
   "schemaVersion": 1,
   "validatedOnHeldOutElBayadhSet": false,
+  "heldOutImagesPerLandmark": 0,
+  "heldOutUnknownSceneImages": 0,
   "minimumCosineSimilarity": 0.0,
   "minimumLeadOverSecond": 0.0,
   "note": "Recognition intentionally remains disabled. Replace only after held-out field calibration."
