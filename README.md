@@ -16,11 +16,20 @@ The supplied VISTA reference boards are the visual authority. Preserve the deep-
 The Android application is in `app/`. Open the repository in Android Studio and sync Gradle.
 
 ## Current implementation status
-The Android/Compose app, offline catalogue reader, SQLite-backed catalogue storage, CameraX preview, QR fallback, favourites and local search are present.
+The Android/Compose app, offline catalogue reader, SQLite-backed catalogue storage, CameraX preview, QR fallback, favourites, local search, and a LiteRT/MobileNetV3 visual-embedding pipeline are present. The scanner supports analysis of a captured camera frame and a selected gallery photograph; QR remains an optional fallback.
 
-**Visual landmark recognition is not implemented yet.** The app currently has a recognition-engine contract and a conservative unavailable fallback. Bundled reference photographs and their local index are inputs for the future engine; their presence alone does not mean the camera can identify a landmark. Do not claim recognition is working until a real on-device matcher is integrated, tested against held-out images, and field-validated at the actual sites.
+**Visual landmark recognition is integrated but not validated for production.** The local embedding engine can rank experimental candidates from bundled reference photographs. Final automatic identification remains deliberately disabled until the field dataset and held-out calibration gates in `RECOGNITION_VALIDATION.md` are satisfied. The current three seed references are not enough to identify landmarks reliably. Do not present experimental suggestions as confirmed recognition.
 
 The current catalogue contains 23 records (content version 12): 8 marked `verified` and 15 marked `under_review`. These are editorial states, not a claim that all visitor information, access details or coordinates have been field-validated.
+
+## Scanner workflow
+
+1. Open the Scanner tab and point the camera at a landmark.
+2. Analyze the current camera preview, or choose an existing photograph from the phone gallery.
+3. The app uses its bundled on-device model and local reference index; no photo upload or runtime network lookup is required.
+4. Until the field-validation gate is passed, candidate suggestions are explicitly marked experimental. QR scanning is available as an optional alternative.
+
+Gallery and camera analysis share the same recognition path. Large gallery images are decoded at a bounded resolution before inference to reduce memory pressure on entry-level Android devices.
 
 ## Content integrity
 Do not invent landmark history, coordinates, visitor ratings, opening hours or safety advice. Keep documented facts, oral accounts and unresolved research distinct. Retain source records and licensing/attribution details for every external image. User-supplied field photographs must not be assigned to a site until the location is confirmed.
