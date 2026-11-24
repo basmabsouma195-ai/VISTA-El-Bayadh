@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "description": "User-confirmed field-photo gallery. Every image is gallery-only; none is approved for visual recognition. Signage and plaques are documentary assets.",
+  "images": [
+    {
+      "id": "field-gallery-01",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "1000078185.jpg",
+      "assetPath": "field-photos/ksar-bent-khass/architecture/1000078185.jpg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-02",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "1000078186.jpg",
+      "assetPath": "field-photos/ksar-bent-khass/architecture/1000078186.jpg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-03",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "1000078259.jpg",
+      "assetPath": "field-photos/ksar-bent-khass/architecture/1000078259.jpg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-04",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "1000078296.jpg",
+      "assetPath": "field-photos/ksar-bent-khass/architecture/1000078296.jpg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-05",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "1000078254.jpg",
+      "assetPath": "field-photos/ksar-bent-khass/signage/1000078254.jpg",
+      "imageType": "signage",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-06",
+      "landmarkId": "gour-bent-el-khass",
+      "sourceFileName": "1000078252.jpg",
+      "assetPath": "field-photos/gour-bent-el-khass/signage/1000078252.jpg",
+      "imageType": "signage",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-07",
+      "landmarkId": "gour-brizina",
+      "sourceFileName": "1000078257.jpg",
+      "assetPath": "field-photos/gour-brizina/landscape/1000078257.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-08",
+      "landmarkId": "gour-brizina",
+      "sourceFileName": "1000078266.jpg",
+      "assetPath": "field-photos/gour-brizina/landscape/1000078266.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-09",
+      "landmarkId": "gour-brizina",
+      "sourceFileName": "1000078269.jpg",
+      "assetPath": "field-photos/gour-brizina/landscape/1000078269.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-10",
+      "landmarkId": "gour-brizina",
+      "sourceFileName": "1000078305.jpg",
+      "assetPath": "field-photos/gour-brizina/landscape/1000078305.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-11",
+      "landmarkId": "gour-brizina",
+      "sourceFileName": "1000078262.jpg",
+      "assetPath": "field-photos/gour-brizina/signage/1000078262.jpg",
+      "imageType": "signage",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-12",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "sourceFileName": "1000078290.jpg",
+      "assetPath": "field-photos/ksar-boussemghoun-zaouia-sidi-ahmed-tidjani/architecture/1000078290.jpg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-13",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "sourceFileName": "1000078285.jpg",
+      "assetPath": "field-photos/ksar-boussemghoun-zaouia-sidi-ahmed-tidjani/landscape/1000078285.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-14",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "sourceFileName": "1000078279.jpg",
+      "assetPath": "field-photos/ksar-boussemghoun-zaouia-sidi-ahmed-tidjani/plaque/1000078279.jpg",
+      "imageType": "plaque",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-15",
+      "landmarkId": "hammam-ain-ouarka",
+      "sourceFileName": "1000078308.jpg",
+      "assetPath": "field-photos/hammam-ain-ouarka/landscape/1000078308.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-16",
+      "landmarkId": "hammam-ain-ouarka",
+      "sourceFileName": "1000078288.jpg",
+      "assetPath": "field-photos/hammam-ain-ouarka/landscape/1000078288.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-17",
+      "landmarkId": "hammam-ain-ouarka",
+      "sourceFileName": "1000078293.jpg",
+      "assetPath": "field-photos/hammam-ain-ouarka/landscape/1000078293.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-18",
+      "landmarkId": "hammam-ain-ouarka",
+      "sourceFileName": "1000078302.jpg",
+      "assetPath": "field-photos/hammam-ain-ouarka/landscape/1000078302.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-19",
+      "landmarkId": "kef-el-melh",
+      "sourceFileName": "1000078299.jpg",
+      "assetPath": "field-photos/kef-el-melh/landscape/1000078299.jpg",
+      "imageType": "landscape",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    }
+  ]
+}
