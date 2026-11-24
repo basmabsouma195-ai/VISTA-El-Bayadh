@@ -8,10 +8,13 @@
     {
       "filename": "1000078185.jpg",
       "sha256": "09d9ff87618807c3a7f2c79221f5a12a798b54675944978452863741c9f41064",
-      "visualStatus": "unclassified_structure",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "architecture_ksar_bent_khass",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Clay wall/building; exact site not confirmed"
+      "reviewNote": "User identified this old clay wall photograph as Ksar Bent El Khass; recognition remains disabled pending image review and dataset validation.",
+      "landmarkId": "ksar-bent-khass",
+      "locationNameAr": "قصر بنت الخس",
+      "locationConfirmation": "User identified this photograph as Ksar Bent El Khass on 2026-11-24."
     },
     {
       "filename": "1000078186.jpg",
