@@ -84,8 +84,7 @@
       "descriptionAr": "",
       "descriptionFr": "",
       "descriptionEn": "",
-      "verification": "under_review",
-      "image": "recognition/references/el-bayadh-martyrs-square-01.jpg"
+      "verification": "under_review"
     },
     {
       "id": "cheikh-bouamama-statue-el-bayadh",
@@ -96,8 +95,7 @@
       "descriptionAr": "",
       "descriptionFr": "",
       "descriptionEn": "",
-      "verification": "under_review",
-      "image": "recognition/references/cheikh-bouamama-statue-01.jpg"
+      "verification": "under_review"
     },
     {
       "id": "rock-art-ksar-el-hamar",
@@ -108,8 +106,7 @@
       "descriptionAr": "",
       "descriptionFr": "",
       "descriptionEn": "",
-      "verification": "under_review",
-      "image": "recognition/references/ksar-el-hamar-rock-art-01.jpg"
+      "verification": "under_review"
     },
     {
       "id": "boussemghoun-oasis",
@@ -120,8 +117,7 @@
       "descriptionAr": "",
       "descriptionFr": "",
       "descriptionEn": "",
-      "verification": "under_review",
-      "image": "recognition/references/boussemghoun-oasis-01.jpg"
+      "verification": "under_review"
     },
     {
       "id": "boussemghoun-old-mosque",
@@ -132,8 +128,7 @@
       "descriptionAr": "",
       "descriptionFr": "",
       "descriptionEn": "",
-      "verification": "under_review",
-      "image": "recognition/references/boussemghoun-old-mosque-01.jpg"
+      "verification": "under_review"
     }
   ]
 }
