@@ -62,7 +62,7 @@ def is_image(path):
             (head[:4] == b"RIFF" and head[8:12] == b"WEBP"))
 
 def add_entry(entries, item, file_path, landmark_id=None):
-    entries.append({
+    entry = {
         "id": item["id"],
         "landmarkId": landmark_id or item["landmarkId"],
         "fileName": item["fileName"],
@@ -70,7 +70,12 @@ def add_entry(entries, item, file_path, landmark_id=None):
         "labelAr": item.get("labelAr", ""),
         "labelFr": item.get("labelFr", ""),
         "labelEn": item.get("labelEn", ""),
-    })
+    }
+    # Preserve reuse terms and provenance in the installed offline package.
+    for key in ("sourcePage", "license", "licenseUrl", "attribution", "changes", "datasetRole"):
+        if item.get(key):
+            entry[key] = item[key]
+    entries.append(entry)
     print(f"Bundled {item['id']}: {file_path.stat().st_size} bytes")
 
 def main():
