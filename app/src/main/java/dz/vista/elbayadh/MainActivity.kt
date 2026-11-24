@@ -229,7 +229,7 @@ private fun VistaApp() {
                                 onFavoriteToggle = ::toggleFavorite,
                                 onOpenLandmark = { selectedLandmark = it }
                             )
-                            else -> MoreScreen(c, language, onLanguage = ::changeLanguage, tripStore = tripStore)
+                            else -> MoreScreen(c, language, onLanguage = ::changeLanguage, tripStore = tripStore, landmarks = catalogue?.landmarks.orEmpty())
                         }
                     }
                 }
@@ -777,7 +777,8 @@ private fun MoreScreen(
     c: Copy,
     language: AppLanguage,
     onLanguage: (AppLanguage) -> Unit,
-    tripStore: TripPlansStore
+    tripStore: TripPlansStore,
+    landmarks: List<Landmark>
 ) {
     var tripTitle by remember { mutableStateOf("") }
     var trips by remember { mutableStateOf(tripStore.all()) }
@@ -830,7 +831,44 @@ private fun MoreScreen(
                     Column(Modifier.padding(14.dp)) {
                         Text(trip.title, color = Forest, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         Text("${trip.landmarkIds.size} $stationsLabel", color = Muted, fontSize = 12.sp)
-                        Text(noPlaces, color = Muted, fontSize = 12.sp, lineHeight = 18.sp)
+                        if (landmarks.isNotEmpty()) {
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                if (isArabic) "أضف محطات إلى رحلتك" else if (isFrench) "Ajouter des étapes" else "Add stops to your trip",
+                                color = Forest, fontWeight = FontWeight.SemiBold, fontSize = 13.sp
+                            )
+                            landmarks.forEach { landmark ->
+                                Row(
+                                    modifier = Modifier.fillMaxWidth().padding(top = 5.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        landmark.name(when (language) {
+                                            AppLanguage.Arabic -> CatalogueLanguage.AR
+                                            AppLanguage.French -> CatalogueLanguage.FR
+                                            AppLanguage.English -> CatalogueLanguage.EN
+                                        }),
+                                        color = Ink, fontSize = 12.sp, modifier = Modifier.weight(1f)
+                                    )
+                                    TextButton(onClick = {
+                                        tripStore.addLandmark(trip.id, landmark.id)
+                                        trips = tripStore.all()
+                                    }) {
+                                        Text(
+                                            if (landmark.id in trip.landmarkIds) {
+                                                if (isArabic) "مضاف" else if (isFrench) "Ajouté" else "Added"
+                                            } else {
+                                                if (isArabic) "إضافة" else if (isFrench) "Ajouter" else "Add"
+                                            },
+                                            color = if (landmark.id in trip.landmarkIds) Muted else Forest
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            Text(noPlaces, color = Muted, fontSize = 12.sp, lineHeight = 18.sp)
+                        }
                         Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                             TextButton(onClick = {
                                 tripStore.delete(trip.id)
