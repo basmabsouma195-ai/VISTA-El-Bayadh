@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "scope": "El Bayadh Province, Algeria",
+  "source": "Algerian Cultural Heritage Map, Wilaya 32 listing",
+  "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/wilaya/32",
+  "note": "Inventory of additional named places discovered during research. It is a research queue, not a claim that every entry is ready for publication. Distinguish exact site records from institutions and avoid duplicate names.",
+  "entries": [
+    {
+      "id": "ksar-molk-slimane",
+      "nameAr": "قصر ملك سليمان",
+      "category": "ksar",
+      "municipality": "البنود",
+      "district": "الأبيض سيدي الشيخ",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/926",
+      "status": "source-recorded",
+      "notes": "أطلال قصر محصن فوق ربوة؛ المصدر يذكر بعده نحو 16 كلم جنوب قرية البنود وصعوبة الوصول. تاريخ القصر غير محسوم وتوجد روايات شفوية."
+    },
+    {
+      "id": "catholic-prayer-house",
+      "nameAr": "مصلى الكاثوليك",
+      "category": "historical-monument",
+      "municipality": "الأبيض سيدي الشيخ",
+      "district": "الأبيض سيدي الشيخ",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/766",
+      "status": "source-recorded",
+      "notes": "مصلى تاريخي يعود حسب البطاقة إلى 1934، وتصف البطاقة عناصره المعمارية ومرافقه."
+    },
+    {
+      "id": "chebka-daigham-rock-art",
+      "nameAr": "محطة النقش الصخري شبكة الديغم (شبكة الدرهم)",
+      "category": "rock-art",
+      "municipality": "المحرة",
+      "district": "الشلالة",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/439",
+      "status": "source-recorded",
+      "notes": "تقع قرب وادي الديغم؛ البطاقة تذكر بقاء رسم كبش ذي قرص واحد وحالة حفظ سيئة جداً، لذلك لا تُعرض كموقع زيارة سهل أو آمن."
+    },
+    {
+      "id": "rock-art-karima",
+      "nameAr": "محطة النقش الصخري الكريمة",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1513",
+      "status": "source-recorded",
+      "notes": "موجودة في جرد خريطة التراث؛ يلزم استكمال تفاصيل الموقع والإحداثيات والصور."
+    },
+    {
+      "id": "rock-art-dhalaa-mayta",
+      "nameAr": "محطة النقش الصخري الضلعة الميتة",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1324",
+      "status": "source-recorded",
+      "notes": "موجودة في جرد خريطة التراث؛ يلزم استكمال تفاصيل الموقع والإحداثيات والصور."
+    },
+    {
+      "id": "rock-art-qaret-tabban",
+      "nameAr": "محطة النقش الصخري قارة التبن",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1265",
+      "status": "source-recorded",
+      "notes": "موجودة في جرد خريطة التراث؛ يلزم استكمال تفاصيل الموقع والإحداثيات والصور."
+    },
+    {
+      "id": "rock-art-qaret-samouta",
+      "nameAr": "محطة النقش الصخري قارة السموطة",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1260",
+      "status": "source-recorded",
+      "notes": "موجودة في جرد خريطة التراث؛ يلزم استكمال تفاصيل الموقع والإحداثيات والصور."
+    },
+    {
+      "id": "rock-art-qaret-taleb",
+      "nameAr": "محطة النقش الصخري قارة الطالب (العقرب العملاق)",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/wilaya/32",
+      "status": "source-listed",
+      "notes": "مذكورة في قائمة ولاية البيض الرسمية؛ نحتاج فتح بطاقة مستقلة لتوثيق التفاصيل."
+    },
+    {
+      "id": "rock-art-qalamouz",
+      "nameAr": "محطة النقش الصخري قلموز لبيوض",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/wilaya/32",
+      "status": "source-listed",
+      "notes": "مذكورة في قائمة ولاية البيض الرسمية؛ نحتاج فتح بطاقة مستقلة لتوثيق التفاصيل."
+    },
+    {
+      "id": "rock-art-qouirat-ben-thaloul",
+      "nameAr": "محطة النقش الصخري قويرات بن ثالول",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/wilaya/32",
+      "status": "source-listed",
+      "notes": "مذكورة في قائمة ولاية البيض الرسمية؛ نحتاج فتح بطاقة مستقلة لتوثيق التفاصيل."
+    },
+    {
+      "id": "rock-art-khalwat-sidi-cheikh",
+      "nameAr": "محطة النقش الصخري خلوة سيدي الشيخ",
+      "category": "rock-art",
+      "municipality": null,
+      "district": null,
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/wilaya/32",
+      "status": "source-listed",
+      "notes": "مذكورة في قائمة ولاية البيض الرسمية؛ نحتاج فتح بطاقة مستقلة لتوثيق التفاصيل."
+    },
+    {
+      "id": "sidi-hamza-tower",
+      "nameAr": "برج سيدي حمزة",
+      "category": "historical-monument",
+      "municipality": "بريزينة",
+      "district": "بريزينة",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/wilaya/32",
+      "status": "source-listed",
+      "notes": "مدرج في قائمة التراث؛ يلزم استكمال البطاقة والصور."
+    },
+    {
+      "id": "barrage-brezina",
+      "nameAr": "سد بريزينة",
+      "category": "water-landscape",
+      "municipality": "بريزينة",
+      "district": "بريزينة",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Le_barrage_de_Br%C3%A9zina.jpg",
+      "status": "photo-source-found",
+      "notes": "صورة عامة موثقة للسد موجودة؛ يلزم إضافة بطاقة تعريف مستقلة ومصدر معلومات رسمي عن السد."
+    }
+  ]
+}
