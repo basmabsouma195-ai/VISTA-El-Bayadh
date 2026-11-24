@@ -1,51 +1,5 @@
 {
   "schemaVersion": 1,
   "mode": "offline_local_assets_only",
-  "images": [
-    {
-      "id": "el-bayadh-martyrs-square-commons-01",
-      "landmarkId": "el-bayadh-martyrs-square",
-      "fileName": "el-bayadh-martyrs-square-01.jpg",
-      "assetPath": "recognition/references/el-bayadh-martyrs-square-01.jpg",
-      "labelAr": "ساحة الشهداء - مدينة البيض",
-      "labelFr": "Place des Martyrs - El Bayadh",
-      "labelEn": "Martyrs' Square - El Bayadh"
-    },
-    {
-      "id": "cheikh-bouamama-statue-commons-01",
-      "landmarkId": "cheikh-bouamama-statue-el-bayadh",
-      "fileName": "cheikh-bouamama-statue-01.jpg",
-      "assetPath": "recognition/references/cheikh-bouamama-statue-01.jpg",
-      "labelAr": "تمثال الشيخ بوعمامة - مدخل مدينة البيض",
-      "labelFr": "Statue du Cheikh Bouamama - entrée d'El Bayadh",
-      "labelEn": "Cheikh Bouamama statue - El Bayadh entrance"
-    },
-    {
-      "id": "ksar-el-hamar-rock-art-commons-01",
-      "landmarkId": "rock-art-ksar-el-hamar",
-      "fileName": "ksar-el-hamar-rock-art-01.jpg",
-      "assetPath": "recognition/references/ksar-el-hamar-rock-art-01.jpg",
-      "labelAr": "النقوش الصخرية - موقع قصر الحمار",
-      "labelFr": "Gravures rupestres - site de Ksar el Hamar",
-      "labelEn": "Rock engravings - Ksar el Hamar site"
-    },
-    {
-      "id": "boussemghoun-oasis-commons-01",
-      "landmarkId": "boussemghoun-oasis",
-      "fileName": "boussemghoun-oasis-01.jpg",
-      "assetPath": "recognition/references/boussemghoun-oasis-01.jpg",
-      "labelAr": "واحة بوسمغون",
-      "labelFr": "Oasis de Boussemghoun",
-      "labelEn": "Boussemghoun oasis"
-    },
-    {
-      "id": "boussemghoun-old-mosque-commons-01",
-      "landmarkId": "boussemghoun-old-mosque",
-      "fileName": "boussemghoun-old-mosque-01.jpg",
-      "assetPath": "recognition/references/boussemghoun-old-mosque-01.jpg",
-      "labelAr": "المسجد العتيق بالقصر القديم - بوسمغون",
-      "labelFr": "Ancienne mosquée du vieux ksar - Boussemghoun",
-      "labelEn": "Old mosque in the ancient ksar - Boussemghoun"
-    }
-  ]
+  "images": []
 }
