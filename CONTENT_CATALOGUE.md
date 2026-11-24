@@ -30,7 +30,8 @@ Each landmark record uses this structure:
   "image": "images/example.webp",
   "audioAr": "audio/example-ar.mp3",
   "audioFr": "audio/example-fr.mp3",
-  "audioEn": "audio/example-en.mp3"
+  "audioEn": "audio/example-en.mp3",
+  "sources": [{ "title": "Source title", "url": "https://...", "publisher": "Publisher", "note": "Editorial note" }]
 }
 ```
 
@@ -40,9 +41,10 @@ Each landmark record uses this structure:
 - Coordinates are optional; never add guessed coordinates.
 - Image and audio paths are optional and must point to bundled files.
 - Keep all three language fields together for each destination.
+- Add one or more `sources` records whenever a description uses external historical, cultural, geographic, or institutional information. Keep the source URL, publisher, and a short note describing exactly what it supports.
+- Source records are stored in SQLite and shown in the landmark detail card. They are bundled with the app and available offline as attribution text; opening source websites requires connectivity.
+- Keep unverified stories, approximate locations, and preliminary research clearly labelled; do not turn a source claim into a confirmed fact without corroboration.
 - Keep IDs stable so favourites and later content updates can refer to the same place.
 - Do not mark an entry verified until its supporting material has been reviewed.
 
-The catalogue currently includes Ksar Mechria Sughra, Gour Brizina, Kef El Melh, Ksar Bent Khass, Gour Bent El Khass, Ksar Boussemghoun – Zaouia Sidi Ahmed Tidjani, and initial El Bayadh/Boussemghoun seed records. Most descriptions, coordinates, and media are intentionally absent pending source review. Gour Brizina and Kef El Melh remain `under_review`; do not present them as historically verified or use unverified coordinates for navigation.
-
-Runtime landmark images are not taken from the optional `image` field in this JSON. `OfflineCatalogue` resolves a photo only when `recognition/index.json` points to an existing packaged local asset for the same `landmarkId`. This prevents broken paths and remote image dependencies.
+The catalogue is focused on El Bayadh Province and currently includes 19 records covering ksour, natural formations, caves, rock-art stations, dinosaur footprints, and religious heritage. The populated entries include Ksar Mechria Sughra, Ksar Ghassoul, Ksar Stitten, Boussemghoun Old Mosque, Gour Bent El Khass, Brézina Gours, Brézina Cave, Khashim Rock Art Station, Merdoufa, Bélier de Bou Alem, Bastion Bent El Khas, and dinosaur footprints near the Reggassa road. Entries without sufficiently reliable descriptions remain intentionally incomplete and marked `under_review`; no coordinates are invented. The source register distinguishes official heritage inventory records, cultural-heritage map descriptions, and local reporting.
