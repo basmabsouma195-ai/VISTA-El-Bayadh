@@ -144,6 +144,66 @@
       "status": "candidate",
       "licenseReview": "required",
       "notes": "مصدر لصور المدينة والمباني والشوارع؛ لا تُربط بمعلم محدد إلا بعد فحص كل صورة."
+    },
+    {
+      "id": "boussemghoun-oasis-commons-2011",
+      "landmarkId": "boussemghoun-oasis",
+      "title": "Vue sur l'oasis de Boussemghoune",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Boussemghoune.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Mourad07",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "3264x2448",
+      "capturedOrPublished": "2011-08-21",
+      "downloadedIntoRepository": false,
+      "notes": "وصف الملف يحدد الصورة كإطلالة على واحة بوسمغون. يسمح بإعادة الاستخدام مع ذكر المؤلف ورابط الترخيص وبيان التعديلات والمشاركة بالمثل."
+    },
+    {
+      "id": "el-gorre-brezina-2019",
+      "landmarkId": "gour-brizina",
+      "title": "El Gorre - Brezina - Algeria",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:El-Gorre.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Sidsegh",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "2049x1365",
+      "capturedOrPublished": "2019-04-17",
+      "downloadedIntoRepository": false,
+      "notes": "صفحة الملف تصرح بأنها جبال El Gorre جنوب الجزائر بولاية البيض وتحديداً بريزينة. ليست صورة موصوفة صراحة بقور بنت الخص، لذلك لا تُدمج مع هذا المعلم المحدد دون مطابقة ميدانية."
+    },
+    {
+      "id": "brezina-dam-2018",
+      "landmarkId": null,
+      "title": "Le barrage de Brézina",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Le_barrage_de_Br%C3%A9zina.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Nabil ALIOUAT",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "dimensions": "4272x2848",
+      "capturedOrPublished": "2018-11-30",
+      "downloadedIntoRepository": false,
+      "notes": "صورة موثقة لسد بريزينة في بلدية بريزينة. أُبقي landmarkId فارغاً حتى إضافة بطاقة مستقلة للسد في الدليل."
+    },
+    {
+      "id": "boussemghoun-town-2017",
+      "landmarkId": null,
+      "title": "Boussemghoun بوسمغون",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Boussemghoun_%D8%A8%D9%88%D8%B3%D9%85%D8%BA%D9%88%D9%86.jpg",
+      "repository": "Wikimedia Commons",
+      "status": "license-reviewed-candidate",
+      "author": "Habib kaki",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "dimensions": "2500x1667",
+      "capturedOrPublished": "2017-04-09",
+      "downloadedIntoRepository": false,
+      "notes": "صورة عامة للبلدة وليست لمعلم مفرد؛ صفحة الملف تضعها في الملكية العامة عبر CC0."
     }
   ]
 }
