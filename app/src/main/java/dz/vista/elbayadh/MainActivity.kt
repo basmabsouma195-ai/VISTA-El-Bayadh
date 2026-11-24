@@ -32,6 +32,8 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -41,6 +43,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +59,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
+import dz.vista.elbayadh.data.TripPlansStore
+import dz.vista.elbayadh.data.TripPlan
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 
@@ -128,6 +133,7 @@ private fun VistaApp() {
         )
     }
     var selectedTab by remember { mutableIntStateOf(0) }
+    val tripStore = remember { TripPlansStore(context) }
     var searchQuery by remember { mutableStateOf("") }
     var favoriteIds by remember {
         mutableStateOf(preferences.getStringSet("favorites", emptySet())?.toSet() ?: emptySet())
@@ -187,7 +193,7 @@ private fun VistaApp() {
                                 if (language == AppLanguage.Arabic) "عدد العناصر المحفوظة: ${favoriteIds.size}" else
                                 if (language == AppLanguage.French) "Sites enregistrés : ${favoriteIds.size}" else
                                 "Saved places: ${favoriteIds.size}", Icons.Filled.Favorite)
-                            else -> MoreScreen(c, language, onLanguage = ::changeLanguage)
+                            else -> MoreScreen(c, language, onLanguage = ::changeLanguage, tripStore = tripStore)
                         }
                     }
                 }
@@ -337,12 +343,75 @@ private fun InfoScreen(title: String, message: String, icon: androidx.compose.ui
 }
 
 @Composable
-private fun MoreScreen(c: Copy, language: AppLanguage, onLanguage: (AppLanguage) -> Unit) {
-    Column(Modifier.fillMaxSize().padding(22.dp)) {
+private fun MoreScreen(
+    c: Copy,
+    language: AppLanguage,
+    onLanguage: (AppLanguage) -> Unit,
+    tripStore: TripPlansStore
+) {
+    var tripTitle by remember { mutableStateOf("") }
+    var trips by remember { mutableStateOf(tripStore.all()) }
+    val isArabic = language == AppLanguage.Arabic
+    val isFrench = language == AppLanguage.French
+    val tripsTitle = if (isArabic) "رحلاتي" else if (isFrench) "Mes voyages" else "My trips"
+    val tripHint = if (isArabic) "اسم الرحلة الجديدة" else if (isFrench) "Nom du nouveau voyage" else "New trip name"
+    val createLabel = if (isArabic) "إنشاء رحلة" else if (isFrench) "Créer un voyage" else "Create trip"
+    val emptyLabel = if (isArabic) "لم تنشئ أي رحلة بعد." else if (isFrench) "Aucun voyage pour le moment." else "No trips created yet."
+    val stationsLabel = if (isArabic) "محطات" else if (isFrench) "étapes" else "stops"
+    val deleteLabel = if (isArabic) "حذف" else if (isFrench) "Supprimer" else "Delete"
+    val noPlaces = if (isArabic) "لا توجد معالم مضافة بعد. ستتمكن من اختيار المعالم عند إدراجها في الموسوعة." else if (isFrench) "Aucun site n’est encore disponible. Vous pourrez ajouter des étapes lorsque le catalogue sera renseigné." else "No landmarks are available yet. You can add stops once the catalogue is populated."
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(22.dp)) {
         Text(c.more, color = Forest, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(18.dp))
+        Spacer(Modifier.height(12.dp))
         Text(c.moreNote, color = Muted, fontSize = 15.sp, lineHeight = 24.sp)
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(22.dp))
+        Text(tripsTitle, color = Forest, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(10.dp))
+        OutlinedTextField(
+            value = tripTitle,
+            onValueChange = { tripTitle = it },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+            label = { Text(tripHint) },
+            shape = RoundedCornerShape(14.dp)
+        )
+        Spacer(Modifier.height(8.dp))
+        Button(
+            onClick = {
+                if (tripTitle.isNotBlank()) {
+                    tripStore.create(tripTitle)
+                    trips = tripStore.all()
+                    tripTitle = ""
+                }
+            },
+            enabled = tripTitle.isNotBlank(),
+            colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Forest)
+        ) { Text(createLabel, color = Color.White) }
+        Spacer(Modifier.height(12.dp))
+        if (trips.isEmpty()) {
+            Text(emptyLabel, color = Muted, fontSize = 14.sp)
+        } else {
+            trips.forEach { trip ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(Modifier.padding(14.dp)) {
+                        Text(trip.title, color = Forest, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Text("${trip.landmarkIds.size} $stationsLabel", color = Muted, fontSize = 12.sp)
+                        Text(noPlaces, color = Muted, fontSize = 12.sp, lineHeight = 18.sp)
+                        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                            TextButton(onClick = {
+                                tripStore.delete(trip.id)
+                                trips = tripStore.all()
+                            }) { Text(deleteLabel, color = Color(0xFF9B5145)) }
+                        }
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(22.dp))
         Text("Language / Langue / اللغة", color = Forest, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
