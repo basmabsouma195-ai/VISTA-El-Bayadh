@@ -25,8 +25,17 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Restore offline recognition image cache
+        uses: actions/cache@v4
+        with:
+          path: app/src/main/assets/recognition/references
+          key: vista-recognition-seed-v1-${{ hashFiles('dataset/recognition/source-manifest.json') }}
+          restore-keys: |
+            vista-recognition-seed-v1-
       - name: Bundle offline recognition image assets
         run: python3 scripts/fetch_recognition_seed_images.py
+        env:
+          VISTA_FETCH_REMOTE_SEED_IMAGES: 'true'
       - name: Assemble debug APK
         run: gradle --no-daemon :app:assembleDebug
       - name: Upload debug APK
