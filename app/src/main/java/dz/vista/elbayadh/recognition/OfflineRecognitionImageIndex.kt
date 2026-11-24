@@ -62,9 +62,7 @@ class OfflineRecognitionImageIndex(context: Context) {
         if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
 
         var sample = 1
-        while (bounds.outWidth / (sample * 2) >= maxDimension &&
-            bounds.outHeight / (sample * 2) >= maxDimension
-        ) {
+        while (maxOf(bounds.outWidth, bounds.outHeight) / (sample * 2) >= maxDimension) {
             sample *= 2
         }
         val options = BitmapFactory.Options().apply { inSampleSize = sample }
