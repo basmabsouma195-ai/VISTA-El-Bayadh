@@ -90,6 +90,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import dz.vista.elbayadh.data.TripPlansStore
 import dz.vista.elbayadh.data.OfflineCatalogue
 import dz.vista.elbayadh.data.FavoritesStore
@@ -649,8 +650,11 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     }
     val recognitionEngine = remember(context) { MobileNetV3RecognitionEngine(context) }
     var recognitionModelLoaded by remember { mutableStateOf(false) }
+    var recognitionReady by remember { mutableStateOf(false) }
+    var recognitionStatus by remember { mutableStateOf<String?>(null) }
+    val recognitionScope = rememberCoroutineScope()
     LaunchedEffect(recognitionEngine) {
-        recognitionEngine.prepare()
+        recognitionReady = recognitionEngine.prepare()
         recognitionModelLoaded = recognitionEngine.isModelLoaded
     }
     DisposableEffect(recognitionEngine) {
@@ -820,6 +824,45 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         else { if (recognitionModelLoaded) "MobileNetV3 model loaded offline. Identification remains disabled: at least 3 verified photos per site and independent calibration are required." else "Could not load the local vision model; the QR fallback remains available." },
                         color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
                     )
+                    recognitionStatus?.let { status ->
+                        Text(status, color = Forest, fontSize = 11.sp, lineHeight = 16.sp, modifier = Modifier.padding(top = 6.dp))
+                    }
+                    Button(
+                        enabled = recognitionReady,
+                        onClick = {
+                            val snapshot = previewView.bitmap?.copy(Bitmap.Config.ARGB_8888, false)
+                            if (snapshot == null) {
+                                recognitionStatus = if (isArabic) "تعذّر التقاط صورة من الكاميرا." else if (isFrench) "Impossible de capturer l’image de la caméra." else "Could not capture a camera frame."
+                            } else {
+                                recognitionScope.launch {
+                                    try {
+                                        when (val result = recognitionEngine.recognize(snapshot)) {
+                                            is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
+                                                val found = landmarks.firstOrNull { it.id == result.candidate.landmarkId }
+                                                if (found != null) onOpenLandmark(found)
+                                                else recognitionStatus = if (isArabic) "المعلم غير موجود في الموسوعة المحلية." else if (isFrench) "Ce site est absent du catalogue local." else "The matched site is missing from the local catalogue."
+                                            }
+                                            is dz.vista.elbayadh.recognition.RecognitionDecision.Ambiguous ->
+                                                recognitionStatus = if (isArabic) "الصورة متشابهة مع أكثر من معلم؛ اقترب أو غيّر زاوية التصوير." else if (isFrench) "Plusieurs sites se ressemblent ; rapprochez-vous ou changez d’angle." else "Several sites look similar; move closer or change the camera angle."
+                                            dz.vista.elbayadh.recognition.RecognitionDecision.Unknown ->
+                                                recognitionStatus = if (isArabic) "لم نتعرّف على هذا المشهد." else if (isFrench) "Scène non reconnue." else "This scene was not recognized."
+                                            dz.vista.elbayadh.recognition.RecognitionDecision.ModelUnavailable ->
+                                                recognitionStatus = if (isArabic) "محرك التعرّف غير جاهز." else if (isFrench) "Le moteur n’est pas prêt." else "Recognition engine is not ready."
+                                        }
+                                    } finally {
+                                        if (!snapshot.isRecycled) snapshot.recycle()
+                                    }
+                                }
+                            }
+                        },
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Forest),
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                    ) {
+                        Text(
+                            if (isArabic) "التعرّف البصري على المعلم" else if (isFrench) "Identifier visuellement le site" else "Identify landmark visually",
+                            color = Color.White
+                        )
+                    }
                 }
             }
         } else {
