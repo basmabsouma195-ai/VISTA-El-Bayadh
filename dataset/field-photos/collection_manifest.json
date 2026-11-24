@@ -170,10 +170,12 @@
     {
       "filename": "1000078308.jpg",
       "sha256": "c7cf4b9567ecd3fca5f98521d785422c0ea3b8b56fb29ce39460a3d697a6c9a1",
-      "visualStatus": "unclassified_ksar_landscape",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "hammam_ain_ouarka",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Ksar rooftops and mountain panorama; exact site not confirmed"
+      "reviewNote": "User identified this photograph as Hammam Ain Ouarka; landmark catalogue entry must be added or matched before app integration.",
+      "locationNameAr": "حمام عين ورقة",
+      "locationConfirmation": "User identified this photograph as Hammam Ain Ouarka on 2026-11-24."
     },
     {
       "filename": "1000078259.jpg",
