@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 7,
+  "contentVersion": 8,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -237,6 +237,63 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل إدراج حصن بنت الخس ضمن الجرد الإضافي والقرار الولائي."
+        }
+      ]
+    },
+    {
+      "id": "ksar-ghassoul",
+      "categoryId": "ksour",
+      "nameAr": "قصر الغاسول",
+      "nameFr": "Ksar de Ghassoul",
+      "nameEn": "Ghassoul Ksar",
+      "descriptionAr": "يقع قصر الغاسول ببلدية الغاسول في ولاية البيض، وهو مسجل في قائمة الجرد الإضافي بقرار ولائي رقم 0345 المؤرخ في 5 أفريل 2016. تصف بطاقة خريطة التراث القصر بأنه مبني فوق هضبة مرتفعة، بمساكن متراصة ذات تنظيم دائري ومدخلين رئيسيين شرقي وغربي، وتذكر أن الأزقة مرصوفة بالحجارة والأخشاب وأن المسجد يقع في أعلى القصر. وتشير البطاقة إلى نشاط فلاحي وحرفي وتجاري ارتبط بالبساتين والتخزين والنسيج والحدادة ودباغة الجلود. أما عمر القصر وأصل تسميته فتوردهما البطاقة في شكل روايات محلية مختلفة.",
+      "descriptionFr": "Le ksar de Ghassoul se trouve dans la commune de Ghassoul, wilaya d’El Bayadh. Il est inscrit à l’inventaire supplémentaire par arrêté de wilaya n° 0345 du 5 avril 2016. La fiche de la Carte du patrimoine culturel le décrit comme un établissement bâti sur un plateau élevé, avec des habitations regroupées selon une organisation circulaire, deux entrées principales à l’est et à l’ouest, des ruelles pavées de pierre et de bois, et une mosquée au sommet du ksar. Elle évoque également des activités agricoles, artisanales et commerciales liées aux jardins, au stockage, au tissage, à la forge et au travail du cuir. L’ancienneté du ksar et l’origine de son nom sont présentées sous forme de récits locaux divergents.",
+      "descriptionEn": "Ghassoul Ksar is in Ghassoul municipality, El Bayadh Province. It was entered on the supplementary inventory under wilaya order No. 0345 dated 5 April 2016. The Algerian Cultural Heritage Map describes a settlement on an elevated plateau, with closely grouped houses in a circular arrangement, two main eastern and western gates, stone-and-wood paved lanes, and a mosque at the upper part of the ksar. The record also notes farming, craft, and trading activities associated with gardens, storage, weaving, metalwork, and leatherwork. The age of the ksar and the origin of its name are presented as differing local accounts.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "قصر الغاسول – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/232",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "المصدر يثبت الموقع وقرار الجرد، ويعرض الوصف والروايات المحلية."
+        }
+      ]
+    },
+    {
+      "id": "ksar-stitten",
+      "categoryId": "ksour",
+      "nameAr": "قصر استيتن",
+      "nameFr": "Ksar de Stitten",
+      "nameEn": "Stitten Ksar",
+      "descriptionAr": "يقع قصر استيتن بمقر بلدية استيتن، على السفح الجنوبي لجبل كسال شرق ولاية البيض. تصف بطاقة خريطة التراث مبانيه بأنها استعملت الطوب والحجارة والخشب، وتذكر مساحة تقارب 2.8 هكتار وأربعة أبواب، مع مساكن وأزقة متداخلة. وتورد البطاقة روايات محلية عن تاريخ المنطقة وشيوخها، لكنها تنبه إلى نقص المدونات والمخطوطات القديمة والحاجة إلى دراسة أكاديمية مستفيضة؛ لذلك تبقى الروايات الزمنية والتاريخية قيد المراجعة.",
+      "descriptionFr": "Le ksar de Stitten se situe au siège de la commune de Stitten, sur le versant sud du Djebel Ksel, à l’est de la wilaya d’El Bayadh. La fiche de la Carte du patrimoine indique l’emploi de la terre crue, de la pierre et du bois dans les constructions, une superficie d’environ 2,8 hectares et quatre portes, avec des habitations et des ruelles imbriquées. Elle rapporte des traditions locales sur l’histoire de la région et ses figures religieuses, tout en soulignant le manque de manuscrits anciens et la nécessité de recherches académiques approfondies. Les récits chronologiques restent donc à l’étude.",
+      "descriptionEn": "Stitten Ksar is located in the municipality of Stitten, on the southern slope of Djebel Ksel in eastern El Bayadh Province. The Algerian Cultural Heritage Map describes buildings using earth, stone, and timber, an area of about 2.8 hectares, four gates, and interlinked houses and lanes. The record also relates local traditions about the region’s history and religious figures, while noting the scarcity of old manuscripts and the need for extensive academic research. Chronological and historical narratives therefore remain under review.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "قصر استيتن – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/563",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "مصدر وصفي محلي؛ البطاقة نفسها تنبه إلى نقص الوثائق والحاجة إلى بحث أكاديمي."
+        }
+      ]
+    },
+    {
+      "id": "dinosaur-footprints-el-bayadh",
+      "categoryId": "rock-art",
+      "nameAr": "آثار بصمات الديناصورات – طريق الرقاصة",
+      "nameFr": "Empreintes de dinosaures – route de Reggassa",
+      "nameEn": "Dinosaur Footprints – Reggassa Road",
+      "descriptionAr": "موقع جيولوجي لآثار أقدام ديناصورات شمال مدينة البيض، على الطريق الرابط بين البيض والرقاصة. تذكر بطاقة خريطة التراث الثقافي الجزائري أن الموقع اكتُشف سنة 2004، وأن دراسة أولية لفريق من معهد الجيولوجيا بجامعة وهران نسبت الآثار إلى نحو 130 مليون سنة، خلال العصر الطباشيري الأسفل. وتذكر البطاقة اكتشاف آثار أخرى في مواقع بالمنطقة؛ ويظل التأريخ هنا منقولاً عن الدراسة الأولية كما ورد في المصدر.",
+      "descriptionFr": "Site géologique présentant des empreintes de dinosaures au nord de la ville d’El Bayadh, sur la route reliant El Bayadh à Reggassa. Selon la Carte du patrimoine culturel algérien, le site a été découvert en 2004. Une étude préliminaire menée par une équipe de l’Institut de géologie de l’Université d’Oran a attribué les empreintes à environ 130 millions d’années, au Crétacé inférieur. La fiche mentionne d’autres découvertes dans la région ; cette datation est rapportée comme celle de l’étude préliminaire citée.",
+      "descriptionEn": "A geological site containing dinosaur footprints north of El Bayadh city, along the road connecting El Bayadh and Reggassa. The Algerian Cultural Heritage Map says the site was discovered in 2004. A preliminary study by a team from the University of Oran’s Institute of Geology attributed the tracks to approximately 130 million years ago, in the Early Cretaceous. The record notes further discoveries in the region; this age is reported as the preliminary study’s estimate cited by the source.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "آثار بصمات الديناصور – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/777",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "المصدر يذكر اكتشاف 2004 والتأريخ المنسوب إلى دراسة أولية."
         }
       ]
     }
