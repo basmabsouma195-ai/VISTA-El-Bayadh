@@ -792,6 +792,17 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                             },
                             color = Ink, fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp)
                         )
+                        if (reference.attribution.isNotBlank() || reference.license.isNotBlank()) {
+                            Text(
+                                listOfNotNull(
+                                    reference.attribution.takeIf { it.isNotBlank() },
+                                    reference.license.takeIf { it.isNotBlank() }
+                                ).joinToString(" · "),
+                                color = Muted,
+                                fontSize = 10.sp,
+                                modifier = Modifier.padding(top = 1.dp)
+                            )
+                        }
                     }
                     Text(
                         if (isArabic) "محرك المطابقة البصرية لم يُدمج بعد؛ لن نعرض نتيجة تعرّف قبل تشغيل نموذج حقيقي واختباره."
