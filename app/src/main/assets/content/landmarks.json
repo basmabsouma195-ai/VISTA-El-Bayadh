@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 13,
+  "contentVersion": 14,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -141,7 +141,7 @@
     },
     {
       "id": "rock-art-ksar-el-hamar",
-      "categoryId": "natural-sites",
+      "categoryId": "rock-art",
       "nameAr": "النقوش الصخرية بمنطقة البيض",
       "nameFr": "Art rupestre de la région d’El Bayadh",
       "nameEn": "Rock art of the El Bayadh region",
@@ -497,6 +497,31 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/234",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "الموقع والوصف والأحداث المنقولة عن الشهادات المحلية؛ تاريخ البناء تقديري."
+        }
+      ]
+    },
+    {
+      "id": "barrage-brezina",
+      "categoryId": "natural-sites",
+      "nameAr": "سد بريزينة",
+      "nameFr": "Barrage de Brézina",
+      "nameEn": "Brezina Dam",
+      "descriptionAr": "سد بريزينة منشأة مائية تقع ببلدية بريزينة في ولاية البيض. توثق صور منشورة في ويكيميديا كومنز السد باسمه وموقعه العام. أُدرج في الدليل كوجهة طبيعية/مائية، لكن بيانات الزيارة وساعات الدخول وإمكانية الاقتراب من المنشآت تحتاج إلى تأكيد من الجهات المحلية؛ لا يُفترض أن كامل محيط السد مفتوح للزوار.",
+      "descriptionFr": "Le barrage de Brézina est un ouvrage hydraulique situé dans la commune de Brézina, wilaya d’El Bayadh. Des photographies publiées sur Wikimedia Commons documentent le barrage et son emplacement général. Il est répertorié ici comme destination naturelle et hydraulique ; les conditions de visite, les horaires et l’accès aux installations doivent être confirmés auprès des autorités locales. L’ensemble du périmètre ne doit pas être considéré comme ouvert au public.",
+      "descriptionEn": "Brezina Dam is a water infrastructure site in the commune of Brézina, El Bayadh Province. Photographs published on Wikimedia Commons document the dam and its general location. It is listed here as a natural and water-related destination, but visitor access, opening hours, and access near operational facilities must be confirmed with local authorities. The entire dam perimeter should not be assumed to be open to visitors.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "Le barrage de Brézina – Wikimedia Commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Le_barrage_de_Br%C3%A9zina.jpg",
+          "publisher": "Wikimedia Commons · Nabil ALIOUAT",
+          "note": "صورة توثيقية للسد؛ الترخيص CC BY-SA 4.0. لم تُدرج الصورة بعد ضمن أصول التطبيق."
+        },
+        {
+          "title": "Barrage de Berezina d'El-bayadh – Wikimedia Commons",
+          "url": "https://commons.wikimedia.org/wiki/File:Barrage_de_Berezina_d%27El-bayadh.jpg",
+          "publisher": "Wikimedia Commons · BoukhalfaAlaa",
+          "note": "صورة أخرى للسد بترخيص CC BY-SA 4.0؛ لم تُنسخ إلى أصول التطبيق بعد."
         }
       ]
     }
