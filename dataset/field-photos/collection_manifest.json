@@ -38,10 +38,13 @@
     {
       "filename": "1000078252.jpg",
       "sha256": "6c9bbdf9f8f8446cf08b2468dedbf0cf96215a0d67d4b3cd526772198d53f280",
-      "visualStatus": "signage_reference",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "signage_reference_gour_bent_el_khas",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Road sign reads Gour Ben El Khas / قور بنت الخس; signage only"
+      "reviewNote": "User confirmed association with Gour Bent El Khas; this is a sign photograph and is retained as a signage reference, not a visual recognition reference.",
+      "landmarkId": "gour-bent-el-khas",
+      "locationNameAr": "قور بنت الخس",
+      "locationConfirmation": "User confirmed on 2026-11-24 that this sign refers to Gour Bent El Khas."
     },
     {
       "filename": "1000078254.jpg",
