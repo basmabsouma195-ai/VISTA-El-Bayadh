@@ -5,25 +5,48 @@ import org.json.JSONObject
 import java.io.IOException
 
 /**
- * Reads the bundled catalogue only. No network request is made here, so this
- * repository remains usable in airplane mode. Remote catalogue updates can be
- * layered on later without changing the UI-facing model.
+ * Reads the bundled catalogue only. Loading this data never makes a network
+ * request, so the same content is available in airplane mode.
  */
 class OfflineCatalogue(context: Context) {
     private val appContext = context.applicationContext
 
     @Throws(IOException::class)
-    fun loadLandmarks(): List<Landmark> {
+    fun load(): CatalogueSnapshot {
         val raw = appContext.assets.open("content/landmarks.json")
             .bufferedReader(Charsets.UTF_8)
             .use { it.readText() }
         val root = JSONObject(raw)
-        val records = root.optJSONArray("landmarks") ?: return emptyList()
-        return buildList(records.length()) {
-            for (index in 0 until records.length()) {
-                val item = records.optJSONObject(index) ?: continue
-                runCatching { Landmark.fromJson(item) }.getOrNull()?.let(::add)
+        val provinceId = root.optJSONObject("province")?.optString("id").orEmpty()
+        require(provinceId.isNotBlank()) { "Catalogue province.id is missing" }
+
+        val categoriesJson = root.optJSONArray("categories")
+        val categories = buildList {
+            if (categoriesJson != null) {
+                for (index in 0 until categoriesJson.length()) {
+                    val item = categoriesJson.optJSONObject(index) ?: continue
+                    runCatching { CatalogueCategory.fromJson(item) }
+                        .getOrNull()?.let(::add)
+                }
             }
         }
+
+        val landmarksJson = root.optJSONArray("landmarks")
+        val landmarks = buildList {
+            if (landmarksJson != null) {
+                for (index in 0 until landmarksJson.length()) {
+                    val item = landmarksJson.optJSONObject(index) ?: continue
+                    runCatching { Landmark.fromJson(item) }.getOrNull()?.let(::add)
+                }
+            }
+        }
+
+        return CatalogueSnapshot(
+            schemaVersion = root.optInt("schemaVersion", 1),
+            contentVersion = root.optInt("contentVersion", 1),
+            provinceId = provinceId,
+            categories = categories,
+            landmarks = landmarks
+        )
     }
 }
