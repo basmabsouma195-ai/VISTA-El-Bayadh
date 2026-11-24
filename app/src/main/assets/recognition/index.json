@@ -1,5 +1,15 @@
 {
   "schemaVersion": 1,
   "mode": "offline_local_assets_only",
-  "images": []
+  "images": [
+    {
+      "id": "field-ksar-bent-khass-01",
+      "landmarkId": "ksar-bent-khass",
+      "fileName": "ksar-bent-khass.jpg",
+      "assetPath": "recognition/references/ksar-bent-khass.jpg",
+      "labelAr": "قصر بنت الخس",
+      "labelFr": "Ksar Bent Khass",
+      "labelEn": "Ksar Bent Khass"
+    }
+  ]
 }
