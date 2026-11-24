@@ -536,6 +536,26 @@ private fun LandmarkDetailDialog(
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(status, color = Gold, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                if (landmark.sources.isNotEmpty()) {
+                    Spacer(Modifier.height(14.dp))
+                    Text(
+                        when (language) {
+                            CatalogueLanguage.AR -> "المصادر والمراجع"
+                            CatalogueLanguage.FR -> "Sources et références"
+                            CatalogueLanguage.EN -> "Sources and references"
+                        },
+                        color = Forest,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp
+                    )
+                    landmark.sources.forEach { source ->
+                        Spacer(Modifier.height(7.dp))
+                        Text(source.title, color = Ink, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                        source.publisher?.let { Text(it, color = Muted, fontSize = 11.sp) }
+                        source.note?.let { Text(it, color = Muted, fontSize = 11.sp, lineHeight = 16.sp) }
+                        source.url?.let { Text(it, color = Forest, fontSize = 10.sp) }
+                    }
+                }
                 if (landmark.latitude != null && landmark.longitude != null) {
                     Spacer(Modifier.height(8.dp))
                     Text("%.5f, %.5f".format(landmark.latitude, landmark.longitude), color = Muted, fontSize = 12.sp)
