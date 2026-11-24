@@ -44,6 +44,12 @@ References:
 
 Use the quantitative gates in [RECOGNITION_VALIDATION.md](../RECOGNITION_VALIDATION.md). In addition, measure model initialization time, per-frame latency, peak memory, APK size, and thermal behaviour on the Samsung Galaxy A06 target device. Pixel 6 benchmark figures from upstream documentation are not evidence of performance on the A06.
 
-## Current state
+## Current implementation status
 
-The app still uses the safe unavailable-engine implementation. This document records the selected evaluation route; it does not mean the model has been integrated or that visual recognition works.
+- LiteRT Interpreter 1.4.2 is declared and the pinned 4.12 MB FP32 MobileNetV3 Small model is fetched during CI, checked by exact byte size and SHA-256, then packaged in the APK. The model is never fetched at app runtime.
+- `MobileNetV3RecognitionEngine` loads the model, validates tensor shapes, preprocesses RGB frames to 224 x 224 float32 values in 0..1, creates L2-normalized 1,024-dimensional embeddings, and ranks local reference vectors by cosine similarity.
+- The scanner loads the model offline and exposes a visual-identification action. QR remains available as an optional fallback.
+- The visual-identification action remains disabled by design: the current catalogue has one approved photo per supported landmark, not the required three or more, and `calibration.json` explicitly records `validatedOnHeldOutElBayadhSet: false`.
+- Unit tests cover similarity math and conservative recognition policy. CI assembly is not a substitute for a camera/device test.
+
+This is an integrated embedding and retrieval pipeline, **not yet a validated landmark recognizer**. Enablement requires multiple verified views per site, held-out local calibration, negative-scene testing, and real-device performance/accuracy validation on the Galaxy A06.
