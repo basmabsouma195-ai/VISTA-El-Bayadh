@@ -1,4 +1,5 @@
 import contextlib
+import hashlib
 import importlib.util
 import io
 import json
@@ -13,49 +14,80 @@ SPEC.loader.exec_module(MODULE)
 
 
 class DatasetValidatorContractTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+        self.image = self.root / "sample.jpg"
+        self.image.write_bytes(b"unique-test-image")
+        self.manifest = self.root / "manifest.json"
+        self.old_root, self.old_manifest = MODULE.ROOT, MODULE.MANIFEST
+        MODULE.ROOT, MODULE.MANIFEST = self.root, self.manifest
+
+    def tearDown(self):
+        MODULE.ROOT, MODULE.MANIFEST = self.old_root, self.old_manifest
+        self.temp.cleanup()
+
+    def write_manifest(self, images):
+        self.manifest.write_text(json.dumps({"schemaVersion": 1, "images": images}), encoding="utf-8")
+
+    def pending(self, image_id="pending-1", path="sample.jpg", **extra):
+        entry = {
+            "id": image_id, "path": path, "role": "reference",
+            "landmarkId": "test-site", "captureSessionId": "visit-1",
+            "source": "documented field capture",
+            "sha256": hashlib.sha256(self.image.read_bytes()).hexdigest(),
+            "verified": False, "reviewStatus": "pending",
+        }
+        entry.update(extra)
+        return entry
+
+    def run_validator(self):
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(MODULE.main(), 0)
+        return output.getvalue()
+
     def test_thresholds_are_conservative(self):
         self.assertEqual(MODULE.MIN_REFERENCES, 20)
         self.assertEqual(MODULE.MIN_EVALUATION, 10)
         self.assertEqual(MODULE.MIN_UNKNOWN, 100)
 
     def test_empty_manifest_keeps_gate_closed_without_failing_ci(self):
-        with tempfile.TemporaryDirectory() as directory:
-            manifest = Path(directory) / "manifest.json"
-            manifest.write_text(json.dumps({"schemaVersion": 1, "images": []}), encoding="utf-8")
-            original = MODULE.MANIFEST
-            MODULE.MANIFEST = manifest
-            output = io.StringIO()
-            try:
-                with contextlib.redirect_stdout(output):
-                    self.assertEqual(MODULE.main(), 0)
-            finally:
-                MODULE.MANIFEST = original
-            self.assertIn("RECOGNITION GATE: NOT READY", output.getvalue())
+        self.write_manifest([])
+        output = self.run_validator()
+        self.assertIn("RECOGNITION GATE: NOT READY", output)
 
-    def test_unverified_entries_do_not_count_toward_readiness(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            image = root / "sample.jpg"
-            image.write_bytes(b"test-image")
-            manifest = root / "manifest.json"
-            manifest.write_text(json.dumps({
-                "schemaVersion": 1,
-                "images": [{
-                    "id": "pending-1", "path": "sample.jpg", "role": "reference",
-                    "landmarkId": "test-site", "captureSessionId": "visit-1",
-                    "verified": False
-                }]
-            }), encoding="utf-8")
-            old_root, old_manifest = MODULE.ROOT, MODULE.MANIFEST
-            MODULE.ROOT, MODULE.MANIFEST = root, manifest
-            output = io.StringIO()
-            try:
-                with contextlib.redirect_stdout(output):
-                    self.assertEqual(MODULE.main(), 0)
-            finally:
-                MODULE.ROOT, MODULE.MANIFEST = old_root, old_manifest
-            self.assertIn("Verified references: 0", output.getvalue())
-            self.assertIn("RECOGNITION GATE: NOT READY", output.getvalue())
+    def test_pending_entry_is_valid_but_never_counted(self):
+        self.write_manifest([self.pending()])
+        output = self.run_validator()
+        self.assertIn("Pending/unverified images: 1", output)
+        self.assertIn("Verified references: 0", output)
+        self.assertIn("RECOGNITION GATE: NOT READY", output)
+
+    def test_modified_file_fails_hash_integrity(self):
+        self.image.write_bytes(b"changed-after-registration")
+        self.write_manifest([self.pending()])
+        with self.assertRaises(SystemExit):
+            self.run_validator()
+
+    def test_duplicate_content_is_rejected_even_with_different_ids(self):
+        duplicate = self.root / "copy.jpg"
+        duplicate.write_bytes(self.image.read_bytes())
+        second = self.pending("pending-2", "copy.jpg")
+        self.write_manifest([self.pending(), second])
+        with self.assertRaises(SystemExit):
+            self.run_validator()
+
+    def test_invalid_role_is_rejected_even_while_pending(self):
+        self.write_manifest([self.pending(role="mystery")])
+        with self.assertRaises(SystemExit):
+            self.run_validator()
+
+    def test_verified_photo_requires_human_review_audit(self):
+        entry = self.pending(verified=True, reviewStatus="approved")
+        self.write_manifest([entry])
+        with self.assertRaises(SystemExit):
+            self.run_validator()
 
 
 if __name__ == "__main__":
