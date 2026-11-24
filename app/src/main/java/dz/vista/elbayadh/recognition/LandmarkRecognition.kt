@@ -63,6 +63,33 @@ data class RecognitionPolicy(
     }
 }
 
+/**
+ * Conservative gate for preview-only suggestions.
+ * These are temporary guardrails, not calibrated accuracy thresholds.
+ * Replace them only after evaluation on separate El Bayadh and unknown-scene sets.
+ */
+object PreviewSuggestionPolicy {
+    const val MINIMUM_SIMILARITY = 0.70f
+    const val MINIMUM_LEAD_OVER_SECOND = 0.12f
+
+    fun filter(candidates: List<RecognitionCandidate>): List<RecognitionCandidate> {
+        if (candidates.isEmpty()) return emptyList()
+        if (candidates.any {
+                it.landmarkId.isBlank() || !it.score.isFinite() || it.score !in -1f..1f
+            }
+        ) return emptyList()
+
+        val ranked = candidates.distinctBy { it.landmarkId }.sortedByDescending { it.score }
+        val best = ranked.firstOrNull() ?: return emptyList()
+        if (best.score < MINIMUM_SIMILARITY) return emptyList()
+        val second = ranked.getOrNull(1)?.score
+        if (second != null && best.score - second < MINIMUM_LEAD_OVER_SECOND) {
+            return emptyList()
+        }
+        return ranked.take(3)
+    }
+}
+
 /** Safe default until a real, validated model and image index are bundled. */
 class UnavailableLandmarkRecognitionEngine : LandmarkRecognitionEngine {
     override val isReady: Boolean = false
