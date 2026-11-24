@@ -20,6 +20,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import android.content.Context
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.CameraSelector
+import androidx.camera.core.Preview
+import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.PreviewView
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.runtime.DisposableEffect
+import java.util.concurrent.Executor
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -432,45 +445,97 @@ private fun LandmarkCard(
 
 @Composable
 private fun ScannerScreen(language: AppLanguage) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val isArabic = language == AppLanguage.Arabic
     val isFrench = language == AppLanguage.French
-    Column(
-        modifier = Modifier.fillMaxSize().background(Ivory).padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Box(
-            Modifier.size(112.dp).clip(RoundedCornerShape(30.dp)).background(Forest),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = Gold, modifier = Modifier.size(62.dp))
-        }
-        Spacer(Modifier.height(24.dp))
+    var hasCameraPermission by remember {
+        mutableStateOf(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+    }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted -> hasCameraPermission = granted }
+
+    Column(Modifier.fillMaxSize().background(Ivory).padding(16.dp)) {
         Text(
-            if (isArabic) "الماسح المعرف"
-            else if (isFrench) "Reconnaissance des sites"
-            else "Landmark recognition",
-            color = Forest, fontSize = 25.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+            if (isArabic) "الماسح المعرف" else if (isFrench) "Scanner intelligent" else "Smart landmark scanner",
+            color = Forest, fontSize = 23.sp, fontWeight = FontWeight.Bold
         )
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
         Text(
-            if (isArabic) "وجّه الكاميرا نحو المعلم ليحاول VISTA التعرّف عليه، حتى دون رمز QR."
-            else if (isFrench) "Pointez la caméra vers un site pour que VISTA tente de l’identifier, même sans QR."
-            else "Point the camera at a landmark and let VISTA try to identify it, even without a QR code.",
-            color = Muted, fontSize = 15.sp, lineHeight = 24.sp, textAlign = TextAlign.Center
+            if (isArabic) "وجّه الكاميرا نحو المعلم. التعرّف البصري على المعالم سيُفعّل بعد إضافة نموذج الولاية واختباره."
+            else if (isFrench) "Pointez la caméra vers le site. L’identification visuelle sera activée après l’intégration et le test du modèle local."
+            else "Point the camera at the landmark. Visual identification will be enabled after the local province model is integrated and tested.",
+            color = Muted, fontSize = 13.sp, lineHeight = 20.sp
         )
-        Spacer(Modifier.height(20.dp))
-        Card(
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = Sand)
-        ) {
-            Text(
-                if (isArabic) "محرك التعرّف بالكاميرا لم يُدمج بعد؛ لن نعرض نتيجة وهمية."
-                else if (isFrench) "Le moteur de reconnaissance par caméra n’est pas encore intégré. Aucun résultat fictif ne sera affiché."
-                else "The camera recognition engine is not integrated yet. VISTA will not display fabricated results.",
-                color = Forest, fontSize = 13.sp, lineHeight = 20.sp,
-                modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center
+        Spacer(Modifier.height(14.dp))
+        if (hasCameraPermission) {
+            AndroidView(
+                modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(22.dp)),
+                factory = { viewContext ->
+                    PreviewView(viewContext).apply {
+                        scaleType = PreviewView.ScaleType.FILL_CENTER
+                        implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                    }
+                },
+                update = { previewView ->
+                    val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+                    cameraProviderFuture.addListener({
+                        val cameraProvider = cameraProviderFuture.get()
+                        val preview = Preview.Builder().build().also {
+                            it.surfaceProvider = previewView.surfaceProvider
+                        }
+                        try {
+                            cameraProvider.unbindAll()
+                            cameraProvider.bindToLifecycle(
+                                lifecycleOwner,
+                                CameraSelector.DEFAULT_BACK_CAMERA,
+                                preview
+                            )
+                        } catch (_: Exception) {
+                            // Keep the scanner screen stable if the device camera cannot bind.
+                        }
+                    }, ContextCompat.getMainExecutor(context))
+                }
             )
+            Spacer(Modifier.height(12.dp))
+            Card(
+                shape = RoundedCornerShape(14.dp),
+                colors = CardDefaults.cardColors(containerColor = Sand)
+            ) {
+                Text(
+                    if (isArabic) "معاينة الكاميرا تعمل. لم نفعّل مطابقة المعالم بعد حتى لا نظهر نتائج تخمينية."
+                    else if (isFrench) "L’aperçu caméra fonctionne. La correspondance des monuments n’est pas encore activée afin d’éviter les résultats spéculatifs."
+                    else "Camera preview is active. Landmark matching is not enabled yet, so no speculative result is shown.",
+                    color = Forest, fontSize = 12.sp, lineHeight = 18.sp, modifier = Modifier.padding(14.dp)
+                )
+            }
+        } else {
+            Box(
+                Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(22.dp)).background(ForestDeep),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
+                    Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = Gold, modifier = Modifier.size(58.dp))
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        if (isArabic) "اسمح لـ VISTA باستخدام الكاميرا"
+                        else if (isFrench) "Autorisez VISTA à utiliser la caméra"
+                        else "Allow VISTA to use the camera",
+                        color = Color.White, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    Button(
+                        onClick = { permissionLauncher.launch(android.Manifest.permission.CAMERA) },
+                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Gold)
+                    ) {
+                        Text(
+                            if (isArabic) "السماح بالكاميرا" else if (isFrench) "Autoriser la caméra" else "Allow camera",
+                            color = ForestDeep
+                        )
+                    }
+                }
+            }
         }
     }
 }
