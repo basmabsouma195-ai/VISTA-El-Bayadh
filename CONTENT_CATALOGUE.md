@@ -42,9 +42,14 @@ Each landmark record uses this structure:
 - Image and audio paths are optional and must point to bundled files.
 - Keep all three language fields together for each destination.
 - Add one or more `sources` records whenever a description uses external historical, cultural, geographic, or institutional information. Keep the source URL, publisher, and a short note describing exactly what it supports.
-- Source records are stored in SQLite and shown in the landmark detail card. They are bundled with the app and available offline as attribution text; opening source websites requires connectivity.
 - Keep unverified stories, approximate locations, and preliminary research clearly labelled; do not turn a source claim into a confirmed fact without corroboration.
 - Keep IDs stable so favourites and later content updates can refer to the same place.
 - Do not mark an entry verified until its supporting material has been reviewed.
 
-The catalogue is focused on El Bayadh Province and currently includes 19 records covering ksour, natural formations, caves, rock-art stations, dinosaur footprints, and religious heritage. The populated entries include Ksar Mechria Sughra, Ksar Ghassoul, Ksar Stitten, Boussemghoun Old Mosque, Gour Bent El Khass, Brézina Gours, Brézina Cave, Khashim Rock Art Station, Merdoufa, Bélier de Bou Alem, Bastion Bent El Khas, and dinosaur footprints near the Reggassa road. Entries without sufficiently reliable descriptions remain intentionally incomplete and marked `under_review`; no coordinates are invented. The source register distinguishes official heritage inventory records, cultural-heritage map descriptions, and local reporting.
+## Current catalogue snapshot
+
+Content version **12** contains **23 landmark records** focused on El Bayadh Province. The editorial status breakdown is **8 verified** and **15 under review**. Every record currently has Arabic, French and English names and descriptions, and at least one source record. This completeness check does not mean every record has been field-validated or that every coordinate, access route, opening time or visitor-safety detail is known.
+
+The catalogue covers ksour and historic buildings, natural formations and caves, rock-art heritage, dinosaur traces and religious heritage. Examples include Ksar Mechria Sughra, Ksar Ghassoul, Ksar Stitten, Ksar Chellala Dhahrania, Ksar Arbaouat, Aïn Hachifa Ksar, the Sidi Cheikh mausoleum, Gour Bent El Khass, Brézina Gours, Kef El Melh and Boussemghoun heritage sites.
+
+The 15 `under_review` entries remain provisional. Do not silently promote them to verified, infer precise locations from approximate research coordinates, or present oral accounts as established dates. Before publication, review the cited source against the exact landmark and add confirmed field observations where needed.
