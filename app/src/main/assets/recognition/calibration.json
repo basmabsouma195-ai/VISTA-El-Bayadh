@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "validatedOnHeldOutElBayadhSet": false,
+  "minimumCosineSimilarity": 0.0,
+  "minimumLeadOverSecond": 0.0,
+  "note": "Recognition intentionally remains disabled. Replace only after held-out field calibration."
+}
