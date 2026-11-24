@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 10,
+  "contentVersion": 11,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -80,17 +80,18 @@
       "nameAr": "كاف الملح",
       "nameFr": "Kef El Melh",
       "nameEn": "Kef El Melh",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
+      "descriptionAr": "كاف الملح معلم جيولوجي جبلي يقع بين بلديتي سيدي طيفور وتاجروت، على تخوم ولاية البيض والأغواط. تذكر دراسة جامعية ميدانية أن ارتفاعه يقارب 1253 متراً، وتصف طبقاته بأنها من التكوينات القديمة في الأطلس الصحراوي. أُدرجت إحداثيات تقريبية مستندة إلى موضع الدراسة، وينبغي تأكيد نقطة الوصول والمسار ميدانياً قبل اعتمادها للملاحة السياحية.",
+      "descriptionFr": "Kef El Melh est un relief montagneux d’intérêt géologique situé entre les communes de Sidi Tifour et de Tadjemout, à la limite des wilayas d’El Bayadh et de Laghouat. Une étude universitaire de terrain indique une altitude d’environ 1 253 m et décrit ses couches comme faisant partie des formations anciennes de l’Atlas saharien. Les coordonnées affichées sont approximatives et dérivées du site étudié ; l’accès et l’itinéraire doivent être confirmés sur le terrain avant toute utilisation pour la navigation touristique.",
+      "descriptionEn": "Kef El Melh is a mountain feature of geological interest between the communes of Sidi Tifour and Tadjemout, near the boundary of El Bayadh and Laghouat provinces. A university field study reports an elevation of about 1,253 metres and describes its strata as among the older formations of the Saharan Atlas. The displayed coordinates are approximate and derived from the study location; access and the route should be field-checked before being used for tourist navigation.",
       "verification": "under_review",
-      "latitude": 33.6474,
-      "longitude": 1.8642,
+      "latitude": 33.6447,
+      "longitude": 1.8561,
       "sources": [
         {
-          "title": "OpenStreetMap feature via Mapcarta",
-          "url": "https://mapcarta.com/N5928920596",
-          "note": "Approximate mapped peak position; field verification required before public navigation."
+          "title": "دراسة جامعية حول جبل كاف الملح – جامعة ورقلة",
+          "url": "https://dspace.univ-ouargla.dz/jspui/bitstream/123456789/36067/1/Hassini-%20Barouki.pdf",
+          "publisher": "جامعة قاصدي مرباح ورقلة",
+          "note": "تحدد الدراسة موقع أخذ العينات بين سيدي طيفور وتاجروت، الارتفاع 1253م والإحداثيات؛ الإحداثيات تقريبية لنطاق الدراسة."
         }
       ]
     },
@@ -100,10 +101,18 @@
       "nameAr": "ساحة الشهداء - مدينة البيض",
       "nameFr": "Place des Martyrs - El Bayadh",
       "nameEn": "Martyrs' Square - El Bayadh",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "ساحة الشهداء فضاء تذكاري في مدينة البيض، يرتبط بذاكرة الثورة التحريرية وتخليد أسماء المجاهدين والشهداء. تصفها صورة توثيقية منشورة على ويكيميديا كومنز بأنها تضم أسماءً مكتوبة على ألواح رخامية. تبقى تفاصيل تاريخ إنشاء الساحة وعدد الأسماء بحاجة إلى توثيق محلي مستقل.",
+      "descriptionFr": "La Place des Martyrs est un espace commémoratif de la ville d’El Bayadh, associé à la mémoire de la guerre de libération et à l’hommage rendu aux combattants et aux martyrs. Une photographie documentaire publiée sur Wikimedia Commons la décrit comme portant des noms gravés sur des plaques de marbre. La date de création de la place et le nombre exact de noms restent à confirmer par une source locale indépendante.",
+      "descriptionEn": "Martyrs’ Square is a memorial space in the city of El Bayadh, associated with the memory of the liberation struggle and the commemoration of fighters and martyrs. A documentary photograph published on Wikimedia Commons describes names inscribed on marble panels. The square’s establishment date and the exact number of names still require independent local confirmation.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "El-Bayadh Centre – وصف ساحة الشهداء",
+          "url": "https://commons.wikimedia.org/wiki/File:El-Bayadh_Centre.jpg",
+          "publisher": "Wikimedia Commons (وصف الصورة)",
+          "note": "وصف توثيقي للموقع واللوحات الرخامية؛ ليس مرجعاً رسمياً لتاريخ إنشاء الساحة."
+        }
+      ]
     },
     {
       "id": "cheikh-bouamama-statue-el-bayadh",
@@ -111,21 +120,43 @@
       "nameAr": "تمثال الشيخ بوعمامة",
       "nameFr": "Statue du Cheikh Bouamama",
       "nameEn": "Cheikh Bouamama Statue",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "يقع تمثال الشيخ بوعمامة عند مدخل مدينة البيض، ويُعد علامة بصرية مرتبطة بذاكرة المقاومة الشعبية في المنطقة. توثق صورة منشورة سنة 2015 موضع التمثال عند مدخل المدينة. تركز هذه البطاقة على المعلم نفسه، أما السيرة التاريخية للشيخ بوعمامة فتُعرض في مصدر تاريخي مستقل ولا تُستنتج من صورة التمثال.",
+      "descriptionFr": "La statue du Cheikh Bouamama se trouve à l’entrée de la ville d’El Bayadh. Elle constitue un repère visuel lié à la mémoire de la résistance populaire dans la région. Une photographie publiée en 2015 documente son emplacement à l’entrée de la ville. Cette fiche porte sur le monument ; la biographie historique du Cheikh Bouamama doit être présentée à partir de sources historiques distinctes, et non déduite de la photographie.",
+      "descriptionEn": "The statue of Cheikh Bouamama stands at the entrance to the city of El Bayadh. It is a visual landmark associated with the memory of popular resistance in the region. A photograph published in 2015 documents the statue at the city entrance. This entry describes the monument itself; the historical biography of Cheikh Bouamama should be presented from separate historical sources, not inferred from the statue photograph.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "Statue du Cheikh Bouamama à l’entrée d’El Bayadh",
+          "url": "https://commons.wikimedia.org/wiki/File:El_Bayadh_-_Cheikh_Bouamama_%D8%A7%D9%84%D8%A8%D9%8A%D8%B6_-_%D8%A7%D9%84%D8%B4%D9%8A%D8%AE_%D8%A8%D9%88%D8%B9%D9%85%D8%A7%D9%85%D8%A9.jpg",
+          "publisher": "Wikimedia Commons – Habib Kaki, 23 octobre 2015",
+          "note": "توثيق بصري لموضع التمثال؛ لا يثبت وحده تفاصيل تاريخ المعلم."
+        }
+      ]
     },
     {
       "id": "rock-art-ksar-el-hamar",
       "categoryId": "natural-sites",
       "nameAr": "النقوش الصخرية بمنطقة البيض",
-      "nameFr": "Gravures rupestres de la région d'El Bayadh",
-      "nameEn": "Rock engravings of El Bayadh region",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "nameFr": "Art rupestre de la région d’El Bayadh",
+      "nameEn": "Rock art of the El Bayadh region",
+      "descriptionAr": "تزخر ولاية البيض بمحطات متعددة للنقوش الصخرية التي توثق حضور الإنسان والحيوان في عصور ما قبل التاريخ. وتضم قائمة التراث الثقافي محطات مسجلة مثل المردوفة وكبش بوعلام والخشيم، ولكل موقع خصائصه وموقعه الخاص. هذه البطاقة مدخل تعريفي إقليمي وليست نقطة أثرية واحدة؛ يجب اختيار المحطة المقصودة في الخريطة أو البحث قبل التوجه إليها.",
+      "descriptionFr": "La wilaya d’El Bayadh possède plusieurs stations d’art rupestre témoignant de la présence humaine et animale à la préhistoire. L’inventaire du patrimoine mentionne notamment Merdoufa, le Bélier de Bou Alem et Khashim, chaque site ayant ses propres caractéristiques et sa localisation. Cette fiche est une introduction régionale et non un site archéologique unique ; il faut sélectionner la station précise sur la carte ou dans la recherche avant de s’y rendre.",
+      "descriptionEn": "El Bayadh Province contains several rock-art stations documenting human and animal life in prehistoric times. The cultural heritage inventory includes sites such as Merdoufa, the Bou Alem Ram, and Khashim, each with its own features and location. This entry is a regional introduction rather than a single archaeological point; visitors should select the specific station on the map or in search before travelling.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "قائمة الممتلكات الثقافية المحمية – ولاية البيض",
+          "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
+          "publisher": "وزارة الثقافة والفنون الجزائرية",
+          "note": "تسجل محطات المردوفة وكبش بوعلام ضمن الممتلكات الثقافية بولاية البيض."
+        },
+        {
+          "title": "محطة النقش الصخري الخشيم",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "بطاقة تعريفية رسمية للمحطة وموقعها قرب بريزينة."
+        }
+      ]
     },
     {
       "id": "boussemghoun-oasis",
@@ -133,10 +164,24 @@
       "nameAr": "واحة بوسمغون",
       "nameFr": "Oasis de Boussemghoun",
       "nameEn": "Boussemghoun Oasis",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "تشتهر بوسمغون بواحتها الزراعية التي تقوم على زراعة النخيل وأشجار الفاكهة والمحاصيل الموسمية، ضمن نظام فلاحي تقليدي تكيف مع المناخ الجاف وإدارة مياه السقي. وتصف تقارير محلية الواحة ومحيطها بوصفهما فضاءً طبيعياً يستقطب الزوار، كما تتناول دراسة جامعية أنماط الإنتاج الزراعي وتحديات استمراريتها. ينبغي التمييز بين واحة القصر القديم وواحة عين النخيلة الواقعة خارج مركز بوسمغون.",
+      "descriptionFr": "Boussemghoun est connue pour son oasis agricole, fondée sur la culture du palmier dattier, des arbres fruitiers et de cultures saisonnières, dans un système traditionnel adapté au climat aride et à la gestion de l’eau d’irrigation. Des reportages locaux décrivent l’oasis et ses environs comme un espace naturel fréquenté par les visiteurs, tandis qu’une étude universitaire analyse les systèmes de production agricole et leurs enjeux de durabilité. Il convient de distinguer l’oasis du vieux ksar de l’oasis d’Aïn Nakhila, située à l’extérieur du centre de Boussemghoun.",
+      "descriptionEn": "Boussemghoun is known for its agricultural oasis, where date palms, fruit trees, and seasonal crops are cultivated in a traditional farming system adapted to the arid climate and irrigation-water management. Local reporting describes the oasis and its surroundings as a natural area visited by tourists, while a university study examines its agricultural production systems and their sustainability challenges. The oasis of the old ksar should be distinguished from Aïn Nakhila oasis, which lies outside Boussemghoun’s centre.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "واحة بوسمغون – دراسة جامعية حول نظم الزراعة",
+          "url": "https://biblio.cuniv-naama.dz/wp-content/uploads/2024/11/Caracterisation-et-typologie-de-systeme-de-culture-dans-loasis-de-Boussemghoun-El-Bayadh.pdf",
+          "publisher": "مستودع المركز الجامعي بالنعامة",
+          "note": "دراسة أكاديمية عن طبقات الزراعة والنخيل وإدارة الموارد المائية في واحة بوسمغون."
+        },
+        {
+          "title": "واحة عين النخيلة ومحيط بوسمغون",
+          "url": "https://elmaouid.dz/%D9%88%D9%84%D8%A7%D9%8A%D8%A9-%D8%A7%D9%84%D8%A8%D9%8A%D8%B6-%D9%85%D8%AF%D9%8A%D9%86%D8%A9-%D8%A7%D9%84%D9%85%D9%88%D8%A7%D9%82%D8%B9-%D8%A7%D9%84%D8%A3%D8%AB%D8%B1%D9%8A%D8%A9-%D9%88%D9%85%D8%AD/",
+          "publisher": "الموعد اليومي",
+          "note": "تقرير صحفي سياحي يصف واحة عين النخيلة وموقعها على الطريق بين بوسمغون والأبيض سيدي الشيخ؛ ليست هي نفسها واحة القصر."
+        }
+      ]
     },
     {
       "id": "boussemghoun-old-mosque",
