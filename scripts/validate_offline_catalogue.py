@@ -64,6 +64,14 @@ for image in index.get("images", []):
     path = ASSETS.joinpath(*rel.parts)
     if not path.is_file() or path.stat().st_size < 1024:
         errors.append(f"{iid}: local image asset missing or too small: {rel}")
+    if image.get("datasetRole") == "seed_reference_only":
+        for key in ("sourcePage", "license", "licenseUrl", "attribution"):
+            if not str(image.get(key, "")).strip():
+                errors.append(f"{iid}: licensed seed image is missing {key}")
+        if not str(image.get("sourcePage", "")).startswith("https://"):
+            errors.append(f"{iid}: sourcePage must be HTTPS")
+        if not str(image.get("licenseUrl", "")).startswith("https://"):
+            errors.append(f"{iid}: licenseUrl must be HTTPS")
 
 if errors:
     print("VISTA offline catalogue validation FAILED:")
