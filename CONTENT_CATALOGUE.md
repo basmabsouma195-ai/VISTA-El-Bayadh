@@ -43,6 +43,6 @@ Each landmark record uses this structure:
 - Keep IDs stable so favourites and later content updates can refer to the same place.
 - Do not mark an entry verified until its supporting material has been reviewed.
 
-The catalogue currently includes the Ksar Mechria Sughra record, the natural-site entries Gour Brizina and Kef El Melh, and initial El Bayadh/Boussemghoun seed records. Most descriptions, coordinates, and media are intentionally absent pending source review. Gour Brizina and Kef El Melh remain `under_review`; do not present them as historically verified or use unverified coordinates for navigation.
+The catalogue currently includes Ksar Mechria Sughra, Gour Brizina, Kef El Melh, Ksar Bent Khass, Gour Bent El Khass, Ksar Boussemghoun – Zaouia Sidi Ahmed Tidjani, and initial El Bayadh/Boussemghoun seed records. Most descriptions, coordinates, and media are intentionally absent pending source review. Gour Brizina and Kef El Melh remain `under_review`; do not present them as historically verified or use unverified coordinates for navigation.
 
 Runtime landmark images are not taken from the optional `image` field in this JSON. `OfflineCatalogue` resolves a photo only when `recognition/index.json` points to an existing packaged local asset for the same `landmarkId`. This prevents broken paths and remote image dependencies.
