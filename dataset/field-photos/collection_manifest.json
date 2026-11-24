@@ -68,10 +68,13 @@
     {
       "filename": "1000078262.jpg",
       "sha256": "6d18d1ca8ef0c18f2dacf48d7defe66fd0d3355ffdfbc0e0084f61d3e034c135",
-      "visualStatus": "signage_reference",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "directional_sign_gour_mountains_brezina",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Road sign reads Gour Ben El Khas / قور بنت الخس; signage only"
+      "reviewNote": "User clarified that this is a directional sign pointing toward Jbel El Gour / the Gours area; retain as signage reference, not as a visual landmark image.",
+      "landmarkId": "gour-brizina",
+      "locationNameAr": "جبال القور ببريزينة",
+      "locationConfirmation": "User clarified on 2026-11-24 that this sign points toward Jbel El Gour."
     },
     {
       "filename": "1000078266.jpg",
