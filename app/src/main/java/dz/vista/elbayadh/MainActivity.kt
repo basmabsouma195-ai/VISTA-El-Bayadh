@@ -103,13 +103,13 @@ import dz.vista.elbayadh.recognition.MobileNetV3RecognitionEngine
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 
-private val Forest = Color(0xFF173D32)
-private val ForestDeep = Color(0xFF102C25)
-private val Gold = Color(0xFFC6A15B)
-private val Ivory = Color(0xFFF7F2E8)
-private val Sand = Color(0xFFE9DFCC)
-private val Ink = Color(0xFF25332D)
-private val Muted = Color(0xFF7B817A)
+private val Forest = Color(0xFF182B43)
+private val ForestDeep = Color(0xFF101D30)
+private val Gold = Color(0xFFC39A58)
+private val Ivory = Color(0xFFF5EFE5)
+private val Sand = Color(0xFFE7D9C5)
+private val Ink = Color(0xFF302B26)
+private val Muted = Color(0xFF81796F)
 
 private enum class AppLanguage { Arabic, French, English }
 
@@ -228,7 +228,7 @@ private fun VistaApp() {
                                 c, language, onLanguage = ::changeLanguage,
                                 searchQuery = searchQuery, onSearchChange = { searchQuery = it },
                                 onOpenScanner = { selectedTab = 2 },
-                                landmarks = catalogue?.landmarks.orEmpty(), favoriteIds = favoriteIds,
+                                landmarks = catalogue?.landmarks.orEmpty(), photosByLandmark = catalogue?.photosByLandmark.orEmpty(), favoriteIds = favoriteIds,
                                 onFavoriteToggle = ::toggleFavorite,
                                 onOpenLandmark = { selectedLandmark = it }
                             )
@@ -266,135 +266,130 @@ private fun VistaApp() {
 
 @Composable
 private fun HomeScreen(
-    c: Copy,
-    language: AppLanguage,
-    onLanguage: (AppLanguage) -> Unit,
-    searchQuery: String,
-    onSearchChange: (String) -> Unit,
-    onOpenScanner: () -> Unit,
-    landmarks: List<Landmark>,
-    favoriteIds: Set<String>,
-    onFavoriteToggle: (String) -> Unit,
-    onOpenLandmark: (Landmark) -> Unit
+    c: Copy, language: AppLanguage, onLanguage: (AppLanguage) -> Unit,
+    searchQuery: String, onSearchChange: (String) -> Unit, onOpenScanner: () -> Unit,
+    landmarks: List<Landmark>, photosByLandmark: Map<String, List<String>>,
+    favoriteIds: Set<String>, onFavoriteToggle: (String) -> Unit, onOpenLandmark: (Landmark) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
-        Box(
-            modifier = Modifier.fillMaxWidth().height(250.dp)
-                .background(Brush.verticalGradient(listOf(Forest, ForestDeep))),
-        ) {
-            Column(modifier = Modifier.fillMaxSize().padding(horizontal = 22.dp, vertical = 16.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+    val lang = when (language) { AppLanguage.Arabic -> CatalogueLanguage.AR; AppLanguage.French -> CatalogueLanguage.FR; AppLanguage.English -> CatalogueLanguage.EN }
+    val ar = language == AppLanguage.Arabic
+    val fr = language == AppLanguage.French
+    val featured = landmarks.filter { photosByLandmark[it.id].orEmpty().isNotEmpty() || !it.image.isNullOrBlank() }
+    val hero = featured.firstOrNull { it.id == "ksar-bent-khass" } ?: featured.firstOrNull()
+    val results = landmarks.filter { searchQuery.isNotBlank() && (it.name(lang).contains(searchQuery.trim(), true) || it.description(lang).contains(searchQuery.trim(), true)) }
+    Column(Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
+        Box(Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(Forest, ForestDeep)))) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 18.dp)) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     Column {
-                        Text("VISTA", color = Gold, fontSize = 30.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
-                        Text("EL BAYADH", color = Color.White, fontSize = 12.sp, letterSpacing = 4.sp)
+                        Text("VISTA", color = Gold, fontSize = 29.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
+                        Text("EL BAYADH", color = Color.White, fontSize = 11.sp, letterSpacing = 4.sp)
+                        Text(if (ar) "دليلك السياحي الذكي لولاية البيض" else if (fr) "Guide touristique intelligent d’El Bayadh" else "Smart tourism guide to El Bayadh", color = Color(0xFFE8DDCB), fontSize = 11.sp)
                     }
                     LanguagePicker(language, onLanguage)
                 }
-                Spacer(Modifier.height(28.dp))
-                Text(c.welcome, color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(5.dp))
-                Text(c.subtitle, color = Color(0xFFE9DFC9), fontSize = 14.sp)
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(22.dp))
+                Text(c.welcome, color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                Text(c.subtitle, color = Color(0xFFE8DDCB), fontSize = 13.sp, modifier = Modifier.padding(top = 5.dp))
+                Spacer(Modifier.height(16.dp))
                 OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = onSearchChange,
-                    modifier = Modifier.fillMaxWidth(),
+                    value = searchQuery, onValueChange = onSearchChange, modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text(c.search, color = Muted, fontSize = 13.sp) },
                     leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = Forest) },
-                    shape = RoundedCornerShape(16.dp),
-                    singleLine = true,
+                    shape = RoundedCornerShape(18.dp), singleLine = true,
                     colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White,
-                        unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White
+                        focusedContainerColor = Color.White, unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White, focusedBorderColor = Gold, unfocusedBorderColor = Color.Transparent
                     )
                 )
             }
-        }
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)
-                .clickable(onClick = onOpenScanner),
-            shape = RoundedCornerShape(22.dp),
-            colors = CardDefaults.cardColors(containerColor = Forest)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    Modifier.size(58.dp).clip(CircleShape).background(Gold),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = ForestDeep, modifier = Modifier.size(32.dp))
-                }
-                Spacer(Modifier.width(15.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        if (language == AppLanguage.Arabic) "تعرّف على المعلم أمامك"
-                        else if (language == AppLanguage.French) "Identifiez le site devant vous"
-                        else "Identify the landmark in front of you",
-                        color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.height(5.dp))
-                    Text(
-                        if (language == AppLanguage.Arabic) "وجّه الكاميرا نحو المعلم لبدء التعرّف"
-                        else if (language == AppLanguage.French) "Pointez la caméra vers le site pour commencer"
-                        else "Point your camera at a landmark to get started",
-                        color = Color(0xFFE9DFC9), fontSize = 12.sp, lineHeight = 18.sp
-                    )
-                }
-            }
-        }
-        Text(
-            if (language == AppLanguage.Arabic) "أو ابحث عن معلم بالاسم"
-            else if (language == AppLanguage.French) "Ou recherchez un site par son nom"
-            else "Or search for a landmark by name",
-            color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-        )
-        val catalogueLanguage = when (language) {
-            AppLanguage.Arabic -> CatalogueLanguage.AR
-            AppLanguage.French -> CatalogueLanguage.FR
-            AppLanguage.English -> CatalogueLanguage.EN
-        }
-        val matchingLandmarks = landmarks.filter { landmark ->
-            searchQuery.isNotBlank() && (
-                landmark.name(catalogueLanguage).contains(searchQuery.trim(), ignoreCase = true) ||
-                landmark.description(catalogueLanguage).contains(searchQuery.trim(), ignoreCase = true)
-            )
         }
         if (searchQuery.isNotBlank()) {
-            if (matchingLandmarks.isEmpty()) {
-                Text(
-                    if (language == AppLanguage.Arabic) "لا توجد نتائج مطابقة"
-                    else if (language == AppLanguage.French) "Aucun résultat correspondant"
-                    else "No matching landmarks",
-                    color = Muted, modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
-                )
-            } else {
-                matchingLandmarks.forEach { landmark ->
-                    LandmarkCard(
-                        landmark = landmark,
-                        language = catalogueLanguage,
-                        isFavorite = landmark.id in favoriteIds,
-                        onFavoriteToggle = { onFavoriteToggle(landmark.id) },
-                        onOpen = { onOpenLandmark(landmark) },
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
-                    )
+            Text(if (ar) "نتائج البحث" else if (fr) "Résultats" else "Search results", color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
+            if (results.isEmpty()) Text(if (ar) "لا توجد نتائج مطابقة" else if (fr) "Aucun résultat" else "No matching places", color = Muted, modifier = Modifier.padding(horizontal = 20.dp))
+            else results.forEach { item -> LandmarkCard(item, lang, item.id in favoriteIds, { onFavoriteToggle(item.id) }, { onOpenLandmark(item) }, Modifier.padding(horizontal = 16.dp, vertical = 5.dp)) }
+        } else {
+            Row(Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text(if (ar) "وجهة تستحق الاكتشاف" else if (fr) "À découvrir" else "Worth discovering", color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(if (ar) "تراث أصيل وطبيعة استثنائية" else if (fr) "Patrimoine et paysages" else "Heritage and remarkable landscapes", color = Muted, fontSize = 11.sp)
+                }
+                Text("WILAYA 32", color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            }
+            hero?.let { item ->
+                Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable { onOpenLandmark(item) }, shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(3.dp)) {
+                    Column {
+                        LandmarkThumbnail(photosByLandmark[item.id].orEmpty().firstOrNull() ?: item.image, item.name(lang), large = true)
+                        Column(Modifier.padding(15.dp)) {
+                            Text(if (ar) "اختيار VISTA" else if (fr) "SÉLECTION VISTA" else "VISTA SELECTION", color = Gold, fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                            Text(item.name(lang), color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 5.dp))
+                            Text(item.description(lang), color = Muted, fontSize = 12.sp, lineHeight = 18.sp, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
+                        }
+                    }
                 }
             }
-        }
-        Spacer(Modifier.height(16.dp))
-        Row(
-            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp)).background(Color(0xFFEDE5D5)).padding(13.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(Modifier.size(34.dp).clip(CircleShape).background(Gold), contentAlignment = Alignment.Center) {
-                Icon(Icons.Filled.Language, contentDescription = null, tint = Forest)
+            Text(if (ar) "استكشف حسب النوع" else if (fr) "Explorer par catégorie" else "Explore by category", color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 20.dp, top = 22.dp, bottom = 10.dp))
+            val cats = listOf(
+                Triple(if (ar) "القصور والواحات" else if (fr) "Ksour et oasis" else "Ksour & oases", "ksour", Gold),
+                Triple(if (ar) "المواقع الطبيعية" else if (fr) "Sites naturels" else "Natural sites", "natural-sites", Color(0xFF7B927E)),
+                Triple(if (ar) "النقوش الصخرية" else if (fr) "Art rupestre" else "Rock art", "rock-art", Color(0xFFB18A69)),
+                Triple(if (ar) "التراث الديني" else if (fr) "Patrimoine religieux" else "Religious heritage", "religious-heritage", Color(0xFF77869A))
+            )
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                cats.chunked(2).forEach { pair ->
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        pair.forEach { cat ->
+                            val count = landmarks.count { it.categoryId == cat.second }
+                            Card(Modifier.weight(1f).padding(bottom = 9.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Box(Modifier.size(36.dp).clip(CircleShape).background(cat.third.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
+                                        Icon(when (cat.second) { "ksour" -> Icons.Filled.Home; "natural-sites" -> Icons.Filled.Map; "rock-art" -> Icons.Filled.Search; else -> Icons.Filled.Language }, contentDescription = null, tint = Forest, modifier = Modifier.size(19.dp))
+                                    }
+                                    Spacer(Modifier.width(9.dp))
+                                    Column {
+                                        Text(cat.first, color = Forest, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                        Text(count.toString() + if (ar) " معالم" else if (fr) " sites" else " places", color = Muted, fontSize = 10.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            Spacer(Modifier.width(10.dp))
-            Text(c.offline, color = Forest, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).clickable(onClick = onOpenScanner), shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = ForestDeep)) {
+                Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.size(58.dp).clip(CircleShape).background(Gold), contentAlignment = Alignment.Center) {
+                        Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = ForestDeep, modifier = Modifier.size(31.dp))
+                    }
+                    Spacer(Modifier.width(14.dp))
+                    Column(Modifier.weight(1f)) {
+                        Text(if (ar) "اكتشف بالكاميرا" else if (fr) "Découvrez avec la caméra" else "Discover with your camera", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                        Text(if (ar) "امسح رمز QR أو صوّر المعلم مباشرة، حتى دون رمز." else if (fr) "Scannez un QR ou photographiez directement le site." else "Scan a QR code or photograph a landmark directly.", color = Color(0xFFE8DDCB), fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 4.dp))
+                    }
+                }
+            }
+            Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text(if (ar) "وجهات مميزة" else if (fr) "Destinations vedettes" else "Featured destinations", color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(featured.size.toString() + if (ar) " وجهات" else if (fr) " sites" else " places", color = Muted, fontSize = 10.sp)
+            }
+            Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                featured.take(8).forEach { item ->
+                    Card(Modifier.width(218.dp).clickable { onOpenLandmark(item) }, shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                        Column {
+                            LandmarkThumbnail(photosByLandmark[item.id].orEmpty().firstOrNull() ?: item.image, item.name(lang), large = true)
+                            Column(Modifier.padding(12.dp)) {
+                                Text(item.name(lang), color = Forest, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                                Text(if (ar) "ولاية البيض" else if (fr) "Wilaya d’El Bayadh" else "El Bayadh Province", color = Muted, fontSize = 10.sp, modifier = Modifier.padding(top = 4.dp))
+                            }
+                        }
+                    }
+                }
+            }
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 18.dp).clip(RoundedCornerShape(14.dp)).background(Sand).padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(34.dp).clip(CircleShape).background(Gold), contentAlignment = Alignment.Center) { Icon(Icons.Filled.Language, contentDescription = null, tint = Forest) }
+                Spacer(Modifier.width(10.dp))
+                Text(c.offline, color = Forest, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+            }
         }
     }
 }
