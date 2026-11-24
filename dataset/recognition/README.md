@@ -26,3 +26,22 @@ An image marked verified is eligible for dataset counts only. It is **not automa
 ## Recognition activation
 
 The validator reports counts and session overlap. Passing those checks does not prove recognition accuracy. The model thresholds still require held-out calibration, unknown-scene false-accept testing, and performance testing on the target Android phone.
+
+
+## Safer registration command
+
+Use the registration helper to calculate the file hash and add a **pending** record without approving it:
+
+```bash
+python3 scripts/register_field_photo.py \
+  --path dataset/recognition/images/ksar-north-front-01.jpg \
+  --id ksar-north-front-01 \
+  --role reference \
+  --landmark-id ksar-bent-khass \
+  --session visit-2026-11-24-a \
+  --source "VISTA team field capture"
+```
+
+For an unrelated/unknown scene, use `--role unknown` and omit `--landmark-id`. For evaluation images, use `--role evaluation` and a different session from all reference images for that landmark.
+
+The helper always writes `verified: false` and `reviewStatus: pending`. A reviewer must inspect the original photo and independently confirm its identity and provenance before manually approving it. Do not mark a photo verified based only on a filename, guess, or model prediction.
