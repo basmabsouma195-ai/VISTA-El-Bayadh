@@ -2,7 +2,6 @@ package dz.vista.elbayadh.recognition
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -23,6 +22,7 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
     private val appContext = context.applicationContext
     private val index = OfflineRecognitionImageIndex(appContext)
     private var interpreter: Interpreter? = null
+    private val inferenceLock = Any()
     private var referenceVectors: Map<String, List<FloatArray>> = emptyMap()
     private var minimumSimilarity = 1f
     private var minimumLead = 1f
@@ -43,9 +43,11 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
             val modelBuffer = ByteBuffer.allocateDirect(modelBytes.size)
                 .order(ByteOrder.nativeOrder()).apply { put(modelBytes); rewind() }
             val runtime = Interpreter(modelBuffer, Interpreter.Options().setNumThreads(2))
+            runtime.resizeInput(0, intArrayOf(1, INPUT_SIZE, INPUT_SIZE, 3))
+            runtime.allocateTensors()
             val inputShape = runtime.getInputTensor(0).shape()
             val outputShape = runtime.getOutputTensor(0).shape()
-            require(inputShape.contentEquals(intArrayOf(1, 224, 224, 3))) {
+            require(inputShape.contentEquals(intArrayOf(1, INPUT_SIZE, INPUT_SIZE, 3))) {
                 "Unexpected MobileNet input tensor: ${inputShape.contentToString()}"
             }
             require(outputShape.contentEquals(intArrayOf(1, EMBEDDING_SIZE))) {
@@ -121,22 +123,26 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
 
     private fun embedWith(runtime: Interpreter, source: Bitmap): FloatArray {
         val resized = Bitmap.createScaledBitmap(source, INPUT_SIZE, INPUT_SIZE, true)
-        val input = ByteBuffer.allocateDirect(INPUT_SIZE * INPUT_SIZE * 3 * 4)
-            .order(ByteOrder.nativeOrder())
-        val pixels = IntArray(INPUT_SIZE * INPUT_SIZE)
-        resized.getPixels(pixels, 0, INPUT_SIZE, 0, 0, INPUT_SIZE, INPUT_SIZE)
-        for (pixel in pixels) {
-            input.putFloat(((pixel shr 16) and 0xFF) / 255f)
-            input.putFloat(((pixel shr 8) and 0xFF) / 255f)
-            input.putFloat((pixel and 0xFF) / 255f)
+        try {
+            val input = ByteBuffer.allocateDirect(INPUT_SIZE * INPUT_SIZE * 3 * 4)
+                .order(ByteOrder.nativeOrder())
+            val pixels = IntArray(INPUT_SIZE * INPUT_SIZE)
+            resized.getPixels(pixels, 0, INPUT_SIZE, 0, 0, INPUT_SIZE, INPUT_SIZE)
+            for (pixel in pixels) {
+                input.putFloat(((pixel shr 16) and 0xFF) / 255f)
+                input.putFloat(((pixel shr 8) and 0xFF) / 255f)
+                input.putFloat((pixel and 0xFF) / 255f)
+            }
+            input.rewind()
+            val output = Array(1) { FloatArray(EMBEDDING_SIZE) }
+            synchronized(inferenceLock) { runtime.run(input, output) }
+            val vector = output[0]
+            val norm = sqrt(vector.sumOf { (it * it).toDouble() }).toFloat()
+            require(norm.isFinite() && norm > 1e-12f) { "Invalid embedding vector" }
+            return FloatArray(vector.size) { vector[it] / norm }
+        } finally {
+            if (resized !== source && !resized.isRecycled) resized.recycle()
         }
-        input.rewind()
-        val output = Array(1) { FloatArray(EMBEDDING_SIZE) }
-        runtime.run(input, output)
-        val vector = output[0]
-        val norm = sqrt(vector.sumOf { (it * it).toDouble() }).toFloat()
-        require(norm.isFinite() && norm > 1e-12f) { "Invalid embedding vector" }
-        return FloatArray(vector.size) { vector[it] / norm }
     }
 
     override fun close() {
