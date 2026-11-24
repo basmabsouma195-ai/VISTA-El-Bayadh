@@ -88,6 +88,7 @@ import dz.vista.elbayadh.data.FavoritesStore
 import dz.vista.elbayadh.data.Landmark
 import dz.vista.elbayadh.data.CatalogueLanguage
 import dz.vista.elbayadh.data.VerificationStatus
+import dz.vista.elbayadh.recognition.OfflineRecognitionImageIndex
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 
@@ -608,6 +609,9 @@ private fun ScannerScreen(language: AppLanguage) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val isArabic = language == AppLanguage.Arabic
     val isFrench = language == AppLanguage.French
+    val localReferences = remember(context) {
+        runCatching { OfflineRecognitionImageIndex(context).load() }.getOrDefault(emptyList())
+    }
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
@@ -680,12 +684,35 @@ private fun ScannerScreen(language: AppLanguage) {
                 shape = RoundedCornerShape(14.dp),
                 colors = CardDefaults.cardColors(containerColor = Sand)
             ) {
-                Text(
-                    if (isArabic) "معاينة الكاميرا تعمل. لم نفعّل مطابقة المعالم بعد حتى لا نظهر نتائج تخمينية."
-                    else if (isFrench) "L’aperçu caméra fonctionne. La correspondance des monuments n’est pas encore activée afin d’éviter les résultats spéculatifs."
-                    else "Camera preview is active. Landmark matching is not enabled yet, so no speculative result is shown.",
-                    color = Forest, fontSize = 12.sp, lineHeight = 18.sp, modifier = Modifier.padding(14.dp)
-                )
+                Column(Modifier.padding(14.dp)) {
+                    Text(
+                        if (isArabic) "الكاميرا جاهزة" else if (isFrench) "Caméra prête" else "Camera ready",
+                        color = Forest, fontWeight = FontWeight.Bold, fontSize = 13.sp
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        if (isArabic) "صور مرجعية محلية: ${localReferences.size}"
+                        else if (isFrench) "Images de référence locales : ${localReferences.size}"
+                        else "Local reference images: ${localReferences.size}",
+                        color = Forest, fontSize = 12.sp
+                    )
+                    localReferences.forEach { reference ->
+                        Text(
+                            when (language) {
+                                AppLanguage.Arabic -> reference.labelAr
+                                AppLanguage.French -> reference.labelFr.ifBlank { reference.labelAr }
+                                AppLanguage.English -> reference.labelEn.ifBlank { reference.labelAr }
+                            },
+                            color = Ink, fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp)
+                        )
+                    }
+                    Text(
+                        if (isArabic) "محرك المطابقة البصرية لم يُدمج بعد؛ لن نعرض نتيجة تعرّف قبل تشغيل نموذج حقيقي واختباره."
+                        else if (isFrench) "Le moteur de reconnaissance visuelle n’est pas encore intégré. Aucun résultat ne sera affiché avant l’ajout et le test d’un vrai modèle."
+                        else "The visual matching engine is not integrated yet. No identification result will be shown until a real model is added and tested.",
+                        color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
+                    )
+                }
             }
         } else {
             Box(
