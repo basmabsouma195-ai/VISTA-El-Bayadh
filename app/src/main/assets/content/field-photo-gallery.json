@@ -34,12 +34,12 @@
     },
     {
       "id": "field-gallery-04",
-      "landmarkId": "ksar-bent-khass",
+      "landmarkId": "unassigned",
       "sourceFileName": "1000078296.jpg",
       "assetPath": "field-photos/ksar-bent-khass/architecture/1000078296.jpg",
       "imageType": "architecture",
-      "locationStatus": "user_confirmed_location",
-      "galleryEnabled": true,
+      "locationStatus": "unconfirmed",
+      "galleryEnabled": false,
       "recognitionApproved": false
     },
     {
