@@ -1,9 +1,12 @@
 package dz.vista.elbayadh
 
 import android.os.Bundle
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +35,7 @@ import androidx.core.content.ContextCompat
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import java.util.concurrent.Executor
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -67,12 +71,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import dz.vista.elbayadh.data.TripPlansStore
 import dz.vista.elbayadh.data.OfflineCatalogue
 import dz.vista.elbayadh.data.FavoritesStore
@@ -411,7 +419,9 @@ private fun LandmarkCard(
             Column(Modifier.weight(1f)) {
                 Text(landmark.name(language), color = Forest, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Spacer(Modifier.height(4.dp))
-                Text(landmark.description(language), color = Muted, fontSize = 12.sp, lineHeight = 18.sp)
+                if (landmark.description(language).isNotBlank()) {
+                    Text(landmark.description(language), color = Muted, fontSize = 12.sp, lineHeight = 18.sp)
+                }
                 val status = when (landmark.verification) {
                     VerificationStatus.VERIFIED -> when (language) {
                         CatalogueLanguage.AR -> "معلومة موثقة"
@@ -432,6 +442,7 @@ private fun LandmarkCard(
                 Spacer(Modifier.height(5.dp))
                 Text(status, color = Gold, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
             }
+            LandmarkThumbnail(landmark.image, landmark.name(language))
             IconButton(onClick = onFavoriteToggle) {
                 Icon(
                     Icons.Filled.Favorite,
@@ -440,6 +451,49 @@ private fun LandmarkCard(
                 )
             }
         }
+    }
+}
+
+
+@Composable
+private fun LandmarkThumbnail(assetPath: String?, description: String) {
+    val context = LocalContext.current
+    var bitmap by remember(assetPath) { mutableStateOf<Bitmap?>(null) }
+
+    LaunchedEffect(assetPath) {
+        bitmap = if (assetPath.isNullOrBlank() || assetPath.contains("://")) {
+            null
+        } else {
+            withContext(Dispatchers.IO) {
+                runCatching {
+                    val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+                    context.assets.open(assetPath).use {
+                        BitmapFactory.decodeStream(it, null, bounds)
+                    }
+                    if (bounds.outWidth <= 0 || bounds.outHeight <= 0) {
+                        null
+                    } else {
+                        var sample = 1
+                        while (maxOf(bounds.outWidth, bounds.outHeight) / (sample * 2) >= 480) {
+                            sample *= 2
+                        }
+                        val options = BitmapFactory.Options().apply { inSampleSize = sample }
+                        context.assets.open(assetPath).use {
+                            BitmapFactory.decodeStream(it, null, options)
+                        }
+                    }
+                }.getOrNull()
+            }
+        }
+    }
+
+    if (bitmap != null) {
+        Image(
+            bitmap = bitmap!!.asImageBitmap(),
+            contentDescription = description,
+            modifier = Modifier.size(76.dp).clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
     }
 }
 
