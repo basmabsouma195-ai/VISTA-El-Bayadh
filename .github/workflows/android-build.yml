@@ -38,7 +38,7 @@ jobs:
             vista-recognition-seed-v2-
       - name: Bundle offline recognition image assets
         env:
-          VISTA_FETCH_REMOTE_SEED_IMAGES: 'true'
+          VISTA_FETCH_REMOTE_SEED_IMAGES: 'false'
         run: python3 scripts/fetch_recognition_seed_images.py
       - name: Validate offline catalogue and local image index
         run: python3 scripts/validate_offline_catalogue.py
