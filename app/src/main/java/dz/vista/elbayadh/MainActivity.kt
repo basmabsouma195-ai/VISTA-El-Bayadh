@@ -691,6 +691,28 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     }
 
     Column(Modifier.fillMaxSize().background(Ivory).padding(16.dp)) {
+        qrMatchedLandmark?.let { found ->
+            AlertDialog(
+                onDismissRequest = { qrMatchedLandmark = null },
+                title = { Text(found.name(when (language) {
+                    AppLanguage.Arabic -> CatalogueLanguage.AR
+                    AppLanguage.French -> CatalogueLanguage.FR
+                    AppLanguage.English -> CatalogueLanguage.EN
+                })) },
+                text = { Text(if (isArabic) "تمت قراءة رمز هذا المعلم." else if (isFrench) "Le QR de ce site a été lu." else "This landmark's QR code was read.") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        qrMatchedLandmark = null
+                        onOpenLandmark(found)
+                    }) { Text(if (isArabic) "اكتشف المعلم" else if (isFrench) "Découvrir" else "Discover") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { qrMatchedLandmark = null }) {
+                        Text(if (isArabic) "إغلاق" else if (isFrench) "Fermer" else "Close")
+                    }
+                }
+            )
+        }
         Text(
             if (isArabic) "الماسح المعرف" else if (isFrench) "Scanner intelligent" else "Smart landmark scanner",
             color = Forest, fontSize = 23.sp, fontWeight = FontWeight.Bold
@@ -703,6 +725,11 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
             color = Muted, fontSize = 13.sp, lineHeight = 20.sp
         )
         Spacer(Modifier.height(14.dp))
+        Text(
+            if (isArabic) "المسح الاحتياطي: QR (اختياري)" else if (isFrench) "Lecture de secours : QR (facultatif)" else "Fallback scan: optional QR",
+            color = Forest, fontWeight = FontWeight.SemiBold, fontSize = 12.sp
+        )
+        qrMessage?.let { Text(it, color = Muted, fontSize = 11.sp) }
         if (hasCameraPermission) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth().weight(1f).clip(RoundedCornerShape(22.dp)),
@@ -771,6 +798,35 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
             }
         }
     }
+}
+
+private fun analyzeVistaQr(
+    proxy: ImageProxy,
+    scanner: com.google.mlkit.vision.barcode.BarcodeScanner,
+    processing: AtomicBoolean,
+    landmarks: List<Landmark>,
+    onFound: (Landmark) -> Unit,
+    onUnknown: (String) -> Unit
+) {
+    val mediaImage = proxy.image
+    if (mediaImage == null || !processing.compareAndSet(false, true)) {
+        proxy.close()
+        return
+    }
+    val input = InputImage.fromMediaImage(mediaImage, proxy.imageInfo.rotationDegrees)
+    scanner.process(input)
+        .addOnSuccessListener { codes ->
+            val raw = codes.firstOrNull { it.format == Barcode.FORMAT_QR_CODE }?.rawValue ?: return@addOnSuccessListener
+            val id = raw.substringAfterLast('/').removePrefix("vista:landmark:").substringBefore('?').trim()
+            val found = landmarks.firstOrNull { it.id == id }
+            if (found != null) onFound(found)
+            else onUnknown("QR detected, but it does not contain a known VISTA landmark ID.")
+        }
+        .addOnFailureListener { onUnknown("QR scan failed. Try holding the camera steady.") }
+        .addOnCompleteListener {
+            processing.set(false)
+            proxy.close()
+        }
 }
 
 @Composable
