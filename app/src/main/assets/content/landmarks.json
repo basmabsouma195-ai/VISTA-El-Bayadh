@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 14,
+  "contentVersion": 15,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -522,6 +522,120 @@
           "url": "https://commons.wikimedia.org/wiki/File:Barrage_de_Berezina_d%27El-bayadh.jpg",
           "publisher": "Wikimedia Commons · BoukhalfaAlaa",
           "note": "صورة أخرى للسد بترخيص CC BY-SA 4.0؛ لم تُنسخ إلى أصول التطبيق بعد."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-kharima",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري الكريمة",
+      "nameFr": "Station rupestre de Kharima (Korima)",
+      "nameEn": "Kharima (Korima) Rock Art Station",
+      "descriptionAr": "محطة فن صخري تقع عند النقطة الكيلومترية 72 على الطريق الوطني رقم 47، على يسار الطريق بنحو كيلومترين، ضمن بلدية أربوات حسب بطاقة خريطة التراث الثقافي الجزائري. تصف البطاقة مرتفعاً من الصخور الحمراء يحمل نقوشاً على واجهتين، وتذكر تنوع موضوعاتها الحيوانية والبشرية. حالة الحفظ متوسطة مع تفتت وتقشر بعض الواجهات؛ يجب احترام الموقع وعدم لمس النقوش أو الكتابة عليها.",
+      "descriptionFr": "Station d’art rupestre située au kilomètre 72 de la RN 47, à environ deux kilomètres à gauche de la route, dans la commune d’Arbaouat selon la Carte du patrimoine culturel algérien. La fiche décrit un relief de roches rouges portant des gravures sur deux faces, avec des motifs animaliers et humains. L’état de conservation est moyen, avec fragmentation et écaillage de certaines surfaces. Les gravures ne doivent être ni touchées ni marquées.",
+      "descriptionEn": "A rock-art station near kilometre 72 of National Road 47, about two kilometres to the left of the road, in Arbaouat municipality according to the Algerian Cultural Heritage Map. The record describes a red-rock elevation with engravings on two surfaces, including animal and human motifs. Its conservation is rated moderate, with some fragmentation and flaking. Visitors should not touch or mark the engravings.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "محطة النقش الصخري الكريمة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1513",
+          "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
+          "note": "مصدر الموقع والوصف وعدد الواجهات وحالة الحفظ."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-dhalaa-mayta",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري الضلعة الميتة",
+      "nameFr": "Station rupestre de Dhalaa Mayta",
+      "nameEn": "Dhalaa Mayta Rock Art Station",
+      "descriptionAr": "موقع فن صخري يتمثل في منبسط صخري تغطيه الرمال، عند النقطة الكيلومترية 72 على الطريق الوطني رقم 47 الرابط بين البيض والأبيض سيدي الشيخ، ويبعد نحو ثلاثة كيلومترات عن الطريق عبر وادي الكريمة. تسجل بطاقة التراث أكثر من عشرين رسماً موزعاً على امتداد يقارب ثلاثة كيلومترات، مع تعرض عدد منها للردم بفعل الرمال.",
+      "descriptionFr": "Site d’art rupestre constitué d’un plateau rocheux recouvert de sable, près du kilomètre 72 de la RN 47 entre El Bayadh et El Abiodh Sidi Cheikh. Il se trouve à environ trois kilomètres de la route, au-delà de l’oued Kharima. La fiche patrimoniale signale plus de vingt gravures réparties sur près de trois kilomètres, dont plusieurs sont ensevelies par le sable.",
+      "descriptionEn": "A rock-art site consisting of a sandy-covered rocky plateau near kilometre 72 of National Road 47 between El Bayadh and El Abiodh Sidi Cheikh. It lies about three kilometres from the road, beyond Oued Kharima. The heritage record reports more than twenty engravings spread over roughly three kilometres, with several affected by burial under sand.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "محطة النقش الصخري الضلعة الميتة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1324",
+          "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
+          "note": "مصدر الموقع والوصف والامتداد وحالة التأثر بالرمال."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-qaret-tabbane",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري قارة التبن",
+      "nameFr": "Station rupestre de Qaret Tabbane",
+      "nameEn": "Qaret Tabbane Rock Art Station",
+      "descriptionAr": "محطة نقش صخري على مرتفع وهضبة من الحجر الرملي في بلدية أربوات، دائرة الأبيض سيدي الشيخ. تذكر بطاقة التراث ثماني واجهات وأكثر من ثلاثين رسماً بموضوعات حيوانية وبشرية وهندسية، وتشير إلى صعوبة بعض المسالك وإلى وجود شواهد أثرية سطحية. لا تُعتمد الإحداثيات أو المسارات قبل التحقق الميداني.",
+      "descriptionFr": "Station rupestre située sur un relief de grès dans la commune d’Arbaouat, daïra d’El Abiodh Sidi Cheikh. La fiche patrimoniale mentionne huit panneaux et plus de trente représentations animales, humaines et géométriques. Elle signale des accès difficiles ainsi que des indices archéologiques de surface. Les coordonnées et itinéraires doivent être vérifiés sur le terrain.",
+      "descriptionEn": "A rock-art station on a sandstone rise in Arbaouat municipality, El Abiodh Sidi Cheikh district. The heritage record lists eight panels and more than thirty animal, human, and geometric figures. It notes difficult access in places and surface archaeological remains. Coordinates and routes must be field-verified before navigation use.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "محطة النقش الصخري قارة التبن – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1265",
+          "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
+          "note": "مصدر الموقع والواجهات والرسومات وصعوبة الوصول."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-qaret-samouta",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري قارة السموطة",
+      "nameFr": "Station rupestre de Qaret Samouta",
+      "nameEn": "Qaret Samouta Rock Art Station",
+      "descriptionAr": "هضبة من الصخور الرملية تحمل رسومات صخرية، تقع غرب قارة الطالب بنحو ثلاثة كيلومترات وفق بطاقة خريطة التراث الثقافي الجزائري. تتكون من محطتين، وتضم نقوشاً حيوانية وبشرية وأشكالاً هندسية ورموزاً من فترات مختلفة. لا تتوفر في البطاقة نقطة إحداثية دقيقة صالحة للملاحة.",
+      "descriptionFr": "Plateau de grès portant des gravures rupestres, situé à environ trois kilomètres à l’ouest de Qaret Taleb selon la Carte du patrimoine culturel algérien. Le site comprend deux stations avec des représentations animales, humaines, géométriques et des symboles de périodes différentes. La fiche ne fournit pas de coordonnées précises adaptées à la navigation.",
+      "descriptionEn": "A sandstone plateau with rock engravings, located about three kilometres west of Qaret Taleb according to the Algerian Cultural Heritage Map. The site comprises two stations with animal, human, geometric, and symbolic representations from different periods. The record does not provide precise navigation-grade coordinates.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "محطة النقش الصخري قارة السموطة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1260",
+          "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
+          "note": "مصدر الموقع وعدد المحطات والوصف الأثري."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-khalwat-sidi-cheikh",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري خلوة سيدي الشيخ",
+      "nameFr": "Station rupestre de Khelouat Sidi Cheikh",
+      "nameEn": "Khalwat Sidi Cheikh Rock Art Station",
+      "descriptionAr": "موقع نقش صخري يقع على بعد نحو عشرة كيلومترات شمال شرق بلدية أربوات، بمحاذاة الطريق الوطني رقم 6 ب وبالقرب من وادي الديغم. تسجل بطاقة التراث أربع واجهات و19 رسماً، من بينها حيوانات وشخصيات آدمية ورموز، وتؤرخها ضمن فنون العصر الحجري الحديث. يجب تجنب لمس الأسطح المنقوشة أو الاقتراب بما يضرها.",
+      "descriptionFr": "Site rupestre situé à environ dix kilomètres au nord-est de la commune d’Arbaouat, près de la RN 6 bis et de l’oued Daigham. La fiche patrimoniale décrit quatre panneaux et 19 figures, représentant notamment des animaux, des personnages humains et des symboles, attribués à l’art du Néolithique. Il faut éviter tout contact susceptible d’endommager les surfaces gravées.",
+      "descriptionEn": "A rock-art site about ten kilometres northeast of Arbaouat municipality, near National Road 6B and Oued Daigham. The heritage record describes four panels and 19 figures, including animals, human figures, and symbols, attributed to Neolithic rock art. Visitors should avoid touching or damaging the engraved surfaces.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "محطة النقش الصخري خلوة سيدي الشيخ – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/959",
+          "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
+          "note": "مصدر الموقع الجغرافي وعدد الواجهات والرسومات."
+        }
+      ]
+    },
+    {
+      "id": "sidi-hamza-tower",
+      "categoryId": "memorials",
+      "nameAr": "برج سيدي حمزة",
+      "nameFr": "Tour de Sidi Hamza",
+      "nameEn": "Sidi Hamza Tower",
+      "descriptionAr": "برج دفاعي تاريخي يقع فوق هضبة وسط مدينة بريزينة، في موقع استراتيجي يطل على محيطه. تؤرخ بطاقة خريطة التراث الثقافي الجزائري بناءه بسنة 1857م وتنسبه إلى الخليفة سي حمزة، كما تصف عناصره المعمارية وغرفه الداخلية. ترد بعض التفاصيل التاريخية في البطاقة بوصفها رواية مصدرية، وتحتاج إلى مقابلة مع الدراسات والوثائق التاريخية قبل اعتمادها بصيغة قطعية.",
+      "descriptionFr": "Tour défensive historique située sur un plateau au centre de Brézina, dans une position stratégique. La Carte du patrimoine culturel algérien date sa construction de 1857 et l’attribue au khalifa Si Hamza ; elle décrit également ses éléments architecturaux et ses pièces intérieures. Certains détails historiques sont rapportés par la fiche et doivent être recoupés avec des études et archives avant d’être présentés comme certains.",
+      "descriptionEn": "A historic defensive tower on a plateau in central Brézina, occupying a strategic position. The Algerian Cultural Heritage Map dates its construction to 1857 and attributes it to Khalifa Si Hamza, while describing its architectural features and interior rooms. Some historical details are narratives reported by the heritage record and should be cross-checked against historical studies and documents before being stated as definitive.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "برج سيدي حمزة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1357",
+          "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
+          "note": "مصدر الموقع والوصف المعماري والتاريخ الوارد في البطاقة."
         }
       ]
     }
