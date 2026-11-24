@@ -819,9 +819,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                     }
                     Text(
-                        if (isArabic) { if (recognitionModelLoaded) "تم تحميل نموذج MobileNetV3 دون إنترنت. التعرف معطّل حاليًا: نحتاج 3 صور مؤكدة على الأقل لكل معلم ومعايرة مستقلة." else "تعذّر تحميل نموذج الرؤية المحلي؛ سيبقى الماسح الاحتياطي QR متاحًا." }
-                        else if (isFrench) { if (recognitionModelLoaded) "Modèle MobileNetV3 chargé hors ligne. Identification désactivée : au moins 3 photos vérifiées par site et une calibration indépendante sont requises." else "Impossible de charger le modèle visuel local ; le lecteur QR reste disponible." }
-                        else { if (recognitionModelLoaded) "MobileNetV3 model loaded offline. Identification remains disabled: at least 3 verified photos per site and independent calibration are required." else "Could not load the local vision model; the QR fallback remains available." },
+                        if (isArabic) { if (recognitionModelLoaded) "تم تحميل نموذج MobileNetV3 دون إنترنت. التعرّف معطّل حاليًا: نحتاج 20 صورة مرجعية و10 صور اختبار مستقلة لكل معلم، و100 مشهد مجهول، ثم معايرة ميدانية." else "تعذّر تحميل نموذج الرؤية المحلي؛ سيبقى الماسح الاحتياطي QR متاحًا." }
+                        else if (isFrench) { if (recognitionModelLoaded) "Modèle MobileNetV3 chargé hors ligne. Identification désactivée : 20 références et 10 images de test indépendantes par site, 100 scènes inconnues et une calibration terrain sont requises." else "Impossible de charger le modèle visuel local ; le lecteur QR reste disponible." }
+                        else { if (recognitionModelLoaded) "MobileNetV3 model loaded offline. Identification remains disabled: 20 reference and 10 independent test images per site, 100 unknown scenes, and field calibration are required." else "Could not load the local vision model; the QR fallback remains available." },
                         color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
                     )
                     recognitionStatus?.let { status ->
