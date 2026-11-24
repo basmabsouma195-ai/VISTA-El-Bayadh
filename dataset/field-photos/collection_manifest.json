@@ -108,7 +108,7 @@
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
       "reviewNote": "User confirmed this heritage plaque belongs to Ksar Boussemghoun / Zaouiat Sidi Ahmed Tidjani; signage/plaque reference only, not a visual recognition reference.",
-      "landmarkId": "ksar-boussemghoun",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
       "locationNameAr": "قصر بوسمغون – زاوية سيدي أحمد التيجاني",
       "locationConfirmation": "User confirmed on 2026-11-24 that this plaque identifies Ksar Boussemghoun."
     },
@@ -119,7 +119,7 @@
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
       "reviewNote": "User identified this oasis walkway photograph as Ksar Boussemghoun; recognition remains disabled pending image review and dataset validation.",
-      "landmarkId": "ksar-boussemghoun",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
       "locationNameAr": "قصر بوسمغون",
       "locationConfirmation": "User identified this photograph as Ksar Boussemghoun on 2026-11-24."
     },
@@ -129,9 +129,10 @@
       "visualStatus": "landscape_hammam_ain_ouarka",
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "User clarified that Ain Ouarka refers to Hammam Ain Ouarka; these photographs belong to the same site.",
+      "reviewNote": "User confirmed this photograph belongs to Hammam Ain Ouarka; it is not approved for visual recognition.",
       "locationNameAr": "حمّام عين ورقة",
-      "locationConfirmation": "User clarified on 2026-11-24 that 'عين ورقة' means Hammam Ain Ouarka; count these images with the previously confirmed Hammam Ain Ouarka photograph."
+      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph belongs to Hammam Ain Ouarka.",
+      "landmarkId": "hammam-ain-ouarka"
     },
     {
       "filename": "1000078290.jpg",
@@ -140,7 +141,7 @@
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
       "reviewNote": "User identified this photograph as Ksar Boussemghoun; recognition remains disabled pending image review and dataset validation.",
-      "landmarkId": "ksar-boussemghoun",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
       "locationNameAr": "قصر بوسمغون",
       "locationConfirmation": "User identified this photograph as Ksar Boussemghoun on 2026-11-24."
     },
@@ -150,9 +151,10 @@
       "visualStatus": "landscape_hammam_ain_ouarka",
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "User clarified that Ain Ouarka refers to Hammam Ain Ouarka; these photographs belong to the same site.",
+      "reviewNote": "User confirmed this photograph belongs to Hammam Ain Ouarka; it is not approved for visual recognition.",
       "locationNameAr": "حمّام عين ورقة",
-      "locationConfirmation": "User clarified on 2026-11-24 that 'عين ورقة' means Hammam Ain Ouarka; count these images with the previously confirmed Hammam Ain Ouarka photograph."
+      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph belongs to Hammam Ain Ouarka.",
+      "landmarkId": "hammam-ain-ouarka"
     },
     {
       "filename": "1000078296.jpg",
@@ -182,9 +184,10 @@
       "visualStatus": "aerial_landscape_hammam_ain_ouarka",
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "User confirmed this aerial landscape photograph is from Hammam Ain Ouarka; recognition remains disabled pending image review and dataset validation.",
+      "reviewNote": "User confirmed this photograph belongs to Hammam Ain Ouarka; it is not approved for visual recognition.",
       "locationNameAr": "حمّام عين ورقة",
-      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph is also from Hammam Ain Ouarka."
+      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph belongs to Hammam Ain Ouarka.",
+      "landmarkId": "hammam-ain-ouarka"
     },
     {
       "filename": "1000078305.jpg",
@@ -203,9 +206,10 @@
       "visualStatus": "hammam_ain_ouarka",
       "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "User identified this photograph as Hammam Ain Ouarka; landmark catalogue entry must be added or matched before app integration.",
-      "locationNameAr": "حمام عين ورقة",
-      "locationConfirmation": "User identified this photograph as Hammam Ain Ouarka on 2026-11-24."
+      "reviewNote": "User confirmed this photograph belongs to Hammam Ain Ouarka; it is not approved for visual recognition.",
+      "locationNameAr": "حمّام عين ورقة",
+      "locationConfirmation": "User confirmed on 2026-11-24 that this photograph belongs to Hammam Ain Ouarka.",
+      "landmarkId": "hammam-ain-ouarka"
     },
     {
       "filename": "1000078259.jpg",
