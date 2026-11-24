@@ -10,6 +10,15 @@
       "labelAr": "قصر بنت الخس",
       "labelFr": "Ksar Bent Khass",
       "labelEn": "Ksar Bent Khass"
+    },
+    {
+      "id": "field-gour-bent-el-khass-sign-01",
+      "landmarkId": "gour-bent-el-khass",
+      "fileName": "gour-bent-el-khass.jpg",
+      "assetPath": "recognition/references/gour-bent-el-khass.jpg",
+      "labelAr": "قور بنت الخس",
+      "labelFr": "Gour Bent El Khass",
+      "labelEn": "Gour Bent El Khass"
     }
   ]
 }
