@@ -192,10 +192,13 @@
     {
       "filename": "1000078259.jpg",
       "sha256": "1c9aab156d158760c8b2552355f827bbf0943909dae13bac1d44666b2247e8c5",
-      "visualStatus": "unclassified_architecture",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "architecture_ksar_bent_khass",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Clay archway/courtyard; exact site not confirmed"
+      "reviewNote": "User identified this clay archway/courtyard photograph as Ksar Bent El Khass; recognition remains disabled pending image review and dataset validation.",
+      "landmarkId": "ksar-bent-khass",
+      "locationNameAr": "قصر بنت الخس",
+      "locationConfirmation": "User identified this photograph as Ksar Bent El Khass on 2026-11-24."
     }
   ]
 }
