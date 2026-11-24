@@ -1124,6 +1124,19 @@ private fun MoreScreen(
         Text(c.more, color = Forest, fontSize = 25.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(12.dp))
         Text(c.moreNote, color = Muted, fontSize = 15.sp, lineHeight = 24.sp)
+        Spacer(Modifier.height(12.dp))
+        Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+            Column(Modifier.padding(16.dp)) {
+                Text(if (isArabic) "حول التطبيق" else if (isFrench) "À propos" else "About VISTA", color = Forest, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                Text(if (isArabic) "دليل سياحي ذكي للتعريف بتراث ولاية البيض ومعالمها التاريخية والطبيعية، مع محتوى أساسي متاح دون إنترنت." else if (isFrench) "Un guide touristique intelligent du patrimoine et des sites naturels et historiques d’El Bayadh, avec un contenu essentiel hors ligne." else "A smart guide to El Bayadh heritage and natural and historical sites, with essential offline content.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
+                Spacer(Modifier.height(12.dp))
+                Text(if (isArabic) "دليل الاستخدام" else if (isFrench) "Guide d’utilisation" else "Usage guide", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(if (isArabic) "تصفّح المعالم من الرئيسية، ثم استخدم الماسح لقراءة QR أو الباركود أو التقط صورة للمعلم. افتح بطاقة المعلم لعرض معلوماته وصوره، وأضفه إلى المفضلة عند الحاجة." else if (isFrench) "Parcourez les sites depuis l’accueil. Scannez un QR/code-barres ou prenez une photo du site, puis consultez sa fiche et ses photos." else "Browse landmarks from Home. Scan a QR/barcode or photograph a landmark, then open its profile to view details and photos.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
+                Spacer(Modifier.height(12.dp))
+                Text(if (isArabic) "عن المشروع" else if (isFrench) "Le projet" else "Project", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(if (isArabic) "يهدف VISTA إلى إبراز المقومات السياحية والتراثية والطبيعية لولاية البيض في دليل موحد." else if (isFrench) "VISTA valorise les ressources touristiques, patrimoniales et naturelles de la wilaya d’El Bayadh." else "VISTA showcases the tourism, heritage and natural assets of El Bayadh in one guide.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
+            }
+        }
         Spacer(Modifier.height(22.dp))
         Text(tripsTitle, color = Forest, fontSize = 21.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(10.dp))
