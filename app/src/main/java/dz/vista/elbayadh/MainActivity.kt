@@ -684,7 +684,12 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
             val provider = boundProvider
             val preview = boundPreview
             val analysis = boundAnalysis
-            if (provider != null) runCatching { provider.unbind(*listOfNotNull(preview, analysis).toTypedArray()) }
+            if (provider != null) {
+                val useCases = mutableListOf<androidx.camera.core.UseCase>()
+                preview?.let(useCases::add)
+                analysis?.let(useCases::add)
+                if (useCases.isNotEmpty()) runCatching { provider.unbind(*useCases.toTypedArray()) }
+            }
             scanner.close()
             analyzerExecutor.shutdown()
         }
