@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import android.content.Context
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -114,8 +116,30 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun VistaApp() {
-    var language by remember { mutableStateOf(AppLanguage.Arabic) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val preferences = remember { context.getSharedPreferences("vista_preferences", Context.MODE_PRIVATE) }
+    var language by remember {
+        mutableStateOf(
+            when (preferences.getString("language", "ar")) {
+                "fr" -> AppLanguage.French
+                "en" -> AppLanguage.English
+                else -> AppLanguage.Arabic
+            }
+        )
+    }
     var selectedTab by remember { mutableIntStateOf(0) }
+    var searchQuery by remember { mutableStateOf("") }
+    var favoriteIds by remember {
+        mutableStateOf(preferences.getStringSet("favorites", emptySet())?.toSet() ?: emptySet())
+    }
+    fun changeLanguage(next: AppLanguage) {
+        language = next
+        preferences.edit().putString("language", when (next) {
+            AppLanguage.Arabic -> "ar"
+            AppLanguage.French -> "fr"
+            AppLanguage.English -> "en"
+        }).apply()
+    }
     val c = copyFor(language)
     val direction = if (language == AppLanguage.Arabic) LayoutDirection.Rtl else LayoutDirection.Ltr
 
@@ -153,11 +177,18 @@ private fun VistaApp() {
                         modifier = Modifier.fillMaxSize().padding(padding)
                     ) {
                         when (selectedTab) {
-                            0 -> HomeScreen(c, language, onLanguage = { language = it })
+                            0 -> HomeScreen(
+                                c, language, onLanguage = ::changeLanguage,
+                                searchQuery = searchQuery, onSearchChange = { searchQuery = it },
+                                onCategorySelected = { searchQuery = it }
+                            )
                             1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
                             2 -> InfoScreen(c.scan, c.scanNote, Icons.Filled.CenterFocusStrong)
-                            3 -> InfoScreen(c.favorites, c.emptyFavorites, Icons.Filled.Favorite)
-                            else -> MoreScreen(c, language, onLanguage = { language = it })
+                            3 -> InfoScreen(c.favorites, if (favoriteIds.isEmpty()) c.emptyFavorites else
+                                if (language == AppLanguage.Arabic) "عدد العناصر المحفوظة: ${favoriteIds.size}" else
+                                if (language == AppLanguage.French) "Sites enregistrés : ${favoriteIds.size}" else
+                                "Saved places: ${favoriteIds.size}", Icons.Filled.Favorite)
+                            else -> MoreScreen(c, language, onLanguage = ::changeLanguage)
                         }
                     }
                 }
@@ -167,8 +198,15 @@ private fun VistaApp() {
 }
 
 @Composable
-private fun HomeScreen(c: Copy, language: AppLanguage, onLanguage: (AppLanguage) -> Unit) {
-    Column(modifier = Modifier.fillMaxSize().background(Ivory)) {
+private fun HomeScreen(
+    c: Copy,
+    language: AppLanguage,
+    onLanguage: (AppLanguage) -> Unit,
+    searchQuery: String,
+    onSearchChange: (String) -> Unit,
+    onCategorySelected: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
         Box(
             modifier = Modifier.fillMaxWidth().height(250.dp)
                 .background(Brush.verticalGradient(listOf(Forest, ForestDeep))),
@@ -187,9 +225,8 @@ private fun HomeScreen(c: Copy, language: AppLanguage, onLanguage: (AppLanguage)
                 Text(c.subtitle, color = Color(0xFFE9DFC9), fontSize = 14.sp)
                 Spacer(Modifier.height(18.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    readOnly = true,
+                    value = searchQuery,
+                    onValueChange = onSearchChange,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = { Text(c.search, color = Muted, fontSize = 13.sp) },
                     leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = Forest) },
@@ -211,8 +248,18 @@ private fun HomeScreen(c: Copy, language: AppLanguage, onLanguage: (AppLanguage)
             Spacer(Modifier.weight(1f))
             Text("VISTA", color = Gold, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
         }
+        val visibleCategories = c.categories.filter {
+            searchQuery.isBlank() || it.contains(searchQuery.trim(), ignoreCase = true)
+        }
+        if (visibleCategories.isEmpty()) {
+            Text(
+                if (language == AppLanguage.Arabic) "لا توجد تصنيفات مطابقة" else
+                    if (language == AppLanguage.French) "Aucune catégorie correspondante" else "No matching categories",
+                color = Muted, modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
+            )
+        }
         Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            c.categories.chunked(2).forEachIndexed { rowIndex, row ->
+            visibleCategories.chunked(2).forEachIndexed { rowIndex, row ->
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
                     row.forEachIndexed { colIndex, title ->
                         val palette = listOf(
@@ -221,7 +268,7 @@ private fun HomeScreen(c: Copy, language: AppLanguage, onLanguage: (AppLanguage)
                             Brush.linearGradient(listOf(Color(0xFF68745A), Color(0xFF344A39))),
                             Brush.linearGradient(listOf(Color(0xFF8C7358), Color(0xFF5A4938)))
                         )
-                        CategoryCard(title, palette[rowIndex * 2 + colIndex], Modifier.weight(1f))
+                        CategoryCard(title, palette[(rowIndex * 2 + colIndex) % palette.size], Modifier.weight(1f))
                     }
                     if (row.size == 1) Spacer(Modifier.weight(1f))
                 }
@@ -245,7 +292,7 @@ private fun HomeScreen(c: Copy, language: AppLanguage, onLanguage: (AppLanguage)
 @Composable
 private fun CategoryCard(title: String, brush: Brush, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier.height(112.dp),
+        modifier = modifier.height(112.dp).clickable { /* category selection is wired by the parent in the next content module */ },
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = Forest),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
