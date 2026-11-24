@@ -759,7 +759,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
             )
         }
         Text(
-            if (isArabic) "الماسح المعرف" else if (isFrench) "Scanner intelligent" else "Smart landmark scanner",
+            if (isArabic) "التعرّف البصري على المعالم" else if (isFrench) "Reconnaissance visuelle des sites" else "Visual landmark recognition",
             color = Forest, fontSize = 23.sp, fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(8.dp))
@@ -771,7 +771,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         )
         Spacer(Modifier.height(14.dp))
         Text(
-            if (isArabic) "المسح الاحتياطي: QR (اختياري)" else if (isFrench) "Lecture de secours : QR (facultatif)" else "Fallback scan: optional QR",
+            if (isArabic) "الأساسي: تحليل صورة المعلم · QR اختياري فقط" else if (isFrench) "Principal : analyse visuelle · QR facultatif" else "Primary: visual analysis · optional QR fallback",
             color = Forest, fontWeight = FontWeight.SemiBold, fontSize = 12.sp
         )
         qrMessage?.let { Text(it, color = Muted, fontSize = 11.sp) }
@@ -828,7 +828,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         Text(status, color = Forest, fontSize = 11.sp, lineHeight = 16.sp, modifier = Modifier.padding(top = 6.dp))
                     }
                     Button(
-                        enabled = recognitionReady,
+                        enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
                         onClick = {
                             val snapshot = previewView.bitmap?.copy(Bitmap.Config.ARGB_8888, false)
                             if (snapshot == null) {
@@ -836,18 +836,39 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                             } else {
                                 recognitionScope.launch {
                                     try {
-                                        when (val result = recognitionEngine.recognize(snapshot)) {
-                                            is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
-                                                val found = landmarks.firstOrNull { it.id == result.candidate.landmarkId }
-                                                if (found != null) onOpenLandmark(found)
-                                                else recognitionStatus = if (isArabic) "المعلم غير موجود في الموسوعة المحلية." else if (isFrench) "Ce site est absent du catalogue local." else "The matched site is missing from the local catalogue."
+                                        if (recognitionReady) {
+                                            when (val result = recognitionEngine.recognize(snapshot)) {
+                                                is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
+                                                    val found = landmarks.firstOrNull { it.id == result.candidate.landmarkId }
+                                                    if (found != null) onOpenLandmark(found)
+                                                    else recognitionStatus = if (isArabic) "المعلم غير موجود في الموسوعة المحلية." else if (isFrench) "Ce site est absent du catalogue local." else "The matched site is missing from the local catalogue."
+                                                }
+                                                is dz.vista.elbayadh.recognition.RecognitionDecision.Ambiguous ->
+                                                    recognitionStatus = if (isArabic) "النتيجة غير حاسمة؛ اقترب أو غيّر زاوية التصوير." else if (isFrench) "Résultat non concluant ; rapprochez-vous ou changez d’angle." else "Inconclusive result; move closer or change angle."
+                                                dz.vista.elbayadh.recognition.RecognitionDecision.Unknown ->
+                                                    recognitionStatus = if (isArabic) "لم نتعرّف على هذا المشهد." else if (isFrench) "Scène non reconnue." else "Scene not recognized."
+                                                dz.vista.elbayadh.recognition.RecognitionDecision.ModelUnavailable ->
+                                                    recognitionStatus = if (isArabic) "محرك التعرّف غير جاهز." else if (isFrench) "Le moteur n’est pas prêt." else "Recognition engine is not ready."
                                             }
-                                            is dz.vista.elbayadh.recognition.RecognitionDecision.Ambiguous ->
-                                                recognitionStatus = if (isArabic) "الصورة متشابهة مع أكثر من معلم؛ اقترب أو غيّر زاوية التصوير." else if (isFrench) "Plusieurs sites se ressemblent ; rapprochez-vous ou changez d’angle." else "Several sites look similar; move closer or change the camera angle."
-                                            dz.vista.elbayadh.recognition.RecognitionDecision.Unknown ->
-                                                recognitionStatus = if (isArabic) "لم نتعرّف على هذا المشهد." else if (isFrench) "Scène non reconnue." else "This scene was not recognized."
-                                            dz.vista.elbayadh.recognition.RecognitionDecision.ModelUnavailable ->
-                                                recognitionStatus = if (isArabic) "محرك التعرّف غير جاهز." else if (isFrench) "Le moteur n’est pas prêt." else "Recognition engine is not ready."
+                                        } else {
+                                            val suggestions = recognitionEngine.suggestCandidates(snapshot)
+                                            val names = suggestions.mapNotNull { candidate ->
+                                                landmarks.firstOrNull { it.id == candidate.landmarkId }?.let { landmark ->
+                                                    landmark.name(when (language) {
+                                                        AppLanguage.Arabic -> CatalogueLanguage.AR
+                                                        AppLanguage.French -> CatalogueLanguage.FR
+                                                        AppLanguage.English -> CatalogueLanguage.EN
+                                                    })
+                                                }
+                                            }
+                                            recognitionStatus = if (names.isEmpty()) {
+                                                if (isArabic) "لم تتوفر اقتراحات لهذه الصورة." else if (isFrench) "Aucune suggestion disponible pour cette image." else "No suggestions available for this image."
+                                            } else {
+                                                val list = names.joinToString("، ")
+                                                if (isArabic) "اقتراحات تجريبية غير مؤكدة: $list. هذه ليست نتيجة تعرّف موثوقة بعد."
+                                                else if (isFrench) "Suggestions expérimentales non confirmées : $list. L’identification n’est pas encore validée."
+                                                else "Unverified experimental suggestions: $list. This is not a validated identification."
+                                            }
                                         }
                                     } finally {
                                         if (!snapshot.isRecycled) snapshot.recycle()
@@ -859,7 +880,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                     ) {
                         Text(
-                            if (isArabic) "التعرّف البصري على المعلم" else if (isFrench) "Identifier visuellement le site" else "Identify landmark visually",
+                            if (isArabic) "حلّل صورة المعلم بالكاميرا" else if (isFrench) "Analyser le site avec la caméra" else "Analyze landmark with camera",
                             color = Color.White
                         )
                     }
