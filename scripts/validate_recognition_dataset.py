@@ -54,11 +54,15 @@ def main():
         session = str(item.get("captureSessionId", "")).strip()
         if not session:
             fail(f"{image_id}: verified image requires captureSessionId")
+        source = str(item.get("source", "")).strip()
+        if not source:
+            fail(f"{image_id}: verified image requires source provenance")
         expected_hash = str(item.get("sha256", "")).strip().lower()
-        if expected_hash:
-            actual = hashlib.sha256(path.read_bytes()).hexdigest()
-            if actual != expected_hash:
-                fail(f"{image_id}: SHA-256 mismatch")
+        if len(expected_hash) != 64 or any(ch not in "0123456789abcdef" for ch in expected_hash):
+            fail(f"{image_id}: verified image requires a valid SHA-256")
+        actual = hashlib.sha256(path.read_bytes()).hexdigest()
+        if actual != expected_hash:
+            fail(f"{image_id}: SHA-256 mismatch")
         if role == "reference":
             landmark = str(item.get("landmarkId", "")).strip()
             if not landmark:
