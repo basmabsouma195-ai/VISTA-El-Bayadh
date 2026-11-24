@@ -45,3 +45,17 @@ python3 scripts/register_field_photo.py \
 For an unrelated/unknown scene, use `--role unknown` and omit `--landmark-id`. For evaluation images, use `--role evaluation` and a different session from all reference images for that landmark.
 
 The helper always writes `verified: false` and `reviewStatus: pending`. A reviewer must inspect the original photo and independently confirm its identity and provenance before manually approving it. Do not mark a photo verified based only on a filename, guess, or model prediction.
+
+
+## Human review and approval
+
+A registered image remains pending until a person checks the actual image, confirms the landmark using reliable evidence, and records the review:
+
+```bash
+python3 scripts/verify_field_photo.py \
+  --id ksar-north-front-01 \
+  --reviewer "VISTA heritage review" \
+  --note "Identity confirmed against the site's official heritage record and visible entrance details."
+```
+
+Approval is intentionally explicit. The tool refuses to approve a changed file or silently overwrite an existing approval. It records reviewer, timestamp, and evidence note. The validator checks the recorded approval, SHA-256 integrity, unique image content, valid role metadata, and separation of reference, evaluation, and unknown-scene capture sessions. Do not approve an image unless the stated evidence was actually checked.
