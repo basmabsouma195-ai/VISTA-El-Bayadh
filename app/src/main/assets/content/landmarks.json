@@ -15,6 +15,12 @@
       "titleAr": "القصور والواحات",
       "titleFr": "Ksour et oasis",
       "titleEn": "Ksour and oases"
+    },
+    {
+      "id": "natural-sites",
+      "titleAr": "المواقع والتشكيلات الطبيعية",
+      "titleFr": "Sites et formations naturelles",
+      "titleEn": "Natural sites and formations"
     }
   ],
   "landmarks": [
@@ -37,6 +43,28 @@
           "note": "وثيقة أرسل المستخدم نصها في المحادثة؛ يلزم تدقيق النقل ومقابلة تفاصيلها مع النسخة الأصلية."
         }
       ]
+    },
+    {
+      "id": "gour-brizina",
+      "categoryId": "natural-sites",
+      "nameAr": "قور بريزينة",
+      "nameFr": "Gours de Brizina",
+      "nameEn": "Brizina Gours",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review"
+    },
+    {
+      "id": "kef-el-melh",
+      "categoryId": "natural-sites",
+      "nameAr": "كاف الملح",
+      "nameFr": "Kef El Melh",
+      "nameEn": "Kef El Melh",
+      "descriptionAr": "",
+      "descriptionFr": "",
+      "descriptionEn": "",
+      "verification": "under_review"
     }
   ]
 }
