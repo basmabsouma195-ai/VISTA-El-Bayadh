@@ -70,6 +70,52 @@ class OfflineRecognitionImageIndex(context: Context) {
         }
     }
 
+    /**
+     * Preview-only image set: approved references plus user-confirmed field photos.
+     * Signage and plaques are excluded because they do not represent the landmark scene.
+     * These images are never promoted to calibrated recognition references.
+     */
+    fun loadPreview(): List<RecognitionReferenceImage> {
+        val approved = load()
+        val gallery = runCatching {
+            val raw = assets.open("content/field-photo-gallery.json")
+                .bufferedReader(Charsets.UTF_8).use { it.readText() }
+            val images = JSONObject(raw).optJSONArray("images") ?: return@runCatching emptyList()
+            buildList {
+                for (i in 0 until images.length()) {
+                    val item = images.optJSONObject(i) ?: continue
+                    if (!item.optBoolean("galleryEnabled", false)) continue
+                    if (item.optBoolean("recognitionApproved", false)) continue
+                    if (item.optString("locationStatus") != "user_confirmed_location") continue
+                    val type = item.optString("imageType")
+                    if (type != "architecture" && type != "landscape") continue
+                    val landmarkId = item.optString("landmarkId").trim()
+                    val path = item.optString("assetPath").trim()
+                    if (landmarkId.isBlank() || path.isBlank() || path.contains("://")) continue
+                    val exists = runCatching { assets.open(path).use { it.read() } }.isSuccess
+                    if (!exists) continue
+                    add(RecognitionReferenceImage(
+                        id = item.optString("id"),
+                        landmarkId = landmarkId,
+                        fileName = item.optString("sourceFileName"),
+                        assetPath = path,
+                        labelAr = "",
+                        labelFr = "",
+                        labelEn = "",
+                        attribution = "",
+                        license = "",
+                        sourcePage = "",
+                        licenseUrl = "",
+                        runtimeApproved = false,
+                        verificationStatus = "user_confirmed_location",
+                        datasetRole = "gallery_preview_only"
+                    ))
+                }
+            }
+        }.getOrDefault(emptyList())
+        return (approved + gallery).distinctBy { it.assetPath }
+    }
+
     /** Decodes a bounded local preview to avoid loading full camera-sized images. */
     @Throws(IOException::class)
     fun decodePreview(image: RecognitionReferenceImage, maxDimension: Int = 640): Bitmap? {
