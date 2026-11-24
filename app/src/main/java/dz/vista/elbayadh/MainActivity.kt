@@ -35,6 +35,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -60,7 +61,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import dz.vista.elbayadh.data.TripPlansStore
-import dz.vista.elbayadh.data.TripPlan
+import dz.vista.elbayadh.data.OfflineCatalogue
+import dz.vista.elbayadh.data.FavoritesStore
+import dz.vista.elbayadh.data.Landmark
+import dz.vista.elbayadh.data.CatalogueLanguage
+import dz.vista.elbayadh.data.VerificationStatus
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 
@@ -134,10 +139,11 @@ private fun VistaApp() {
     }
     var selectedTab by remember { mutableIntStateOf(0) }
     val tripStore = remember { TripPlansStore(context) }
+    val favoritesStore = remember { FavoritesStore(context) }
+    val catalogue = remember { runCatching { OfflineCatalogue(context).load() }.getOrNull() }
+    var favoriteIds by remember { mutableStateOf(favoritesStore.allIds()) }
+    fun toggleFavorite(id: String) { favoritesStore.toggle(id); favoriteIds = favoritesStore.allIds() }
     var searchQuery by remember { mutableStateOf("") }
-    var favoriteIds by remember {
-        mutableStateOf(preferences.getStringSet("favorites", emptySet())?.toSet() ?: emptySet())
-    }
     fun changeLanguage(next: AppLanguage) {
         language = next
         preferences.edit().putString("language", when (next) {
@@ -185,14 +191,18 @@ private fun VistaApp() {
                         when (selectedTab) {
                             0 -> HomeScreen(
                                 c, language, onLanguage = ::changeLanguage,
-                                searchQuery = searchQuery, onSearchChange = { searchQuery = it }
+                                searchQuery = searchQuery, onSearchChange = { searchQuery = it },
+                                landmarks = catalogue?.landmarks.orEmpty(), favoriteIds = favoriteIds,
+                                onFavoriteToggle = ::toggleFavorite
                             )
                             1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
                             2 -> InfoScreen(c.scan, c.scanNote, Icons.Filled.CenterFocusStrong)
-                            3 -> InfoScreen(c.favorites, if (favoriteIds.isEmpty()) c.emptyFavorites else
-                                if (language == AppLanguage.Arabic) "عدد العناصر المحفوظة: ${favoriteIds.size}" else
-                                if (language == AppLanguage.French) "Sites enregistrés : ${favoriteIds.size}" else
-                                "Saved places: ${favoriteIds.size}", Icons.Filled.Favorite)
+                            3 -> FavoritesScreen(
+                                title = c.favorites,
+                                landmarks = catalogue?.landmarks.orEmpty().filter { it.id in favoriteIds },
+                                language = language,
+                                onFavoriteToggle = ::toggleFavorite
+                            )
                             else -> MoreScreen(c, language, onLanguage = ::changeLanguage, tripStore = tripStore)
                         }
                     }
@@ -208,7 +218,10 @@ private fun HomeScreen(
     language: AppLanguage,
     onLanguage: (AppLanguage) -> Unit,
     searchQuery: String,
-    onSearchChange: (String) -> Unit
+    onSearchChange: (String) -> Unit,
+    landmarks: List<Landmark>,
+    favoriteIds: Set<String>,
+    onFavoriteToggle: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
         Box(
@@ -278,6 +291,38 @@ private fun HomeScreen(
                 }
             }
         }
+        val catalogueLanguage = when (language) {
+            AppLanguage.Arabic -> CatalogueLanguage.AR
+            AppLanguage.French -> CatalogueLanguage.FR
+            AppLanguage.English -> CatalogueLanguage.EN
+        }
+        val matchingLandmarks = landmarks.filter { landmark ->
+            searchQuery.isBlank() ||
+                landmark.name(catalogueLanguage).contains(searchQuery.trim(), ignoreCase = true) ||
+                landmark.description(catalogueLanguage).contains(searchQuery.trim(), ignoreCase = true)
+        }
+        if (landmarks.isNotEmpty()) {
+            Text(
+                if (language == AppLanguage.Arabic) "المعالم" else if (language == AppLanguage.French) "Sites à découvrir" else "Places to discover",
+                color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)
+            )
+            matchingLandmarks.forEach { landmark ->
+                LandmarkCard(
+                    landmark = landmark,
+                    language = catalogueLanguage,
+                    isFavorite = landmark.id in favoriteIds,
+                    onFavoriteToggle = { onFavoriteToggle(landmark.id) },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
+                )
+            }
+            if (matchingLandmarks.isEmpty()) {
+                Text(
+                    if (language == AppLanguage.Arabic) "لا توجد نتائج مطابقة" else if (language == AppLanguage.French) "Aucun résultat" else "No matching results",
+                    color = Muted, modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                )
+            }
+        }
         Spacer(Modifier.height(16.dp))
         Row(
             modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth()
@@ -320,6 +365,94 @@ private fun LanguagePicker(language: AppLanguage, onLanguage: (AppLanguage) -> U
                     .clickable { onLanguage(lang) }.padding(horizontal = 9.dp, vertical = 5.dp)
             ) {
                 Text(label, color = if (language == lang) ForestDeep else Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
+@Composable
+private fun LandmarkCard(
+    landmark: Landmark,
+    language: CatalogueLanguage,
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(landmark.name(language), color = Forest, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Spacer(Modifier.height(4.dp))
+                Text(landmark.description(language), color = Muted, fontSize = 12.sp, lineHeight = 18.sp)
+                val status = when (landmark.verification) {
+                    VerificationStatus.VERIFIED -> when (language) {
+                        CatalogueLanguage.AR -> "معلومة موثقة"
+                        CatalogueLanguage.FR -> "Information vérifiée"
+                        CatalogueLanguage.EN -> "Verified information"
+                    }
+                    VerificationStatus.ORAL_HISTORY -> when (language) {
+                        CatalogueLanguage.AR -> "رواية شفوية"
+                        CatalogueLanguage.FR -> "Tradition orale"
+                        CatalogueLanguage.EN -> "Oral history"
+                    }
+                    VerificationStatus.UNDER_REVIEW -> when (language) {
+                        CatalogueLanguage.AR -> "قيد التحقيق"
+                        CatalogueLanguage.FR -> "En cours de vérification"
+                        CatalogueLanguage.EN -> "Under review"
+                    }
+                }
+                Spacer(Modifier.height(5.dp))
+                Text(status, color = Gold, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+            }
+            IconButton(onClick = onFavoriteToggle) {
+                Icon(
+                    Icons.Filled.Favorite,
+                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                    tint = if (isFavorite) Color(0xFFB24E4E) else Muted
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FavoritesScreen(
+    title: String,
+    landmarks: List<Landmark>,
+    language: AppLanguage,
+    onFavoriteToggle: (String) -> Unit
+) {
+    val catalogueLanguage = when (language) {
+        AppLanguage.Arabic -> CatalogueLanguage.AR
+        AppLanguage.French -> CatalogueLanguage.FR
+        AppLanguage.English -> CatalogueLanguage.EN
+    }
+    val empty = when (language) {
+        AppLanguage.Arabic -> "لم تحفظ أي معلم بعد. أضف المعالم إلى المفضلة من صفحة الاستكشاف."
+        AppLanguage.French -> "Aucun favori. Enregistrez des sites depuis la page d’accueil."
+        AppLanguage.English -> "No favorites yet. Save places from the home screen."
+    }
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(vertical = 18.dp)) {
+        Text(title, color = Forest, fontSize = 25.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 20.dp))
+        Spacer(Modifier.height(12.dp))
+        if (landmarks.isEmpty()) {
+            Text(empty, color = Muted, fontSize = 14.sp, lineHeight = 22.sp, modifier = Modifier.padding(horizontal = 20.dp))
+        } else {
+            landmarks.forEach { landmark ->
+                LandmarkCard(
+                    landmark = landmark,
+                    language = catalogueLanguage,
+                    isFavorite = true,
+                    onFavoriteToggle = { onFavoriteToggle(landmark.id) },
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
+                )
             }
         }
     }
