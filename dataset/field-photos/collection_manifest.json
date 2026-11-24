@@ -48,10 +48,13 @@
     {
       "filename": "1000078257.jpg",
       "sha256": "8d38c4432ee1e9c8b1495b9b8dd26099c5470db4ea340037bfa0428b413174c0",
-      "visualStatus": "unclassified_rock_formation",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "rock_formation_gour_brezina",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+      "reviewNote": "Location confirmed by user; keep excluded from recognition runtime pending photo integrity, multi-view coverage and dataset review.",
+      "landmarkId": "gour-brizina",
+      "locationNameAr": "قور بريزينة",
+      "locationConfirmation": "User explicitly confirmed these four photographs depict Gour Brezina on 2026-11-24."
     },
     {
       "filename": "1000078262.jpg",
@@ -64,18 +67,24 @@
     {
       "filename": "1000078266.jpg",
       "sha256": "97475d2e0d433ca2d3c2467f09951d5b3d3f6cb392c0355c32b64a5eb89b47da",
-      "visualStatus": "unclassified_rock_formation",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "rock_formation_gour_brezina",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+      "reviewNote": "Location confirmed by user; keep excluded from recognition runtime pending photo integrity, multi-view coverage and dataset review.",
+      "landmarkId": "gour-brizina",
+      "locationNameAr": "قور بريزينة",
+      "locationConfirmation": "User explicitly confirmed these four photographs depict Gour Brezina on 2026-11-24."
     },
     {
       "filename": "1000078269.jpg",
       "sha256": "329eab77ca0ed659a52e0089bb2aedbdd4aeb0643536d19b379558669524a7b9",
-      "visualStatus": "unclassified_rock_formation",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "rock_formation_gour_brezina",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+      "reviewNote": "Location confirmed by user; keep excluded from recognition runtime pending photo integrity, multi-view coverage and dataset review.",
+      "landmarkId": "gour-brizina",
+      "locationNameAr": "قور بريزينة",
+      "locationConfirmation": "User explicitly confirmed these four photographs depict Gour Brezina on 2026-11-24."
     },
     {
       "filename": "1000078279.jpg",
@@ -144,10 +153,13 @@
     {
       "filename": "1000078305.jpg",
       "sha256": "0ee07446a04b07175f4ce4ace984838fe2145b570c3061d6aaa6edaefe61d3a4",
-      "visualStatus": "unclassified_rock_formation",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "rock_formation_gour_brezina",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Rock formation; exact landmark/location not confirmed"
+      "reviewNote": "Location confirmed by user; keep excluded from recognition runtime pending photo integrity, multi-view coverage and dataset review.",
+      "landmarkId": "gour-brizina",
+      "locationNameAr": "قور بريزينة",
+      "locationConfirmation": "User explicitly confirmed these four photographs depict Gour Brezina on 2026-11-24."
     },
     {
       "filename": "1000078308.jpg",
