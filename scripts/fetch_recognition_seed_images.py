@@ -62,6 +62,7 @@ def is_image(path):
             (head[:4] == b"RIFF" and head[8:12] == b"WEBP"))
 
 def add_entry(entries, item, file_path, landmark_id=None):
+    verified = item.get("runtimeApproved") is True and item.get("verificationStatus") == "verified"
     entry = {
         "id": item["id"],
         "landmarkId": landmark_id or item["landmarkId"],
@@ -70,6 +71,9 @@ def add_entry(entries, item, file_path, landmark_id=None):
         "labelAr": item.get("labelAr", ""),
         "labelFr": item.get("labelFr", ""),
         "labelEn": item.get("labelEn", ""),
+        "runtimeApproved": verified,
+        "verificationStatus": "verified" if verified else "seed_only",
+        "datasetRole": item.get("datasetRole", "seed_reference_only"),
     }
     # Preserve reuse terms and provenance in the installed offline package.
     for key in ("sourcePage", "license", "licenseUrl", "attribution", "changes", "datasetRole"):
@@ -118,7 +122,8 @@ def main():
         for item in field_data.get("images", []):
             landmark_id = item.get("landmarkId")
             # A provisional label is not enough for a runtime photo association.
-            if not landmark_id or not item.get("runtimeApproved", False):
+            if (not landmark_id or not item.get("runtimeApproved", False) or
+                    item.get("verificationStatus") != "verified"):
                 continue
             staged = FIELD_INCOMING / item["sourceFileName"]
             if not is_image(staged):
