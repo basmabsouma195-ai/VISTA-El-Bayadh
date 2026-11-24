@@ -174,7 +174,7 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
             provinceId = province,
             categories = categories.ifEmpty { fallback.categories },
             landmarks = landmarks.ifEmpty { fallback.landmarks },
-            photosByLandmark = buildMap {
+            photosByLandmark = buildMap<String, List<String>> {
                 db.rawQuery("SELECT landmark_id,asset_path FROM landmark_photos ORDER BY landmark_id,position", null).use { c ->
                     while (c.moveToNext()) {
                         val id = c.getString(0)
