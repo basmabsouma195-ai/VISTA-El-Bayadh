@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "scope": "El Bayadh Province, Algeria",
+  "purpose": "Source-backed research notes for future landmark catalogue enrichment. These notes are not yet runtime catalogue records.",
+  "entries": [
+    {
+      "id": "ksar-ain-hachifa",
+      "nameAr": "قصر عين حشيفة بالشلالة القبلية",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/234",
+      "sourceAuthority": "خريطة التراث الثقافي الجزائري - مديرية الثقافة لولاية البيض",
+      "municipality": "الشلالة القبلية",
+      "locationText": "شرق الشلالة القبلية بنحو 5 كلم",
+      "verifiedFacts": [
+        "قصر تاريخي على مساحة تقارب 2087 متر مربع فوق مرتفع بجوار عين ماء كانت تسقي السكان والماشية والبساتين.",
+        "تعرض للقصف المدفعي في صيف 1956 بسبب استخدامه قاعدة خلفية وإمداد لثوار جيش التحرير وفق البطاقة التراثية.",
+        "توجد به انهيارات، وقد هجره ملاكه إلى القرية المجاورة."
+      ],
+      "historicalDate": {
+        "value": null,
+        "note": "لا يمكن تحديد تاريخ البناء بدقة؛ البطاقة تطرح بداية القرن التاسع عشر كاستنتاج ميداني لا كتاريخ مثبت."
+      },
+      "visitorCaution": "لا تُذكر العين على أنها جارية حاليا؛ المصدر يقول إنها جفت. حالة الوصول والسلامة الحالية تحتاج تحققاً محلياً.",
+      "publicationStatus": "research-enriched-not-runtime"
+    },
+    {
+      "id": "ksar-boussemghoun",
+      "nameAr": "قصر بوسمغون",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/561",
+      "sourceAuthority": "خريطة التراث الثقافي الجزائري - مديرية الثقافة لولاية البيض",
+      "municipality": "بوسمغون",
+      "verifiedFacts": [
+        "القصر يضم سبعة أحياء تاريخية بحسب البطاقة التراثية.",
+        "ترتبط معيشة سكان القصر تاريخيا بالواحة؛ وتذكر البطاقة واحة تضم نحو أربعة آلاف نخلة.",
+        "المسجد في وسط القصر، وتذكر البطاقة تجديد سقفه سنة 1902 وتوسعات في 1927 و1952.",
+        "تضم الزاوية التجانية مرافق للتعليم وإيواء الطلبة والطهي والتخزين ومصلى وفناء وخلوة."
+      ],
+      "caution": "أي معلومة عن تاريخ تأسيس المسجد أو القصر تحتاج صياغة منسوبة للمصدر؛ البطاقة نفسها تعرض بعض التواريخ على سبيل الاعتقاد أو الاستنتاج.",
+      "publicationStatus": "research-enriched-not-runtime"
+    },
+    {
+      "id": "ksar-molk-slimane",
+      "nameAr": "قصر ملك سليمان",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/926",
+      "sourceAuthority": "خريطة التراث الثقافي الجزائري",
+      "municipality": "البنود",
+      "verifiedFacts": [
+        "أطلال قصر محصن فوق مرتفع، يقع جنوب قرية البنود بنحو 16 كلم وفق البطاقة.",
+        "الوصول الموصوف صعب ويتطلب المشي أو مركبة مناسبة لعبور مجرى واد رملي."
+      ],
+      "caution": "الروايات الشفوية حول أصل القصر غير مثبتة تاريخيا؛ لا تحول إلى حقائق في الوصف السياحي. يلزم التحقق من المسار والوصول قبل اقتراح الزيارة.",
+      "publicationStatus": "research-enriched-not-runtime"
+    }
+  ]
+}
