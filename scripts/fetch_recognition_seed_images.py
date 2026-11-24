@@ -42,8 +42,8 @@ def is_image(path):
     with path.open("rb") as stream:
         head = stream.read(12)
     return (
-        head.startswith(b"\\xff\\xd8\\xff")
-        or head.startswith(b"\\x89PNG\\r\\n\\x1a\\n")
+        head.startswith(b"\xff\xd8\xff")
+        or head.startswith(b"\x89PNG\r\n\x1a\n")
         or (head[:4] == b"RIFF" and head[8:12] == b"WEBP")
     )
 
@@ -86,7 +86,7 @@ def main():
         "images": local_entries,
     }
     RUNTIME_INDEX.write_text(
-        json.dumps(runtime_index, ensure_ascii=False, indent=2) + "\\n",
+        json.dumps(runtime_index, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     print(f"Bundled {len(local_entries)} of {len(source['images'])} declared seed images.")
