@@ -52,6 +52,24 @@ def main():
     local_entries = []
     allow_remote = os.environ.get("VISTA_FETCH_REMOTE_SEED_IMAGES", "").lower() == "true"
 
+    # Preserve references committed directly into the APK assets. The previous
+    # packer regenerated index.json from downloaded seed manifests only, which
+    # silently discarded reviewed local field references during CI builds.
+    if RUNTIME_INDEX.exists():
+        try:
+            checked_in = json.loads(RUNTIME_INDEX.read_text(encoding="utf-8"))
+            for item in checked_in.get("images", []):
+                relative = pathlib.PurePosixPath(item.get("assetPath", ""))
+                if (not relative.parts or relative.is_absolute() or
+                        ".." in relative.parts or "://" in str(relative)):
+                    continue
+                asset_file = ROOT / "app/src/main/assets" / pathlib.Path(*relative.parts)
+                if is_image(asset_file):
+                    local_entries.append(item)
+                    print(f"Preserved committed local reference {item.get('id')}")
+        except (OSError, ValueError, TypeError) as exc:
+            print(f"Could not read checked-in runtime index: {exc}", file=sys.stderr)
+
     if SOURCE_MANIFEST.exists():
         source = json.loads(SOURCE_MANIFEST.read_text(encoding="utf-8"))
         for item in source.get("images", []):
