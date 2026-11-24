@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 6,
+  "contentVersion": 7,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -21,6 +21,18 @@
       "titleAr": "المواقع والتشكيلات الطبيعية",
       "titleFr": "Sites et formations naturelles",
       "titleEn": "Natural sites and formations"
+    },
+    {
+      "id": "rock-art",
+      "titleAr": "النقوش والآثار ما قبل التاريخ",
+      "titleFr": "Art rupestre et vestiges préhistoriques",
+      "titleEn": "Rock art and prehistoric heritage"
+    },
+    {
+      "id": "religious-heritage",
+      "titleAr": "المعالم الدينية والروحية",
+      "titleFr": "Patrimoine religieux et spirituel",
+      "titleEn": "Religious and spiritual heritage"
     }
   ],
   "landmarks": [
@@ -30,17 +42,16 @@
       "nameAr": "قصر المشرية الصغرى",
       "nameFr": "Ksar de Mechria Sughra",
       "nameEn": "Ksar Mechria Sughra",
-      "descriptionAr": "بحسب النص التاريخي «تاريخ وعمارة البيض» (2013)، يُنسب تأسيس قصر المشرية الصغرى إلى سنة 1564م، الموافق 981هـ، على يد أبناء سيدي علي الخليفة: سيدي عبد الرحمن وسيدي الحاج وسيدي أمحمد. ويورد النص رواية عن نسب الأسرة ومسار انتقالها من فاس إلى غليزان ثم إلى نواحي جبل كسال واستيتن. شُيّد القصر قرب العين على مرتفع صخري، وتبلغ مساحته المذكورة نحو 1000م²، ويأخذ شكلاً مستطيلاً. ويصف النص ثلاثة أبواب تتجه شرقاً وغرباً وجنوباً، وحَيَّيْن هما الحاف الفوقاني والحاف التحتاني. بُنيت المساكن بالحجارة وسُقفت بالعرعار، وتضمّنت مرافق مرتبطة بالماء والتخزين والعبادة والتجارة، من بينها فضاءات حجرة الماء، ومخازن للحبوب، ومسجد القوارير والمسجد العتيق ومصلّى، كما يذكر النص سبع قباب وخمسة محال. ويشير كذلك إلى وثيقة مؤرخة في 15 ديسمبر 1804 تتعلق بشراء أرض القصر مقابل 110 بقرات. هذه التفاصيل معروضة بوصفها روايات ومعطيات واردة في النص المرجعي، وهي قيد المراجعة والتحقيق قبل اعتمادها نهائياً.",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review",
+      "descriptionAr": "يقع قصر المشرية الصغرى بقرية المشرية الصغرى في ولاية البيض، وقد أُسّس وفق بطاقة خريطة التراث الثقافي الجزائري سنة 1564م (981هـ). شُيّد فوق مرتفع صخري، وتبلغ مساحته المذكورة نحو 1000م²، واتخذ شكلاً مستطيلاً بثلاثة أبواب. يصف المصدر مساكن مبنية بالحجارة ومسقوفة بخشب العرعار، وحيّين هما الحاف الفوقاني والحاف التحتاني، وأزقة وساحات ارتبطت بتنظيم الحياة الاجتماعية وتقاسم مياه السقي. كما يورد وجود مرافق دينية ومخازن للحبوب وأنشطة فلاحية وتجارية وحرفية. تُعرض الروايات التاريخية والتفاصيل الواردة في البطاقة مع نسبتها إلى مصدرها، ولا تُعدّ جميعها تحقيقاً أثرياً مستقلاً.",
+      "descriptionFr": "Le ksar de Mechria Sughra se trouve dans le village de Mechria Sughra, dans la wilaya d’El Bayadh. Selon la Carte du patrimoine culturel algérien, sa fondation remonterait à 1564 (981 H). Édifié sur un relief rocheux, il couvre une superficie indiquée d’environ 1 000 m² et présente un plan rectangulaire avec trois portes. La fiche décrit des habitations en pierre couvertes de bois de genévrier, deux quartiers — El Haf supérieur et inférieur — ainsi que des ruelles et des espaces collectifs liés à la vie sociale et au partage de l’eau d’irrigation. Elle mentionne également des lieux de culte, des silos à grains et des activités agricoles, commerciales et artisanales. Les récits historiques sont présentés avec attribution à leur source et ne constituent pas tous une expertise archéologique indépendante.",
+      "descriptionEn": "Ksar Mechria Sughra is located in the village of Mechria Sughra in El Bayadh Province. The Algerian Cultural Heritage Map dates its foundation to 1564 CE (981 AH). Built on rocky ground, it is described as covering about 1,000 m², with a rectangular plan and three gates. The heritage record describes stone houses roofed with juniper wood, two quarters known as the upper and lower El Haf, and lanes and communal spaces connected with social life and irrigation-water sharing. It also records religious facilities, grain stores, and agricultural, trading, and craft activities. Historical narratives are attributed to the source record and should not all be treated as independently archaeologically verified.",
+      "verification": "verified",
       "sources": [
         {
-          "title": "تاريخ وعمارة البيض",
-          "publisher": "مديرية الثقافة لولاية البيض، مصلحة التراث الثقافي",
-          "place": "البيض",
-          "year": 2013,
-          "note": "وثيقة أرسل المستخدم نصها في المحادثة؛ يلزم تدقيق النقل ومقابلة تفاصيلها مع النسخة الأصلية."
+          "title": "قصر المشرية الصغرى – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/228",
+          "publisher": "وزارة الثقافة والفنون / خريطة التراث الثقافي الجزائري",
+          "note": "المصدر الأساسي لتاريخ التأسيس والوصف المعماري والاجتماعي؛ تُنسب إليه الروايات والتفاصيل."
         }
       ]
     },
@@ -121,14 +132,22 @@
     },
     {
       "id": "boussemghoun-old-mosque",
-      "categoryId": "ksour",
+      "categoryId": "religious-heritage",
       "nameAr": "المسجد العتيق بالقصر القديم - بوسمغون",
       "nameFr": "Ancienne mosquée du vieux ksar - Boussemghoun",
       "nameEn": "Old Mosque in the Ancient Ksar - Boussemghoun",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "يقع المسجد العتيق في قلب قصر بوسمغون التاريخي بولاية البيض، ويُعد من أبرز معالمه الدينية والمعمارية. وتصفه وكالة الأنباء الجزائرية بأنه معلم روحي وثقافي بارز داخل القصر. أما تفاصيل تاريخ التأسيس الأول وتواريخ التوسعة فتحتاج إلى مقابلة مصادر تاريخية متخصصة قبل اعتمادها في البطاقة.",
+      "descriptionFr": "La mosquée antique se trouve au cœur du ksar historique de Boussemghoun, dans la wilaya d’El Bayadh. L’Agence Algérie Presse la présente comme un repère religieux, spirituel et culturel majeur du ksar. Les détails relatifs à sa première fondation et aux différentes phases d’agrandissement nécessitent toutefois une confrontation avec des sources historiques spécialisées avant validation.",
+      "descriptionEn": "The old mosque stands at the heart of the historic Ksar of Boussemghoun in El Bayadh Province. Algeria Press Service describes it as a prominent religious, spiritual, and cultural landmark within the ksar. Details about its earliest foundation and later expansion phases still require corroboration from specialist historical sources before being treated as established facts.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "المسجد العتيق ببوسمغون – وكالة الأنباء الجزائرية",
+          "url": "https://www.aps.dz/culture/patrimoine/mmqc7fkd-%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF-%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82-%D8%A8%D8%A8%D9%88%D8%B3%D9%85%D8%BA%D9%88%D9%86-%D9%85%D9%86%D8%A7%D8%B1%D8%A9-%D8%AF%D9%8A%D9%86%D9%8A%D8%A9-%D9%88%D8%AA%D8%AD%D9%81%D8%A9-%D9%85%D8%B9%D9%85%D8%A7%D8%B1%D9%8A%D8%A9-%D8%B4%D8%A7%D9%85%D8%AE%D8%A9-%D9%85%D9%86%D8%B0-%D9%82%D8%B1%D9%88%D9%86",
+          "publisher": "وكالة الأنباء الجزائرية، 14 مارس 2026",
+          "note": "يدعم الموقع والأهمية الدينية والثقافية؛ لا يثبت وحده تاريخ التأسيس."
+        }
+      ]
     },
     {
       "id": "ksar-bent-khass",
@@ -163,6 +182,63 @@
       "descriptionFr": "",
       "descriptionEn": "",
       "verification": "under_review"
+    },
+    {
+      "id": "rock-art-merdoufa",
+      "categoryId": "rock-art",
+      "nameAr": "محطة النقش الصخري المردوفة",
+      "nameFr": "Station rupestre de Merdoufa",
+      "nameEn": "Merdoufa Rock Art Station",
+      "descriptionAr": "موقع للنقوش الصخرية بمنطقة الغاسول في ولاية البيض. أدرجته وزارة الثقافة ضمن الجرد العام للممتلكات الثقافية العقارية بقرار مؤرخ في 14 جويلية 2007، بعد موافقة اللجنة الوطنية للممتلكات الثقافية في 12 أكتوبر 2006. تفاصيل الرسوم ومحتواها وتأريخها التفصيلي تحتاج إلى بطاقة أثرية متخصصة.",
+      "descriptionFr": "Site d’art rupestre situé dans la région de Ghassoul, wilaya d’El Bayadh. Le ministère de la Culture l’inscrit à l’inventaire général des biens culturels immobiliers par arrêté du 14 juillet 2007, après avis favorable de la commission nationale du 12 octobre 2006. La description détaillée des gravures et leur datation nécessitent une documentation archéologique spécialisée.",
+      "descriptionEn": "A rock-art site in the Ghassoul area of El Bayadh Province. Algeria’s Ministry of Culture records it in the general inventory of immovable cultural property under an order dated 14 July 2007, following a favourable national commission opinion on 12 October 2006. Detailed interpretation and dating of the engravings require specialist archaeological documentation.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "Liste générale des biens culturels protégés – Wilaya d’El Bayadh",
+          "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
+          "publisher": "وزارة الثقافة والفنون الجزائرية",
+          "note": "يسجل الموقع وتاريخ إدراجه في الجرد العام."
+        }
+      ]
+    },
+    {
+      "id": "rock-art-belier-bou-alem",
+      "categoryId": "rock-art",
+      "nameAr": "محطة كبش بوعلام للنقش الصخري",
+      "nameFr": "Station rupestre du Bélier de Bou Alem",
+      "nameEn": "Bélier de Bou Alem Rock Art Station",
+      "descriptionAr": "محطة للنقش الصخري ببلدية بوعلام في ولاية البيض، معروفة باسم كبش بوعلام. أدرجتها وزارة الثقافة ضمن قائمة الممتلكات الثقافية المصنفة بقرار 3 ديسمبر 2015، ونُشر القرار في الجريدة الرسمية رقم 28 بتاريخ 8 أفريل 2016. لا يضيف هذا الوصف تأريخاً أو تفسيراً للرسوم غير وارد في سجل الحماية.",
+      "descriptionFr": "Station d’art rupestre située dans la commune de Boualem, wilaya d’El Bayadh, connue sous le nom de Bélier de Bou Alem. Le ministère de la Culture l’a classée par arrêté du 3 décembre 2015, publié au Journal officiel n° 28 du 8 avril 2016. Cette fiche n’ajoute aucune datation ni interprétation non attestée dans le registre de protection.",
+      "descriptionEn": "A rock-art station in Boualem municipality, El Bayadh Province, known as the Bélier de Bou Alem. Algeria’s Ministry of Culture lists it as a classified cultural property under an order dated 3 December 2015, published in Official Gazette No. 28 on 8 April 2016. This entry does not add unsupported dating or interpretations of the artwork.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "Liste générale des biens culturels protégés – Wilaya d’El Bayadh",
+          "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
+          "publisher": "وزارة الثقافة والفنون الجزائرية",
+          "note": "يسجل تصنيف المحطة وتاريخ القرار والنشر."
+        }
+      ]
+    },
+    {
+      "id": "bastion-bent-el-khas",
+      "categoryId": "ksour",
+      "nameAr": "حصن بنت الخس – بريزينة",
+      "nameFr": "Bastion Bent El Khas – Brézina",
+      "nameEn": "Bent El Khas Bastion – Brézina",
+      "descriptionAr": "معلم تراثي مسجل ضمن القائمة الإضافية للممتلكات الثقافية بولاية البيض، يقع ببلدية بريزينة. يذكر سجل وزارة الثقافة أن إدراجه تم بموجب قرار الوالي رقم 342 المؤرخ في 5 أفريل 2016. لم يحدد سجل الحماية تاريخاً أثرياً للمعلم، لذلك لا تُضاف هنا نسبة زمنية غير موثقة.",
+      "descriptionFr": "Élément patrimonial inscrit sur l’inventaire supplémentaire des biens culturels de la wilaya d’El Bayadh, dans la commune de Brézina. Le registre du ministère de la Culture indique une inscription par arrêté du wali n° 342 du 5 avril 2016. Aucune datation patrimoniale n’étant précisée dans ce registre, aucune période n’est avancée ici.",
+      "descriptionEn": "A heritage site entered on the supplementary inventory of cultural property in El Bayadh Province, in Brézina municipality. The Ministry of Culture register records its inclusion under wali order No. 342 dated 5 April 2016. As the protection record provides no historical dating, this entry does not assign it an unsupported period.",
+      "verification": "verified",
+      "sources": [
+        {
+          "title": "Liste générale des biens culturels protégés – Wilaya d’El Bayadh",
+          "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
+          "publisher": "وزارة الثقافة والفنون الجزائرية",
+          "note": "يسجل إدراج حصن بنت الخس ضمن الجرد الإضافي والقرار الولائي."
+        }
+      ]
     }
   ]
 }
