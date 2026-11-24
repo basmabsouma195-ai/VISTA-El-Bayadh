@@ -50,6 +50,7 @@ import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -165,6 +166,7 @@ private fun VistaApp() {
     var favoriteIds by remember { mutableStateOf(favoritesStore.allIds()) }
     fun toggleFavorite(id: String) { favoritesStore.toggle(id); favoriteIds = favoritesStore.allIds() }
     var searchQuery by remember { mutableStateOf("") }
+    var selectedLandmark by remember { mutableStateOf<Landmark?>(null) }
     fun changeLanguage(next: AppLanguage) {
         language = next
         preferences.edit().putString("language", when (next) {
@@ -215,7 +217,8 @@ private fun VistaApp() {
                                 searchQuery = searchQuery, onSearchChange = { searchQuery = it },
                                 onOpenScanner = { selectedTab = 2 },
                                 landmarks = catalogue?.landmarks.orEmpty(), favoriteIds = favoriteIds,
-                                onFavoriteToggle = ::toggleFavorite
+                                onFavoriteToggle = ::toggleFavorite,
+                                onOpenLandmark = { selectedLandmark = it }
                             )
                             1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
                             2 -> ScannerScreen(language)
@@ -223,11 +226,25 @@ private fun VistaApp() {
                                 title = c.favorites,
                                 landmarks = catalogue?.landmarks.orEmpty().filter { it.id in favoriteIds },
                                 language = language,
-                                onFavoriteToggle = ::toggleFavorite
+                                onFavoriteToggle = ::toggleFavorite,
+                                onOpenLandmark = { selectedLandmark = it }
                             )
                             else -> MoreScreen(c, language, onLanguage = ::changeLanguage, tripStore = tripStore)
                         }
                     }
+                }
+                selectedLandmark?.let { landmark ->
+                    LandmarkDetailDialog(
+                        landmark = landmark,
+                        language = when (language) {
+                            AppLanguage.Arabic -> CatalogueLanguage.AR
+                            AppLanguage.French -> CatalogueLanguage.FR
+                            AppLanguage.English -> CatalogueLanguage.EN
+                        },
+                        onDismiss = { selectedLandmark = null },
+                        isFavorite = landmark.id in favoriteIds,
+                        onFavoriteToggle = { toggleFavorite(landmark.id) }
+                    )
                 }
             }
         }
@@ -244,7 +261,8 @@ private fun HomeScreen(
     onOpenScanner: () -> Unit,
     landmarks: List<Landmark>,
     favoriteIds: Set<String>,
-    onFavoriteToggle: (String) -> Unit
+    onFavoriteToggle: (String) -> Unit,
+    onOpenLandmark: (Landmark) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
         Box(
@@ -347,6 +365,7 @@ private fun HomeScreen(
                         language = catalogueLanguage,
                         isFavorite = landmark.id in favoriteIds,
                         onFavoriteToggle = { onFavoriteToggle(landmark.id) },
+                        onOpen = { onOpenLandmark(landmark) },
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
                     )
                 }
@@ -405,10 +424,11 @@ private fun LandmarkCard(
     language: CatalogueLanguage,
     isFavorite: Boolean,
     onFavoriteToggle: () -> Unit,
+    onOpen: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().clickable(onClick = onOpen),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
@@ -454,6 +474,91 @@ private fun LandmarkCard(
     }
 }
 
+
+@Composable
+private fun LandmarkDetailDialog(
+    landmark: Landmark,
+    language: CatalogueLanguage,
+    onDismiss: () -> Unit,
+    isFavorite: Boolean,
+    onFavoriteToggle: () -> Unit
+) {
+    val title = landmark.name(language)
+    val description = landmark.description(language)
+    val status = when (landmark.verification) {
+        VerificationStatus.VERIFIED -> when (language) {
+            CatalogueLanguage.AR -> "معلومة موثقة"
+            CatalogueLanguage.FR -> "Information vérifiée"
+            CatalogueLanguage.EN -> "Verified information"
+        }
+        VerificationStatus.ORAL_HISTORY -> when (language) {
+            CatalogueLanguage.AR -> "رواية شفوية"
+            CatalogueLanguage.FR -> "Tradition orale"
+            CatalogueLanguage.EN -> "Oral history"
+        }
+        VerificationStatus.UNDER_REVIEW -> when (language) {
+            CatalogueLanguage.AR -> "المعلومات قيد التحقيق"
+            CatalogueLanguage.FR -> "Informations en cours de vérification"
+            CatalogueLanguage.EN -> "Information under review"
+        }
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title, color = Forest, fontWeight = FontWeight.Bold) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                LandmarkThumbnail(landmark.image, title)
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    description.ifBlank {
+                        when (language) {
+                            CatalogueLanguage.AR -> "نعمل على إعداد بطاقة هذا المعلم بمعلومات وصور ميدانية موثوقة."
+                            CatalogueLanguage.FR -> "La fiche de ce site sera complétée avec des informations et des photos de terrain vérifiées."
+                            CatalogueLanguage.EN -> "This landmark's profile is being prepared with verified information and field photographs."
+                        }
+                    },
+                    color = Ink, fontSize = 14.sp, lineHeight = 22.sp
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(status, color = Gold, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                if (landmark.latitude != null && landmark.longitude != null) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("%.5f, %.5f".format(landmark.latitude, landmark.longitude), color = Muted, fontSize = 12.sp)
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onFavoriteToggle) {
+                Text(
+                    if (isFavorite) {
+                        when (language) {
+                            CatalogueLanguage.AR -> "إزالة من المفضلة"
+                            CatalogueLanguage.FR -> "Retirer des favoris"
+                            CatalogueLanguage.EN -> "Remove from favorites"
+                        }
+                    } else {
+                        when (language) {
+                            CatalogueLanguage.AR -> "أضف إلى المفضلة"
+                            CatalogueLanguage.FR -> "Ajouter aux favoris"
+                            CatalogueLanguage.EN -> "Add to favorites"
+                        }
+                    },
+                    color = Forest
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(when (language) {
+                    CatalogueLanguage.AR -> "إغلاق"
+                    CatalogueLanguage.FR -> "Fermer"
+                    CatalogueLanguage.EN -> "Close"
+                }, color = Muted)
+            }
+        },
+        containerColor = Ivory
+    )
+}
 
 @Composable
 private fun LandmarkThumbnail(assetPath: String?, description: String) {
@@ -617,7 +722,8 @@ private fun FavoritesScreen(
     title: String,
     landmarks: List<Landmark>,
     language: AppLanguage,
-    onFavoriteToggle: (String) -> Unit
+    onFavoriteToggle: (String) -> Unit,
+    onOpenLandmark: (Landmark) -> Unit
 ) {
     val catalogueLanguage = when (language) {
         AppLanguage.Arabic -> CatalogueLanguage.AR
@@ -641,6 +747,7 @@ private fun FavoritesScreen(
                     language = catalogueLanguage,
                     isFavorite = true,
                     onFavoriteToggle = { onFavoriteToggle(landmark.id) },
+                    onOpen = { onOpenLandmark(landmark) },
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
                 )
             }
