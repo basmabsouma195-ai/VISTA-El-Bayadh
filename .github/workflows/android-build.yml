@@ -20,6 +20,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install optional user-confirmed field photo bundle
+        shell: bash
+        run: |
+          BUNDLE="VISTA-El-Bayadh-Field-Photos-Integration.zip"
+          if [ -f "$BUNDLE" ]; then
+            unzip -o "$BUNDLE" -d .
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = Path("app/src/main/assets/content/field-photo-gallery.json")
+          data = json.loads(manifest.read_text(encoding="utf-8"))
+          images = data.get("images", [])
+          missing = [
+              item.get("assetPath", "")
+              for item in images
+              if not (Path("app/src/main/assets") / item.get("assetPath", "")).is_file()
+          ]
+          if missing:
+              raise SystemExit("Missing field gallery assets: " + ", ".join(missing))
+          if any(item.get("recognitionApproved", False) for item in images):
+              raise SystemExit("Field gallery photos must not be auto-approved for recognition.")
+          print(f"Validated {len(images)} user-confirmed gallery photos.")
+          PY
+          else
+            echo "No field-photo bundle uploaded; building without user field-photo assets."
+          fi
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
