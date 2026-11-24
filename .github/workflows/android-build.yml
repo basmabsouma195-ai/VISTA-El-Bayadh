@@ -33,9 +33,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: app/src/main/assets/recognition/references
-          key: vista-recognition-seed-v1-${{ hashFiles('dataset/recognition/source-manifest.json') }}
+          key: vista-recognition-seed-v2-${{ hashFiles('dataset/recognition/source-manifest.json') }}
           restore-keys: |
-            vista-recognition-seed-v1-
+            vista-recognition-seed-v2-
       - name: Bundle offline recognition image assets
         env:
           VISTA_FETCH_REMOTE_SEED_IMAGES: 'true'
