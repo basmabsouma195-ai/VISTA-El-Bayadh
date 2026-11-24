@@ -64,7 +64,16 @@
       "descriptionAr": "",
       "descriptionFr": "",
       "descriptionEn": "",
-      "verification": "under_review"
+      "verification": "under_review",
+      "latitude": 33.6474,
+      "longitude": 1.8642,
+      "sources": [
+        {
+          "title": "OpenStreetMap feature via Mapcarta",
+          "url": "https://mapcarta.com/N5928920596",
+          "note": "Approximate mapped peak position; field verification required before public navigation."
+        }
+      ]
     },
     {
       "id": "el-bayadh-martyrs-square",
