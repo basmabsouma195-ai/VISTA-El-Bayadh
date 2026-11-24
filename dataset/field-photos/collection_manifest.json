@@ -113,10 +113,13 @@
     {
       "filename": "1000078290.jpg",
       "sha256": "dc7211c5c8de19209a8f01b2ec51583b9caf86d3710b62b4b5e7730df4529221",
-      "visualStatus": "unclassified_architecture",
-      "reviewStatus": "needs_human_location_confirmation",
+      "visualStatus": "architecture_ksar_boussemghoun",
+      "reviewStatus": "user_confirmed_location",
       "recognitionApproved": false,
-      "reviewNote": "Arched passage and Arabic signs; exact site not confirmed"
+      "reviewNote": "User identified this photograph as Ksar Boussemghoun; recognition remains disabled pending image review and dataset validation.",
+      "landmarkId": "ksar-boussemghoun",
+      "locationNameAr": "قصر بوسمغون",
+      "locationConfirmation": "User identified this photograph as Ksar Boussemghoun on 2026-11-24."
     },
     {
       "filename": "1000078293.jpg",
