@@ -136,7 +136,7 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
             }
             snapshot.photosByLandmark.forEach { (landmarkId, paths) ->
                 paths.distinct().forEachIndexed { position, assetPath ->
-                    if (!assetPath.contains("://") && assetPath.startsWith("recognition/")) {
+                    if (!assetPath.contains("://") && (assetPath.startsWith("recognition/") || assetPath.startsWith("field-photos/"))) {
                         db.insertOrThrow("landmark_photos", null, ContentValues().apply {
                             put("landmark_id", landmarkId)
                             put("asset_path", assetPath)
