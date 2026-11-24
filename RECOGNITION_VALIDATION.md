@@ -9,7 +9,7 @@
 - Conservative unknown/ambiguous decisions. Raw cosine similarity is not represented as a probability.
 - CI verifies the model size and SHA-256 before packaging it in the APK.
 
-This is an integrated visual embedding and retrieval pipeline. It is **not yet a validated landmark recognition service**: the current curated index contains one reference photograph for each of three landmarks, and the calibration asset explicitly remains unvalidated. The scanner must keep visual identification disabled until the dataset and calibration gates pass.
+This is an integrated visual embedding and retrieval pipeline. It is **not yet a validated landmark recognition service**: the current curated index contains one reference photograph for each of three landmarks, and the calibration asset explicitly remains unvalidated. The runtime enforces at least 20 reference images per landmark, at least 10 held-out images per landmark, at least 100 held-out unknown-scene images, and a calibration file explicitly recording those held-out counts. The scanner must keep visual identification disabled until these gates pass.
 
 ## Dataset contract
 
