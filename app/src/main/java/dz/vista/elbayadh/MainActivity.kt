@@ -797,124 +797,70 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 }
             )
         }
-        Text(
-            if (isArabic) "التعرّف البصري على المعالم" else if (isFrench) "Reconnaissance visuelle des sites" else "Visual landmark recognition",
-            color = Forest, fontSize = 23.sp, fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            if (isArabic) "وجّه الكاميرا نحو المعلم ثم اضغط زر التحليل أسفل المعاينة. النتائج الحالية اقتراحات تجريبية غير مؤكدة."
-            else if (isFrench) "Dirigez la caméra vers le site puis appuyez sur le bouton d’analyse sous l’aperçu. Les résultats actuels sont expérimentaux."
-            else "Point the camera at the landmark, then tap the analysis button below the preview. Current results are experimental suggestions.",
-            color = Muted, fontSize = 13.sp, lineHeight = 20.sp
-        )
-        Spacer(Modifier.height(14.dp))
-        Text(
-            if (isArabic) "الأساسي: تحليل صورة المعلم · QR اختياري فقط" else if (isFrench) "Principal : analyse visuelle · QR facultatif" else "Primary: visual analysis · optional QR fallback",
-            color = Forest, fontWeight = FontWeight.SemiBold, fontSize = 12.sp
-        )
-        qrMessage?.let { Text(it, color = Muted, fontSize = 11.sp) }
         if (hasCameraPermission) {
             AndroidView(
-                modifier = Modifier.fillMaxWidth().height(260.dp).clip(RoundedCornerShape(22.dp)),
+                modifier = Modifier.fillMaxWidth().height(300.dp).clip(RoundedCornerShape(22.dp)),
                 factory = { previewView }
             )
-            Spacer(Modifier.height(12.dp))
-            Card(
-                shape = RoundedCornerShape(14.dp),
-                colors = CardDefaults.cardColors(containerColor = Sand)
-            ) {
-                Column(Modifier.padding(14.dp)) {
-                    Text(
-                        if (isArabic) "الكاميرا جاهزة" else if (isFrench) "Caméra prête" else "Camera ready",
-                        color = Forest, fontWeight = FontWeight.Bold, fontSize = 13.sp
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        if (isArabic) "صور مرجعية محلية: ${localReferences.size}"
-                        else if (isFrench) "Images de référence locales : ${localReferences.size}"
-                        else "Local reference images: ${localReferences.size}",
-                        color = Forest, fontSize = 12.sp
-                    )
-                    localReferences.forEach { reference ->
+            Spacer(Modifier.height(14.dp))
+            qrMessage?.let { Text(it, color = Muted, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) }
+            recognitionStatus?.let { status ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = Sand)
+                ) {
+                    Text(status, color = Forest, fontSize = 14.sp, lineHeight = 20.sp, modifier = Modifier.padding(14.dp))
+                }
+            }
+            suggestedLandmarks.forEachIndexed { index, candidate ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).clickable { onOpenLandmark(candidate) },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(Modifier.fillMaxWidth().padding(12.dp)) {
+                        Text(candidate.name(when (language) {
+                            AppLanguage.Arabic -> CatalogueLanguage.AR
+                            AppLanguage.French -> CatalogueLanguage.FR
+                            AppLanguage.English -> CatalogueLanguage.EN
+                        }), color = Forest, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         Text(
-                            when (language) {
-                                AppLanguage.Arabic -> reference.labelAr
-                                AppLanguage.French -> reference.labelFr.ifBlank { reference.labelAr }
-                                AppLanguage.English -> reference.labelEn.ifBlank { reference.labelAr }
-                            },
-                            color = Ink, fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp)
-                        )
-                        if (reference.attribution.isNotBlank() || reference.license.isNotBlank()) {
-                            Text(
-                                listOfNotNull(
-                                    reference.attribution.takeIf { it.isNotBlank() },
-                                    reference.license.takeIf { it.isNotBlank() }
-                                ).joinToString(" · "),
-                                color = Muted,
-                                fontSize = 10.sp,
-                                modifier = Modifier.padding(top = 1.dp)
-                            )
-                        }
-                    }
-                    Text(
-                        if (isArabic) { if (recognitionModelLoaded && recognitionReady) "النموذج المحلي جاهز. التعرّف النهائي مفعّل بعد المعايرة." else if (recognitionModelLoaded) "النموذج محمّل دون إنترنت. يمكنك تجربة اقتراحات بصرية أولية، لكنها غير مؤكدة. يلزم جمع صور ميدانية واختبارها قبل اعتماد التعرّف النهائي." else "تعذّر تحميل نموذج الرؤية المحلي." }
-                        else if (isFrench) { if (recognitionModelLoaded && recognitionReady) "Modèle local prêt. Identification finale activée après calibration." else if (recognitionModelLoaded) "Modèle chargé hors ligne. Des suggestions visuelles préliminaires sont disponibles, sans garantie. Des photos terrain et des tests sont nécessaires avant validation." else "Impossible de charger le modèle visuel local." }
-                        else { if (recognitionModelLoaded && recognitionReady) "Local model ready. Final identification is enabled after calibration." else if (recognitionModelLoaded) "Model loaded offline. Preliminary visual suggestions are available but unverified. Field photos and testing are required before final validation." else "Could not load the local vision model." },
-                        color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
-                    )
-                    recognitionStatus?.let { status ->
-                        Text(status, color = Forest, fontSize = 11.sp, lineHeight = 16.sp, modifier = Modifier.padding(top = 6.dp))
-                    }
-                    suggestedLandmarks.forEachIndexed { index, candidate ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth().padding(top = 7.dp).clickable { onOpenLandmark(candidate) },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
-                        ) {
-                            Column(Modifier.fillMaxWidth().padding(12.dp)) {
-                                Text(if (isArabic) "مرشح ${index + 1}" else if (isFrench) "Candidat ${index + 1}" else "Candidate ${index + 1}", color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text(candidate.name(when (language) { AppLanguage.Arabic -> CatalogueLanguage.AR; AppLanguage.French -> CatalogueLanguage.FR; AppLanguage.English -> CatalogueLanguage.EN }), color = Forest, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Text(if (isArabic) "اقتراح تجريبي — اضغط لفتح البطاقة، وليس تأكيداً لهوية الصورة." else if (isFrench) "Suggestion expérimentale — appuyez pour ouvrir la fiche, sans confirmer l’identité de l’image." else "Experimental suggestion — tap to open the profile; this does not confirm the image identity.", color = Muted, fontSize = 10.sp)
-                            }
-                        }
-                    }
-                    Button(
-                        enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
-                        onClick = {
-                            val snapshot = previewView.bitmap?.copy(Bitmap.Config.ARGB_8888, false)
-                            if (snapshot == null) {
-                                recognitionStatus = if (isArabic) "تعذّر التقاط صورة من الكاميرا." else if (isFrench) "Impossible de capturer l’image de la caméra." else "Could not capture a camera frame."
-                            } else {
-                                recognitionScope.launch {
-                                    analyzeLandmarkPhoto(
-                                        snapshot, recognitionEngine, recognitionReady, landmarks, language,
-                                        onOpenLandmark = onOpenLandmark,
-                                        onSuggestions = { suggestedLandmarks = it },
-                                        onStatus = { recognitionStatus = it }
-                                    )
-                                }
-                            }
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Forest),
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                    ) {
-                        Text(
-                            if (isArabic) "حلّل صورة المعلم بالكاميرا" else if (isFrench) "Analyser le site avec la caméra" else "Analyze landmark with camera",
-                            color = Color.White
-                        )
-                    }
-                    OutlinedButton(
-                        enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
-                        onClick = { galleryLauncher.launch("image/*") },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                    ) {
-                        Text(
-                            if (isArabic) "اختر صورة للمعلم من المعرض" else if (isFrench) "Choisir une photo depuis la galerie" else "Choose a landmark photo",
-                            color = Forest
+                            if (isArabic) "اضغط لعرض تفاصيل المعلم" else if (isFrench) "Appuyez pour voir le site" else "Tap to view landmark details",
+                            color = Muted, fontSize = 11.sp
                         )
                     }
                 }
+            }
+            Button(
+                enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
+                onClick = {
+                    val snapshot = previewView.bitmap?.copy(Bitmap.Config.ARGB_8888, false)
+                    if (snapshot == null) {
+                        recognitionStatus = if (isArabic) "تعذّر التقاط الصورة. حاول مجددًا." else if (isFrench) "Capture impossible. Réessayez." else "Could not capture the image. Try again."
+                    } else {
+                        recognitionStatus = if (isArabic) "جارٍ تحليل الصورة..." else if (isFrench) "Analyse de l’image..." else "Analyzing image..."
+                        recognitionScope.launch {
+                            analyzeLandmarkPhoto(
+                                snapshot, recognitionEngine, recognitionReady, landmarks, language,
+                                onOpenLandmark = onOpenLandmark,
+                                onSuggestions = { suggestedLandmarks = it },
+                                onStatus = { recognitionStatus = it }
+                            )
+                        }
+                    }
+                },
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Forest),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(if (isArabic) "امسح بالكاميرا" else if (isFrench) "Scanner avec la caméra" else "Scan with camera", color = Color.White)
+            }
+            OutlinedButton(
+                enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
+                onClick = { galleryLauncher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            ) {
+                Text(if (isArabic) "اختيار صورة من المعرض" else if (isFrench) "Choisir depuis la galerie" else "Choose from gallery", color = Forest)
             }
         } else {
             Box(
@@ -925,9 +871,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = Gold, modifier = Modifier.size(58.dp))
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        if (isArabic) "اسمح لـ VISTA باستخدام الكاميرا"
-                        else if (isFrench) "Autorisez VISTA à utiliser la caméra"
-                        else "Allow VISTA to use the camera",
+                        if (isArabic) "اسمح لـ VISTA باستخدام الكاميرا" else if (isFrench) "Autorisez VISTA à utiliser la caméra" else "Allow VISTA to use the camera",
                         color = Color.White, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(14.dp))
@@ -935,10 +879,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         onClick = { permissionLauncher.launch(android.Manifest.permission.CAMERA) },
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Gold)
                     ) {
-                        Text(
-                            if (isArabic) "السماح بالكاميرا" else if (isFrench) "Autoriser la caméra" else "Allow camera",
-                            color = ForestDeep
-                        )
+                        Text(if (isArabic) "السماح بالكاميرا" else if (isFrench) "Autoriser la caméra" else "Allow camera", color = ForestDeep)
                     }
                 }
             }
