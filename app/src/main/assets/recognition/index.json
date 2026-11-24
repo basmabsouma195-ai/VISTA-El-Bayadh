@@ -19,6 +19,15 @@
       "labelAr": "قور بنت الخس",
       "labelFr": "Gour Bent El Khass",
       "labelEn": "Gour Bent El Khass"
+    },
+    {
+      "id": "field-ksar-boussemghoun-zaouia-sign-01",
+      "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
+      "fileName": "ksar-boussemghoun-zaouia.jpg",
+      "assetPath": "recognition/references/ksar-boussemghoun-zaouia.jpg",
+      "labelAr": "قصر بوسمغون – زاوية سيدي أحمد التيجاني",
+      "labelFr": "Ksar de Boussemghoun – Zaouïa Sidi Ahmed Tidjani",
+      "labelEn": "Boussemghoun Ksar – Sidi Ahmed Tidjani Zaouia"
     }
   ]
 }
