@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 16,
+  "contentVersion": 17,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -648,6 +648,25 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1357",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع والوصف المعماري والتاريخ الوارد في البطاقة."
+        }
+      ]
+    },
+    {
+      "id": "hammam-ain-ouarka",
+      "categoryId": "natural-sites",
+      "nameAr": "حمّام عين ورقة",
+      "nameFr": "Hammam Aïn Ouarka",
+      "nameEn": "Hammam Ain Ouarka",
+      "descriptionAr": "موقع محلي بولاية البيض، وقد أكد صاحب الصور الميدانية أن الصور المرفقة بهذا السجل تعود إلى حمّام عين ورقة. تبقى المعلومات التاريخية، والموقع الجغرافي الدقيق، وطبيعة المياه، والخدمات وإمكانية الزيارة قيد التحقق قبل نشر إرشادات للزوار.",
+      "descriptionFr": "Site local dans la wilaya d’El Bayadh. Le propriétaire des photographies de terrain a confirmé que les images associées à cette fiche représentent Hammam Aïn Ouarka. L’histoire, la position géographique exacte, la nature des eaux, les services et les conditions de visite restent à vérifier avant toute publication de conseils aux visiteurs.",
+      "descriptionEn": "A local site in El Bayadh Province. The owner of the field photographs confirmed that the images associated with this record depict Hammam Ain Ouarka. Its history, precise geographic position, water characteristics, services and visitor access remain unverified and should be researched before visitor guidance is published.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "تأكيد موقع الصور الميدانية – حمّام عين ورقة",
+          "url": "https://github.com/basmabsouma195-ai/VISTA-El-Bayadh/blob/main/dataset/field-photos/collection_manifest.json",
+          "publisher": "تأكيد صاحب الصور الميدانية",
+          "note": "هذا المصدر يوثق نسبة الصور إلى الموقع بتأكيد صاحبها فقط؛ ولا يمثل مصدراً مستقلاً لتاريخه أو إحداثياته أو مرافقه."
         }
       ]
     }
