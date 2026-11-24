@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 9,
+  "contentVersion": 10,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -163,11 +163,25 @@
       "nameAr": "قصر بنت الخس",
       "nameFr": "Ksar Bent Khass",
       "nameEn": "Ksar Bent Khass",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
+      "descriptionAr": "قصر بنت الخس معلم تراثي مرتبط بمنطقة بريزينة. وتدرج وزارة الثقافة حصن بنت الخس ضمن الجرد الإضافي للممتلكات الثقافية بولاية البيض، بينما تعرض بطاقة خريطة التراث روايات متعددة حول شخصية بنت الخس ومباركة وموقع الحصن وآثاره. تميّز البطاقة بين الرواية الشعبية والمعطيات المكانية، وتوضح أن بعض عناصر القصة محل اختلاف؛ لذلك لا نعتمد التواريخ والأنساب الواردة في الروايات باعتبارها حقائق محسومة.",
+      "descriptionFr": "Le Ksar/Bastion Bent El Khass est un élément patrimonial associé à la région de Brézina. Le ministère de la Culture inscrit le bastion sur l’inventaire supplémentaire des biens culturels de la wilaya d’El Bayadh. La Carte du patrimoine culturel présente plusieurs récits concernant Bent El Khass, appelée aussi مباركة dans la tradition, ainsi que l’emplacement et les vestiges du bastion. La fiche distingue les traditions populaires des éléments de localisation et signale des divergences ; les dates et généalogies rapportées ne sont donc pas présentées comme des faits définitivement établis.",
+      "descriptionEn": "Ksar/Bastion Bent El Khass is a heritage feature associated with the Brézina area. Algeria’s Ministry of Culture lists the bastion on the supplementary inventory of cultural property in El Bayadh Province. The Algerian Cultural Heritage Map presents differing narratives about Bent El Khass, also called Mubarka in local tradition, and describes the bastion’s location and remains. The record distinguishes popular tradition from location information and notes disagreements; dates and genealogies in the narratives are not treated as settled facts.",
       "verification": "under_review",
-      "image": "recognition/references/ksar-bent-khass.jpg"
+      "image": "recognition/references/ksar-bent-khass.jpg",
+      "sources": [
+        {
+          "title": "حصن بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/565",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "يعرض الروايات المتباينة وموقع الحصن، ويجب إبقاء الرواية الشعبية مميزة عن التاريخ المحقق."
+        },
+        {
+          "title": "قائمة الممتلكات الثقافية المحمية – وزارة الثقافة الجزائرية",
+          "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
+          "publisher": "وزارة الثقافة والفنون الجزائرية",
+          "note": "تسجل حصن بنت الخس ضمن الجرد الإضافي بقرار 5 أفريل 2016."
+        }
+      ]
     },
     {
       "id": "gour-bent-el-khass",
@@ -194,10 +208,18 @@
       "nameAr": "قصر بوسمغون – زاوية سيدي أحمد التيجاني",
       "nameFr": "Ksar de Boussemghoun – Zaouïa Sidi Ahmed Tidjani",
       "nameEn": "Boussemghoun Ksar – Zaouia of Sidi Ahmed Tidjani",
-      "descriptionAr": "",
-      "descriptionFr": "",
-      "descriptionEn": "",
-      "verification": "under_review"
+      "descriptionAr": "يقع قصر بوسمغون التاريخي ببلدية بوسمغون في ولاية البيض، ويضم نسيجاً عمرانياً تقليدياً تتوسطه مرافق دينية واجتماعية. تصف بطاقة خريطة التراث الثقافي الجزائري المسجد الجامع في وسط القصر، كما توثق الزاوية التجانية في الحي المعروف باسم «أغرم أقديم» شمال غرب القصر، وتذكر مرافقها التعليمية والإيوائية وساحة داخلية وخلوة مرتبطة بسيدي أحمد التيجاني. وتعرض البطاقة تفاصيل معمارية دقيقة للزاوية، بينما تظل الروايات التاريخية المتصلة بالشخصيات والفترات بحاجة إلى مقابلة وثائقية مستقلة.",
+      "descriptionFr": "Le ksar historique de Boussemghoun se trouve dans la commune de Boussemghoun, wilaya d’El Bayadh. Son tissu urbain traditionnel comprend des espaces religieux et collectifs. La Carte du patrimoine culturel algérien situe la mosquée au centre du ksar et documente la zaouïa tidjane dans le quartier appelé « Aghrem Aqdim », au nord-ouest. Elle décrit ses espaces d’enseignement et d’accueil, sa cour intérieure et une pièce de retraite associée à Sidi Ahmed Tidjani. La fiche fournit des détails architecturaux, tandis que les récits historiques relatifs aux personnages et aux périodes nécessitent une corroboration documentaire indépendante.",
+      "descriptionEn": "The historic Ksar of Boussemghoun is in Boussemghoun municipality, El Bayadh Province. Its traditional urban fabric includes religious and communal spaces. The Algerian Cultural Heritage Map places the congregational mosque near the centre of the ksar and documents the Tijani zaouia in the north-western quarter known as “Aghrem Aqdim”. It describes teaching and guest facilities, an inner courtyard, and a retreat room associated with Sidi Ahmed Tidjani. The record provides architectural details, while historical narratives about individuals and dates still require independent documentary corroboration.",
+      "verification": "under_review",
+      "sources": [
+        {
+          "title": "قصر بوسمغون – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/561",
+          "publisher": "خريطة التراث الثقافي الجزائري",
+          "note": "يوثق المسجد والزاوية التجانية وموقعها داخل القصر ووصف مرافقها."
+        }
+      ]
     },
     {
       "id": "rock-art-merdoufa",
