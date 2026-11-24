@@ -21,16 +21,16 @@ class OfflineCatalogue(context: Context) {
         val provinceId = root.optJSONObject("province")?.optString("id").orEmpty()
         require(provinceId.isNotBlank()) { "Catalogue province.id is missing" }
 
-        val localImageByLandmark = runCatching {
+        val localPhotosByLandmark = runCatching {
             OfflineRecognitionImageIndex(appContext).load()
                 .filter { reference ->
-                    // An index entry is usable only when its packaged file really exists.
                     runCatching {
                         appContext.assets.open(reference.assetPath).use { it.read() }
                     }.isSuccess
                 }
-                .associate { it.landmarkId to it.assetPath }
+                .groupBy({ it.landmarkId }, { it.assetPath })
         }.getOrDefault(emptyMap())
+        val localImageByLandmark = localPhotosByLandmark.mapValues { it.value.firstOrNull().orEmpty() }
 
         val categoriesJson = root.optJSONArray("categories")
         val categories = buildList {
@@ -63,7 +63,8 @@ class OfflineCatalogue(context: Context) {
             contentVersion = root.optInt("contentVersion", 1),
             provinceId = provinceId,
             categories = categories,
-            landmarks = landmarks
+            landmarks = landmarks,
+            photosByLandmark = localPhotosByLandmark
         )
         // Seed once from APK assets, then serve catalogue data from local SQLite.
         val database = VistaDatabase(appContext)
