@@ -97,6 +97,7 @@ import dz.vista.elbayadh.data.Landmark
 import dz.vista.elbayadh.data.CatalogueLanguage
 import dz.vista.elbayadh.data.VerificationStatus
 import dz.vista.elbayadh.recognition.OfflineRecognitionImageIndex
+import dz.vista.elbayadh.recognition.MobileNetV3RecognitionEngine
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.CompositionLocalProvider
 
@@ -646,6 +647,15 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     val localReferences = remember(context) {
         runCatching { OfflineRecognitionImageIndex(context).load() }.getOrDefault(emptyList())
     }
+    val recognitionEngine = remember(context) { MobileNetV3RecognitionEngine(context) }
+    var recognitionModelLoaded by remember { mutableStateOf(false) }
+    LaunchedEffect(recognitionEngine) {
+        recognitionEngine.prepare()
+        recognitionModelLoaded = recognitionEngine.isModelLoaded
+    }
+    DisposableEffect(recognitionEngine) {
+        onDispose { recognitionEngine.close() }
+    }
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
@@ -750,9 +760,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            if (isArabic) "وجّه الكاميرا نحو المعلم. التعرّف البصري على المعالم سيُفعّل بعد إضافة نموذج الولاية واختباره."
-            else if (isFrench) "Pointez la caméra vers le site. L’identification visuelle sera activée après l’intégration et le test du modèle local."
-            else "Point the camera at the landmark. Visual identification will be enabled after the local province model is integrated and tested.",
+            if (isArabic) "يُحمّل VISTA نموذج الرؤية محليًا. سيبقى تحديد هوية المعلم معطّلًا حتى تكتمل الصور المرجعية والمعايرة الميدانية."
+            else if (isFrench) "VISTA charge le modèle visuel local. L’identification reste désactivée jusqu’à la constitution des références et à la calibration sur le terrain."
+            else "VISTA loads its offline vision model. Landmark identification stays disabled until the reference set and field calibration are complete.",
             color = Muted, fontSize = 13.sp, lineHeight = 20.sp
         )
         Spacer(Modifier.height(14.dp))
@@ -805,9 +815,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                     }
                     Text(
-                        if (isArabic) "محرك المطابقة البصرية لم يُدمج بعد؛ لن نعرض نتيجة تعرّف قبل تشغيل نموذج حقيقي واختباره."
-                        else if (isFrench) "Le moteur de reconnaissance visuelle n’est pas encore intégré. Aucun résultat ne sera affiché avant l’ajout et le test d’un vrai modèle."
-                        else "The visual matching engine is not integrated yet. No identification result will be shown until a real model is added and tested.",
+                        if (isArabic) { if (recognitionModelLoaded) "تم تحميل نموذج MobileNetV3 دون إنترنت. التعرف معطّل حاليًا: نحتاج 3 صور مؤكدة على الأقل لكل معلم ومعايرة مستقلة." else "تعذّر تحميل نموذج الرؤية المحلي؛ سيبقى الماسح الاحتياطي QR متاحًا." }
+                        else if (isFrench) { if (recognitionModelLoaded) "Modèle MobileNetV3 chargé hors ligne. Identification désactivée : au moins 3 photos vérifiées par site et une calibration indépendante sont requises." else "Impossible de charger le modèle visuel local ; le lecteur QR reste disponible." }
+                        else { if (recognitionModelLoaded) "MobileNetV3 model loaded offline. Identification remains disabled: at least 3 verified photos per site and independent calibration are required." else "Could not load the local vision model; the QR fallback remains available." },
                         color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
                     )
                 }
