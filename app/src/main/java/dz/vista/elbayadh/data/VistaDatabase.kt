@@ -4,8 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Offline-first catalogue database. The bundled JSON is the install seed;
@@ -181,7 +179,22 @@ class VistaDatabase(context: Context) : SQLiteOpenHelper(
                 latitude = if (c.isNull(8)) null else c.getDouble(8),
                 longitude = if (c.isNull(9)) null else c.getDouble(9),
                 verification = VerificationStatus.fromValue(c.getString(10)),
-                image = c.getString(11), audioAr = c.getString(12), audioFr = c.getString(13), audioEn = c.getString(14)
+                image = c.getString(11), audioAr = c.getString(12), audioFr = c.getString(13), audioEn = c.getString(14),
+                sources = db.rawQuery(
+                    "SELECT title,url,publisher,note FROM landmark_sources WHERE landmark_id=? ORDER BY id",
+                    arrayOf(c.getString(0))
+                ).use { sourceCursor ->
+                    buildList {
+                        while (sourceCursor.moveToNext()) add(
+                            LandmarkSource(
+                                title = sourceCursor.getString(0),
+                                url = sourceCursor.getString(1),
+                                publisher = sourceCursor.getString(2),
+                                note = sourceCursor.getString(3)
+                            )
+                        )
+                    }
+                }
             )
         }
         val version = db.rawQuery("SELECT value FROM catalogue_meta WHERE key='content_version'", null)
