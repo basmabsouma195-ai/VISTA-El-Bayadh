@@ -192,11 +192,12 @@ private fun VistaApp() {
                             0 -> HomeScreen(
                                 c, language, onLanguage = ::changeLanguage,
                                 searchQuery = searchQuery, onSearchChange = { searchQuery = it },
+                                onOpenScanner = { selectedTab = 2 },
                                 landmarks = catalogue?.landmarks.orEmpty(), favoriteIds = favoriteIds,
                                 onFavoriteToggle = ::toggleFavorite
                             )
                             1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
-                            2 -> InfoScreen(c.scan, c.scanNote, Icons.Filled.CenterFocusStrong)
+                            2 -> ScannerScreen(language)
                             3 -> FavoritesScreen(
                                 title = c.favorites,
                                 landmarks = catalogue?.landmarks.orEmpty().filter { it.id in favoriteIds },
@@ -219,6 +220,7 @@ private fun HomeScreen(
     onLanguage: (AppLanguage) -> Unit,
     searchQuery: String,
     onSearchChange: (String) -> Unit,
+    onOpenScanner: () -> Unit,
     landmarks: List<Landmark>,
     favoriteIds: Set<String>,
     onFavoriteToggle: (String) -> Unit
@@ -257,70 +259,76 @@ private fun HomeScreen(
                 )
             }
         }
-        Row(
-            modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp).fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)
+                .clickable(onClick = onOpenScanner),
+            shape = RoundedCornerShape(22.dp),
+            colors = CardDefaults.cardColors(containerColor = Forest)
         ) {
-            Text(c.discover, color = Forest, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.weight(1f))
-            Text("VISTA", color = Gold, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
-        }
-        val visibleCategories = c.categories.filter {
-            searchQuery.isBlank() || it.contains(searchQuery.trim(), ignoreCase = true)
-        }
-        if (visibleCategories.isEmpty()) {
-            Text(
-                if (language == AppLanguage.Arabic) "لا توجد تصنيفات مطابقة" else
-                    if (language == AppLanguage.French) "Aucune catégorie correspondante" else "No matching categories",
-                color = Muted, modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
-            )
-        }
-        Column(modifier = Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            visibleCategories.chunked(2).forEachIndexed { rowIndex, row ->
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                    row.forEachIndexed { colIndex, title ->
-                        val palette = listOf(
-                            Brush.linearGradient(listOf(Color(0xFF315D4C), Color(0xFF173D32))),
-                            Brush.linearGradient(listOf(Color(0xFF8B6A3F), Color(0xFF59452D))),
-                            Brush.linearGradient(listOf(Color(0xFF68745A), Color(0xFF344A39))),
-                            Brush.linearGradient(listOf(Color(0xFF8C7358), Color(0xFF5A4938)))
-                        )
-                        CategoryCard(title, palette[(rowIndex * 2 + colIndex) % palette.size], Modifier.weight(1f))
-                    }
-                    if (row.size == 1) Spacer(Modifier.weight(1f))
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    Modifier.size(58.dp).clip(CircleShape).background(Gold),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = ForestDeep, modifier = Modifier.size(32.dp))
+                }
+                Spacer(Modifier.width(15.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        if (language == AppLanguage.Arabic) "تعرّف على المعلم أمامك"
+                        else if (language == AppLanguage.French) "Identifiez le site devant vous"
+                        else "Identify the landmark in front of you",
+                        color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(5.dp))
+                    Text(
+                        if (language == AppLanguage.Arabic) "وجّه الكاميرا نحو المعلم لبدء التعرّف"
+                        else if (language == AppLanguage.French) "Pointez la caméra vers le site pour commencer"
+                        else "Point your camera at a landmark to get started",
+                        color = Color(0xFFE9DFC9), fontSize = 12.sp, lineHeight = 18.sp
+                    )
                 }
             }
         }
+        Text(
+            if (language == AppLanguage.Arabic) "أو ابحث عن معلم بالاسم"
+            else if (language == AppLanguage.French) "Ou recherchez un site par son nom"
+            else "Or search for a landmark by name",
+            color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+        )
         val catalogueLanguage = when (language) {
             AppLanguage.Arabic -> CatalogueLanguage.AR
             AppLanguage.French -> CatalogueLanguage.FR
             AppLanguage.English -> CatalogueLanguage.EN
         }
         val matchingLandmarks = landmarks.filter { landmark ->
-            searchQuery.isBlank() ||
+            searchQuery.isNotBlank() && (
                 landmark.name(catalogueLanguage).contains(searchQuery.trim(), ignoreCase = true) ||
                 landmark.description(catalogueLanguage).contains(searchQuery.trim(), ignoreCase = true)
-        }
-        if (landmarks.isNotEmpty()) {
-            Text(
-                if (language == AppLanguage.Arabic) "المعالم" else if (language == AppLanguage.French) "Sites à découvrir" else "Places to discover",
-                color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp)
             )
-            matchingLandmarks.forEach { landmark ->
-                LandmarkCard(
-                    landmark = landmark,
-                    language = catalogueLanguage,
-                    isFavorite = landmark.id in favoriteIds,
-                    onFavoriteToggle = { onFavoriteToggle(landmark.id) },
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
-                )
-            }
+        }
+        if (searchQuery.isNotBlank()) {
             if (matchingLandmarks.isEmpty()) {
                 Text(
-                    if (language == AppLanguage.Arabic) "لا توجد نتائج مطابقة" else if (language == AppLanguage.French) "Aucun résultat" else "No matching results",
-                    color = Muted, modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                    if (language == AppLanguage.Arabic) "لا توجد نتائج مطابقة"
+                    else if (language == AppLanguage.French) "Aucun résultat correspondant"
+                    else "No matching landmarks",
+                    color = Muted, modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)
                 )
+            } else {
+                matchingLandmarks.forEach { landmark ->
+                    LandmarkCard(
+                        landmark = landmark,
+                        language = catalogueLanguage,
+                        isFavorite = landmark.id in favoriteIds,
+                        onFavoriteToggle = { onFavoriteToggle(landmark.id) },
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
+                    )
+                }
             }
         }
         Spacer(Modifier.height(16.dp))
@@ -418,6 +426,51 @@ private fun LandmarkCard(
                     tint = if (isFavorite) Color(0xFFB24E4E) else Muted
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ScannerScreen(language: AppLanguage) {
+    val isArabic = language == AppLanguage.Arabic
+    val isFrench = language == AppLanguage.French
+    Column(
+        modifier = Modifier.fillMaxSize().background(Ivory).padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            Modifier.size(112.dp).clip(RoundedCornerShape(30.dp)).background(Forest),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = Gold, modifier = Modifier.size(62.dp))
+        }
+        Spacer(Modifier.height(24.dp))
+        Text(
+            if (isArabic) "الماسح المعرف"
+            else if (isFrench) "Reconnaissance des sites"
+            else "Landmark recognition",
+            color = Forest, fontSize = 25.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(12.dp))
+        Text(
+            if (isArabic) "وجّه الكاميرا نحو المعلم ليحاول VISTA التعرّف عليه، حتى دون رمز QR."
+            else if (isFrench) "Pointez la caméra vers un site pour que VISTA tente de l’identifier, même sans QR."
+            else "Point the camera at a landmark and let VISTA try to identify it, even without a QR code.",
+            color = Muted, fontSize = 15.sp, lineHeight = 24.sp, textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(20.dp))
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = Sand)
+        ) {
+            Text(
+                if (isArabic) "محرك التعرّف بالكاميرا لم يُدمج بعد؛ لن نعرض نتيجة وهمية."
+                else if (isFrench) "Le moteur de reconnaissance par caméra n’est pas encore intégré. Aucun résultat fictif ne sera affiché."
+                else "The camera recognition engine is not integrated yet. VISTA will not display fabricated results.",
+                color = Forest, fontSize = 13.sp, lineHeight = 20.sp,
+                modifier = Modifier.padding(16.dp), textAlign = TextAlign.Center
+            )
         }
     }
 }
