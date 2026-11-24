@@ -9,7 +9,8 @@
       "landmarkId": "ksar-bent-khass",
       "reviewNote": "identified_by_nearby_official_site_sign",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-02",
@@ -18,7 +19,8 @@
       "landmarkId": "ksar-bent-khass",
       "reviewNote": "identified_by_nearby_official_site_sign",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-03",
@@ -27,7 +29,8 @@
       "landmarkId": "ksar-bent-khass",
       "reviewNote": "official_tourism_sign_visible",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-04",
@@ -36,7 +39,8 @@
       "landmarkId": "ksar-bent-khass",
       "reviewNote": "identified_by_nearby_official_site_sign",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-05",
@@ -45,7 +49,8 @@
       "landmarkId": "gour-bent-el-khass",
       "reviewNote": "directional_sign_visible",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-06",
@@ -54,7 +59,8 @@
       "landmarkId": "gour-bent-el-khass",
       "reviewNote": "directional_sign_visible",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-07",
@@ -63,7 +69,8 @@
       "landmarkId": "gour-bent-el-khass",
       "reviewNote": "same_rock_formation_group_pending_field_confirmation",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-08",
@@ -72,7 +79,8 @@
       "landmarkId": "gour-bent-el-khass",
       "reviewNote": "same_rock_formation_group_pending_field_confirmation",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-09",
@@ -81,7 +89,8 @@
       "landmarkId": "gour-bent-el-khass",
       "reviewNote": "same_rock_formation_group_pending_field_confirmation",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-10",
@@ -90,7 +99,8 @@
       "landmarkId": "gour-bent-el-khass",
       "reviewNote": "same_rock_formation_group_pending_field_confirmation",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-11",
@@ -99,7 +109,8 @@
       "landmarkId": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
       "reviewNote": "official_tourism_sign_visible",
       "source": "user_supplied_project_photograph",
-      "status": "provisional_landmark_mapping"
+      "status": "provisional_landmark_mapping",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-12",
@@ -108,7 +119,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_hotel_sign",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-13",
@@ -117,7 +129,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_garden_scene",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-14",
@@ -126,7 +139,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_aerial_valley",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-15",
@@ -135,7 +149,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_architecture",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-16",
@@ -144,7 +159,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_aerial_landscape",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-17",
@@ -153,7 +169,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_ksar_scene",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-18",
@@ -162,7 +179,8 @@
       "landmarkId": null,
       "reviewNote": "possible_kef_el_melh_landscape_not_confirmed",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-19",
@@ -171,7 +189,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_aerial_landscape",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     },
     {
       "id": "field-photo-20",
@@ -180,7 +199,8 @@
       "landmarkId": null,
       "reviewNote": "unassigned_ksar_or_village_scene",
       "source": "user_supplied_project_photograph",
-      "status": "unassigned_pending_identification"
+      "status": "unassigned_pending_identification",
+      "runtimeApproved": false
     }
   ]
 }
