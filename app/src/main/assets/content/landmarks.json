@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 12,
+  "contentVersion": 13,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -33,6 +33,12 @@
       "titleAr": "المعالم الدينية والروحية",
       "titleFr": "Patrimoine religieux et spirituel",
       "titleEn": "Religious and spiritual heritage"
+    },
+    {
+      "id": "memorials",
+      "titleAr": "المعالم التذكارية",
+      "titleFr": "Monuments commémoratifs",
+      "titleEn": "Memorial landmarks"
     }
   ],
   "landmarks": [
@@ -97,7 +103,7 @@
     },
     {
       "id": "el-bayadh-martyrs-square",
-      "categoryId": "ksour",
+      "categoryId": "memorials",
       "nameAr": "ساحة الشهداء - مدينة البيض",
       "nameFr": "Place des Martyrs - El Bayadh",
       "nameEn": "Martyrs' Square - El Bayadh",
@@ -116,7 +122,7 @@
     },
     {
       "id": "cheikh-bouamama-statue-el-bayadh",
-      "categoryId": "ksour",
+      "categoryId": "memorials",
       "nameAr": "تمثال الشيخ بوعمامة",
       "nameFr": "Statue du Cheikh Bouamama",
       "nameEn": "Cheikh Bouamama Statue",
