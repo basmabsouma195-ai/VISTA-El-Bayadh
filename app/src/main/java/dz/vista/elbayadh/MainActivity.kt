@@ -28,7 +28,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
+import androidx.camera.core.ImageAnalysis
+import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.common.InputImage
+import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -222,7 +230,7 @@ private fun VistaApp() {
                                 onOpenLandmark = { selectedLandmark = it }
                             )
                             1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
-                            2 -> ScannerScreen(language)
+                            2 -> ScannerScreen(language, catalogue?.landmarks.orEmpty(), onOpenLandmark = { selectedLandmark = it })
                             3 -> FavoritesScreen(
                                 title = c.favorites,
                                 landmarks = catalogue?.landmarks.orEmpty().filter { it.id in favoriteIds },
@@ -604,7 +612,7 @@ private fun LandmarkThumbnail(assetPath: String?, description: String) {
 }
 
 @Composable
-private fun ScannerScreen(language: AppLanguage) {
+private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOpenLandmark: (Landmark) -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val isArabic = language == AppLanguage.Arabic
@@ -615,6 +623,8 @@ private fun ScannerScreen(language: AppLanguage) {
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
+    var qrMessage by remember { mutableStateOf<String?>(null) }
+    var qrMatchedLandmark by remember { mutableStateOf<Landmark?>(null) }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasCameraPermission = granted }
