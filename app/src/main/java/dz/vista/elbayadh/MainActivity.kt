@@ -670,7 +670,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     val recognitionEngine = remember(context) { MobileNetV3RecognitionEngine(context) }
     var recognitionModelLoaded by remember { mutableStateOf(false) }
     var recognitionReady by remember { mutableStateOf(false) }
-    var liveStatus by remember { mutableStateOf<String?>(if (isArabic) "تهيئة محرك التحليل البصري…" else if (isFrench) "Initialisation du moteur visuel…" else "Preparing visual analysis engine…") }
+    var liveStatus by remember { mutableStateOf<String?>(null) }
+    var liveScanInProgress by remember { mutableStateOf(false) }
+    val scanRequestSignal = remember { AtomicBoolean(false) }
     var galleryStatus by remember { mutableStateOf<String?>(null) }
     var liveSuggestedLandmarks by remember { mutableStateOf<List<Landmark>>(emptyList()) }
     var gallerySuggestedLandmarks by remember { mutableStateOf<List<Landmark>>(emptyList()) }
@@ -680,8 +682,8 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         recognitionModelLoaded = recognitionEngine.isModelLoaded
         liveStatus = when {
             !recognitionModelLoaded -> if (isArabic) "تعذّر تحميل محرك التحليل البصري." else if (isFrench) "Impossible de charger le moteur visuel." else "Could not load the visual analysis engine."
-            !recognitionReady -> if (isArabic) "المحرك محمّل؛ يعمل حاليًا بترشيح بصري أولي غير مؤكد." else if (isFrench) "Moteur chargé ; suggestions visuelles préliminaires non confirmées." else "Engine loaded; preliminary, unverified visual suggestions are active."
-            else -> if (isArabic) "وجّه الكاميرا نحو معلم؛ يجري تحليل الصورة تلقائيًا." else if (isFrench) "Pointez la caméra vers un site ; analyse automatique." else "Point the camera at a landmark; automatic analysis is active."
+            !recognitionReady -> if (isArabic) "المحرك محمّل للمقارنة الأولية؛ وجّه الكاميرا واضغط «امسح الآن»." else if (isFrench) "Moteur chargé pour une comparaison préliminaire ; pointez la caméra puis appuyez sur « Scanner »." else "Engine loaded for preliminary matching; point the camera and tap “Scan now”."
+            else -> if (isArabic) "وجّه الكاميرا نحو المعلم ثم اضغط «امسح الآن»." else if (isFrench) "Pointez la caméra vers le site puis appuyez sur « Scanner »." else "Point the camera at the landmark, then tap “Scan now”."
         }
     }
     DisposableEffect(recognitionEngine) {
@@ -744,10 +746,11 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                             .build()
                         analysis.setAnalyzer(analyzerExecutor) { proxy ->
                             val now = SystemClock.elapsedRealtime()
-                            val previousAnalysisAt = lastAnalysisAt.get()
-                            val shouldAnalyze = now - previousAnalysisAt >= 1100L &&
-                                lastAnalysisAt.compareAndSet(previousAnalysisAt, now) &&
-                                analysisInFlight.compareAndSet(false, true)
+                            val requested = scanRequestSignal.get()
+                            val acquired = requested && analysisInFlight.compareAndSet(false, true)
+                            val shouldAnalyze = acquired && scanRequestSignal.compareAndSet(true, false)
+                            if (acquired && !shouldAnalyze) analysisInFlight.set(false)
+                            if (shouldAnalyze) lastAnalysisAt.set(now)
                             val frame = if (shouldAnalyze) imageProxyToBitmap(proxy) else null
                             proxy.close()
                             if (frame != null && !disposed) {
@@ -759,25 +762,29 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                         liveSuggestedLandmarks = visibleCandidates
                                             .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
                                         val best = visibleCandidates.firstOrNull()
-                                        if (best == null) {
+                                        if (best == null || liveSuggestedLandmarks.isEmpty()) {
                                             stableCandidateFrames.set(0)
                                             lastCandidateId.set(null)
-                                            liveStatus = if (isArabic) "وصل إطار الكاميرا، لكن محرك الصور لم يُرجع مرشحين. تحقق من الصور المرجعية المحلية." else if (isFrench) "Image caméra reçue, mais aucun candidat visuel retourné." else "Camera frame received, but the visual engine returned no candidates."
+                                            liveStatus = if (isArabic) "لم يتم التعرف على معلم في هذه الصورة. حاول توجيه الكاميرا بوضوح ثم أعد المسح." else if (isFrench) "Aucun site reconnu dans cette image. Cadrez plus clairement puis réessayez." else "No landmark result was returned for this frame. Aim more clearly and scan again."
                                         } else {
                                             lastCandidateId.set(best.landmarkId)
                                             stableCandidateFrames.incrementAndGet()
-                                            liveStatus = if (isArabic) "المعلم الأقرب الذي رصده التحليل — اضغط لعرض بطاقته." else if (isFrench) "Résultat visuel le plus proche — appuyez pour ouvrir la fiche." else "Single closest visual result — tap to open its landmark page."
+                                            liveStatus = if (isArabic) "نتيجة المسح — اضغط على بطاقة المعلم لعرض التفاصيل." else if (isFrench) "Résultat du scan — appuyez sur la fiche pour voir les détails." else "Scan result — tap the landmark card to view details."
                                         }
                                     } catch (_: Exception) {
-                                        liveStatus = if (isArabic) "تعذّر تحليل إطار الكاميرا؛ ستتم إعادة المحاولة تلقائيًا." else if (isFrench) "Échec de l’analyse de l’image ; nouvelle tentative automatique." else "Camera frame analysis failed; retrying automatically."
+                                        liveSuggestedLandmarks = emptyList()
+                                        liveStatus = if (isArabic) "تعذّر تحليل الصورة. اضغط «امسح الآن» للمحاولة مجددًا." else if (isFrench) "L’analyse a échoué. Appuyez sur « Scanner » pour réessayer." else "Image analysis failed. Tap “Scan now” to try again."
                                     } finally {
                                         if (!frame.isRecycled) frame.recycle()
                                         analysisInFlight.set(false)
+                                        liveScanInProgress = false
                                     }
                                 }
                             } else if (shouldAnalyze) {
                                 if (!disposed) {
-                                    liveStatus = if (isArabic) "تعذّر تحويل إطار الكاميرا إلى صورة للتحليل؛ أُعيدت المحاولة." else if (isFrench) "Impossible de convertir l’image caméra pour l’analyse ; nouvelle tentative." else "Could not convert camera frame for analysis; retrying."
+                                    liveSuggestedLandmarks = emptyList()
+                                    liveStatus = if (isArabic) "تعذّر التقاط صورة من الكاميرا. اضغط «امسح الآن» للمحاولة مجددًا." else if (isFrench) "Impossible de capturer l’image caméra. Appuyez sur « Scanner » pour réessayer." else "Could not capture a camera frame. Tap “Scan now” to retry."
+                                    liveScanInProgress = false
                                 }
                                 analysisInFlight.set(false)
                             }
@@ -816,9 +823,29 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 factory = { previewView }
             )
             Spacer(Modifier.height(14.dp))
+            Button(
+                enabled = recognitionModelLoaded && localReferences.isNotEmpty() && !liveScanInProgress,
+                onClick = {
+                    liveSuggestedLandmarks = emptyList()
+                    liveStatus = if (isArabic) "جارٍ التقاط صورة وتحليلها…" else if (isFrench) "Capture et analyse de l’image en cours…" else "Capturing and analyzing the image…"
+                    liveScanInProgress = true
+                    scanRequestSignal.set(true)
+                },
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = ForestDeep)
+            ) {
+                Text(
+                    if (liveScanInProgress) {
+                        if (isArabic) "جارٍ المسح…" else if (isFrench) "Analyse en cours…" else "Scanning…"
+                    } else {
+                        if (isArabic) "امسح الآن" else if (isFrench) "Scanner maintenant" else "Scan now"
+                    },
+                    color = Color.White
+                )
+            }
             liveStatus?.let { status ->
                 Card(
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp),
                     shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(containerColor = Sand)
                 ) {
