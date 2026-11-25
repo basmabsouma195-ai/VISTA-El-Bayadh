@@ -22,48 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download latest successful El Bayadh offline map package
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          github_token: ${{ github.token }}
-          repo: ${{ github.repository }}
-          workflow: build-el-bayadh-offline-map.yml
-          workflow_conclusion: success
-          branch: feature/el-bayadh-offline-map
-          name: vista-el-bayadh-offline-map-data
-          path: ${{ runner.temp }}/vista-el-bayadh-map-package
-          if_no_artifact_found: fail
-
-      - name: Install verified offline map and local places index into Android assets
-        shell: bash
-        run: |
-          set -euo pipefail
-          PACKAGE="${{ runner.temp }}/vista-el-bayadh-map-package"
-          test -s "$PACKAGE/el-bayadh.map"
-          test -s "$PACKAGE/el-bayadh-pois.json"
-          test -s "$PACKAGE/SHA256SUMS"
-          (cd "$PACKAGE" && sed 's#build/el-bayadh/##g' SHA256SUMS | sha256sum -c -)
-          mkdir -p app/src/main/assets/maps
-          cp "$PACKAGE/el-bayadh.map" app/src/main/assets/maps/el-bayadh.map
-          cp "$PACKAGE/el-bayadh-pois.json" app/src/main/assets/maps/el-bayadh-pois.json
-          python3 - <<'PY'
-          import json
-          from pathlib import Path
-          root = Path("app/src/main/assets/maps")
-          map_file = root / "el-bayadh.map"
-          places_file = root / "el-bayadh-pois.json"
-          places = json.loads(places_file.read_text(encoding="utf-8"))
-          items = places.get("items", []) if isinstance(places, dict) else []
-          if not items or places.get("wilaya_codes") != [32]:
-              raise SystemExit("Offline places index must cover El Bayadh wilaya 32 only.")
-          target = next((item for item in items if item.get("osm_id") == 490536990), None)
-          if not target or target.get("name_ar") != "الأبيض سيدي الشيخ":
-              raise SystemExit("Offline places index is missing El Abiodh Sidi Cheikh.")
-          print(f"Bundled map: {map_file.stat().st_size:,} bytes")
-          print(f"Bundled named places: {len(items)}")
-          print(f"Verified town: {target['name']} ({target['name_ar']})")
-          PY
-
       - name: Install optional user-confirmed field photo bundle
         shell: bash
         run: |
@@ -135,25 +93,6 @@ jobs:
       - name: Clean and assemble fresh APK
         run: gradle --no-daemon clean :app:assembleDebug
 
-      - name: Verify offline map is embedded in debug APK
-        run: |
-          python3 - <<'PY'
-          import zipfile
-          from pathlib import Path
-          apk = Path("app/build/outputs/apk/debug/app-debug.apk")
-          required = ("assets/maps/el-bayadh.map", "assets/maps/el-bayadh-pois.json")
-          with zipfile.ZipFile(apk) as archive:
-              names = set(archive.namelist())
-              missing = [name for name in required if name not in names]
-              if missing:
-                  raise SystemExit("APK is missing bundled offline map assets: " + ", ".join(missing))
-              for name in required:
-                  info = archive.getinfo(name)
-                  if info.file_size <= 0:
-                      raise SystemExit(f"Bundled asset is empty: {name}")
-                  print(f"Verified in debug APK: {name} ({info.file_size:,} bytes)")
-          PY
-
       - name: Prepare stable release signing key
         id: release-signing
         shell: bash
@@ -181,26 +120,6 @@ jobs:
           VISTA_KEY_ALIAS: ${{ secrets.VISTA_KEY_ALIAS }}
           VISTA_KEY_PASSWORD: ${{ secrets.VISTA_KEY_PASSWORD }}
         run: gradle --no-daemon :app:assembleRelease
-
-      - name: Verify offline map is embedded in release APK
-        if: steps.release-signing.outputs.ready == 'true'
-        run: |
-          python3 - <<'PY'
-          import zipfile
-          from pathlib import Path
-          apk = Path("app/build/outputs/apk/release/app-release.apk")
-          required = ("assets/maps/el-bayadh.map", "assets/maps/el-bayadh-pois.json")
-          with zipfile.ZipFile(apk) as archive:
-              names = set(archive.namelist())
-              missing = [name for name in required if name not in names]
-              if missing:
-                  raise SystemExit("Release APK is missing bundled offline map assets: " + ", ".join(missing))
-              for name in required:
-                  info = archive.getinfo(name)
-                  if info.file_size <= 0:
-                      raise SystemExit(f"Bundled asset is empty: {name}")
-                  print(f"Verified in release APK: {name} ({info.file_size:,} bytes)")
-          PY
 
       - name: Verify stable release APK
         if: steps.release-signing.outputs.ready == 'true'
