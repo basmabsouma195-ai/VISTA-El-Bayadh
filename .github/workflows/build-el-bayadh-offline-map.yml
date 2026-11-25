@@ -30,8 +30,8 @@ jobs:
 
       - name: Download and verify Algeria OSM extract
         run: |
-          curl --fail --location --retry 3 --output algeria-latest.osm.pbf https://download.geofabrik.de/africa/algeria-latest.osm.pbf
-          curl --fail --location --retry 3 --output algeria-latest.osm.pbf.md5 https://download.geofabrik.de/africa/algeria-latest.osm.pbf.md5
+          curl --fail --location --retry 8 --retry-all-errors --retry-delay 10 --connect-timeout 30 --max-time 1200 --output algeria-latest.osm.pbf https://download.geofabrik.de/africa/algeria-latest.osm.pbf
+          curl --fail --location --retry 8 --retry-all-errors --retry-delay 10 --connect-timeout 30 --max-time 1200 --output algeria-latest.osm.pbf.md5 https://download.geofabrik.de/africa/algeria-latest.osm.pbf.md5
           md5sum --check algeria-latest.osm.pbf.md5
 
       - name: Create verified El Bayadh clipping polygon
