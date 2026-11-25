@@ -705,7 +705,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     analyzeLandmarkPhoto(
                         selected, recognitionEngine, recognitionReady, landmarks, language,
                         onOpenLandmark = onOpenLandmark,
-                        onSuggestions = { gallerySuggestedLandmarks = it },
+                        onSuggestions = { gallerySuggestedLandmarks = it.take(1) },
                         onStatus = { galleryStatus = it }
                     )
                 }
@@ -856,19 +856,34 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     Text(status, color = Forest, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(12.dp))
                 }
             }
-            gallerySuggestedLandmarks.forEach { candidate ->
+            gallerySuggestedLandmarks.firstOrNull()?.let { candidate ->
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp).clickable { onOpenLandmark(candidate) },
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(14.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    Column(Modifier.fillMaxWidth().padding(12.dp)) {
-                        Text(candidate.name(when (language) {
-                            AppLanguage.Arabic -> CatalogueLanguage.AR
-                            AppLanguage.French -> CatalogueLanguage.FR
-                            AppLanguage.English -> CatalogueLanguage.EN
-                        }), color = Forest, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                        Text(if (isArabic) "اقتراح من صورة المعرض — اضغط لفتح التفاصيل" else if (isFrench) "Suggestion depuis la galerie — touchez pour ouvrir" else "Gallery suggestion — tap to open details", color = Muted, fontSize = 11.sp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Surface(
+                            modifier = Modifier.size(44.dp),
+                            shape = CircleShape,
+                            color = Sand
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(Icons.Filled.Map, contentDescription = null, tint = Forest, modifier = Modifier.size(24.dp))
+                            }
+                        }
+                        Column(Modifier.weight(1f)) {
+                            Text(candidate.name(when (language) {
+                                AppLanguage.Arabic -> CatalogueLanguage.AR
+                                AppLanguage.French -> CatalogueLanguage.FR
+                                AppLanguage.English -> CatalogueLanguage.EN
+                            }), color = Forest, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                            Text(if (isArabic) "المعلم الأقرب للصورة — اضغط لعرض التفاصيل" else if (isFrench) "Site le plus proche de l’image — voir les détails" else "Closest landmark match — tap for details", color = Muted, fontSize = 11.sp)
+                        }
                     }
                 }
             }
