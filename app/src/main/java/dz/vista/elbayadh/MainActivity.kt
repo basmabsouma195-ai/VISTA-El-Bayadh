@@ -756,22 +756,18 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                     try {
                                         val ranked = recognitionEngine.rankPreviewCandidates(frame)
                                         if (disposed) return@launch
-                                        val best = ranked.firstOrNull()?.takeIf { it.score >= 0.45f }
+                                        val visibleCandidates = ranked.take(3)
+                                        liveSuggestedLandmarks = visibleCandidates
+                                            .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
+                                        val best = visibleCandidates.firstOrNull()
                                         if (best == null) {
                                             stableCandidateFrames.set(0)
                                             lastCandidateId.set(null)
-                                            liveStatus = if (isArabic) "تم تحليل الإطار؛ لم يظهر تشابه بصري كافٍ مع الصور المرجعية. حرّك الهاتف ببطء نحو المعلم." else if (isFrench) "Image analysée ; aucune similarité suffisante avec les références. Déplacez lentement le téléphone." else "Frame analyzed; no sufficient visual similarity to the references. Slowly move the phone toward the landmark."
+                                            liveStatus = if (isArabic) "وصل إطار الكاميرا، لكن محرك الصور لم يُرجع مرشحين. تحقق من الصور المرجعية المحلية." else if (isFrench) "Image caméra reçue, mais aucun candidat visuel retourné." else "Camera frame received, but the visual engine returned no candidates."
                                         } else {
-                                            val previous = lastCandidateId.getAndSet(best.landmarkId)
-                                            val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
-                                                stableCandidateFrames.set(1); 1
-                                            }
-                                            if (stable >= 2) {
-                                                liveSuggestedLandmarks = ranked
-                                                    .filter { it.score >= 0.35f }
-                                                    .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
-                                                liveStatus = if (isArabic) "أقرب تطابق بصري مبدئي — ترشيح غير مؤكد، اضغط لفتح بطاقة المعلم." else if (isFrench) "Meilleure similarité visuelle préliminaire — suggestion non confirmée." else "Closest preliminary visual match — unverified suggestion; tap to open."
-                                            }
+                                            lastCandidateId.set(best.landmarkId)
+                                            stableCandidateFrames.incrementAndGet()
+                                            liveStatus = if (isArabic) "تحليل حي — أقرب الصور المرجعية (اقتراحات أولية غير مؤكدة). اضغط لفتح بطاقة المعلم." else if (isFrench) "Analyse en direct — références les plus proches (suggestions non confirmées)." else "Live analysis — nearest reference images (unverified suggestions)."
                                         }
                                     } catch (_: Exception) {
                                         liveStatus = if (isArabic) "تعذّر تحليل إطار الكاميرا؛ ستتم إعادة المحاولة تلقائيًا." else if (isFrench) "Échec de l’analyse de l’image ; nouvelle tentative automatique." else "Camera frame analysis failed; retrying automatically."
@@ -781,6 +777,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                     }
                                 }
                             } else if (shouldAnalyze) {
+                                if (!disposed) {
+                                    liveStatus = if (isArabic) "تعذّر تحويل إطار الكاميرا إلى صورة للتحليل؛ أُعيدت المحاولة." else if (isFrench) "Impossible de convertir l’image caméra pour l’analyse ; nouvelle tentative." else "Could not convert camera frame for analysis; retrying."
+                                }
                                 analysisInFlight.set(false)
                             }
                         }
