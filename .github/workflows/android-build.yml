@@ -86,8 +86,11 @@ jobs:
         shell: bash
         env:
           VISTA_KEYSTORE_BASE64: ${{ secrets.VISTA_KEYSTORE_BASE64 }}
+          VISTA_KEYSTORE_PASSWORD: ${{ secrets.VISTA_KEYSTORE_PASSWORD }}
+          VISTA_KEY_ALIAS: ${{ secrets.VISTA_KEY_ALIAS }}
+          VISTA_KEY_PASSWORD: ${{ secrets.VISTA_KEY_PASSWORD }}
         run: |
-          if [ -n "$VISTA_KEYSTORE_BASE64" ] && [ -n "${{ secrets.VISTA_KEYSTORE_PASSWORD }}" ] && [ -n "${{ secrets.VISTA_KEY_ALIAS }}" ] && [ -n "${{ secrets.VISTA_KEY_PASSWORD }}" ]; then
+          if [ -n "$VISTA_KEYSTORE_BASE64" ] && [ -n "$VISTA_KEYSTORE_PASSWORD" ] && [ -n "$VISTA_KEY_ALIAS" ] && [ -n "$VISTA_KEY_PASSWORD" ]; then
             KEYSTORE_PATH="$RUNNER_TEMP/vista-release-key.jks"
             printf '%s' "$VISTA_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE_PATH"
             test -s "$KEYSTORE_PATH"
