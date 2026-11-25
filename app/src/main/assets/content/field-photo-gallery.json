@@ -191,6 +191,206 @@
       "locationStatus": "user_confirmed_location",
       "galleryEnabled": true,
       "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-20",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images.jpeg",
+      "assetPath": "recognition/references/images.jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-21",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (1).jpeg",
+      "assetPath": "recognition/references/images (1).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-22",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (2).jpeg",
+      "assetPath": "recognition/references/images (2).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-23",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (3).jpeg",
+      "assetPath": "recognition/references/images (3).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-24",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (4).jpeg",
+      "assetPath": "recognition/references/images (4).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-25",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (5).jpeg",
+      "assetPath": "recognition/references/images (5).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-26",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (6).jpeg",
+      "assetPath": "recognition/references/images (6).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-27",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (7).jpeg",
+      "assetPath": "recognition/references/images (7).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-28",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (8).jpeg",
+      "assetPath": "recognition/references/images (8).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-29",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (9).jpeg",
+      "assetPath": "recognition/references/images (9).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-30",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (10).jpeg",
+      "assetPath": "recognition/references/images (10).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-31",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (11).jpeg",
+      "assetPath": "recognition/references/images (11).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-32",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (12).jpeg",
+      "assetPath": "recognition/references/images (12).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-33",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (13).jpeg",
+      "assetPath": "recognition/references/images (13).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-34",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (14).jpeg",
+      "assetPath": "recognition/references/images (14).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-35",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (15).jpeg",
+      "assetPath": "recognition/references/images (15).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-36",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (16).jpeg",
+      "assetPath": "recognition/references/images (16).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-37",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (17).jpeg",
+      "assetPath": "recognition/references/images (17).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-38",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (18).jpeg",
+      "assetPath": "recognition/references/images (18).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
+    },
+    {
+      "id": "field-gallery-39",
+      "landmarkId": "ksar-bent-khass",
+      "sourceFileName": "images (19).jpeg",
+      "assetPath": "recognition/references/images (19).jpeg",
+      "imageType": "architecture",
+      "locationStatus": "user_confirmed_location",
+      "galleryEnabled": true,
+      "recognitionApproved": false
     }
   ]
 }
