@@ -33,7 +33,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.toBitmap
 import androidx.camera.lifecycle.ProcessCameraProvider
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
@@ -971,9 +970,50 @@ private suspend fun analyzeLandmarkPhoto(
 
 private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
     return runCatching {
-        // Let CameraX perform the YUV_420_888 conversion. Manual plane/stride
-        // decoding can produce corrupted colors or offsets on some devices.
-        val cameraBitmap = proxy.toBitmap()
+        // Convert the CameraX YUV_420_888 planes to RGB explicitly while
+        // respecting row/pixel strides. This avoids relying on an unavailable
+        // CameraX toBitmap extension in the project's pinned CameraX version.
+        val yPlane = proxy.planes[0]
+        val uPlane = proxy.planes[1]
+        val vPlane = proxy.planes[2]
+        val width = proxy.width
+        val height = proxy.height
+        val yBuffer = yPlane.buffer.duplicate()
+        val uBuffer = uPlane.buffer.duplicate()
+        val vBuffer = vPlane.buffer.duplicate()
+        val yBytes = ByteArray(yBuffer.remaining()).also { yBuffer.get(it) }
+        val uBytes = ByteArray(uBuffer.remaining()).also { uBuffer.get(it) }
+        val vBytes = ByteArray(vBuffer.remaining()).also { vBuffer.get(it) }
+        val yRowStride = yPlane.rowStride
+        val yPixelStride = yPlane.pixelStride
+        val uRowStride = uPlane.rowStride
+        val uPixelStride = uPlane.pixelStride
+        val vRowStride = vPlane.rowStride
+        val vPixelStride = vPlane.pixelStride
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val yIndex = y * yRowStride + x * yPixelStride
+                val uvX = x / 2
+                val uvY = y / 2
+                val uIndex = uvY * uRowStride + uvX * uPixelStride
+                val vIndex = uvY * vRowStride + uvX * vPixelStride
+                require(yIndex in yBytes.indices && uIndex in uBytes.indices && vIndex in vBytes.indices) {
+                    "Camera YUV frame planes are incomplete"
+                }
+                val yy = (yBytes[yIndex].toInt() and 0xFF) - 16
+                val uu = (uBytes[uIndex].toInt() and 0xFF) - 128
+                val vv = (vBytes[vIndex].toInt() and 0xFF) - 128
+                val c = maxOf(0, yy)
+                val red = ((298 * c + 409 * vv + 128) shr 8).coerceIn(0, 255)
+                val green = ((298 * c - 100 * uu - 208 * vv + 128) shr 8).coerceIn(0, 255)
+                val blue = ((298 * c + 516 * uu + 128) shr 8).coerceIn(0, 255)
+                pixels[y * width + x] = android.graphics.Color.rgb(red, green, blue)
+            }
+        }
+        val cameraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).apply {
+            setPixels(pixels, 0, width, 0, 0, width, height)
+        }
         val rotation = proxy.imageInfo.rotationDegrees
         if (rotation == 0) {
             cameraBitmap
