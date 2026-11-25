@@ -56,6 +56,8 @@ import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.CenterFocusStrong
+import androidx.compose.material.icons.filled.ChevronLeft
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Button
@@ -551,17 +553,43 @@ private fun LandmarkDetailDialog(
             CatalogueLanguage.EN -> "Information under review"
         }
     }
+    val galleryPhotos = remember(landmark.id, photos, landmark.image) {
+        (photos + listOfNotNull(landmark.image)).distinct()
+    }
+    var selectedPhotoIndex by remember(landmark.id) { mutableIntStateOf(0) }
+    val selectedPhoto = galleryPhotos.getOrNull(selectedPhotoIndex) ?: landmark.image
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(title, color = Forest, fontWeight = FontWeight.Bold) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                LandmarkThumbnail(photos.firstOrNull() ?: landmark.image, title, large = true)
-                val galleryPhotos = (photos + listOfNotNull(landmark.image)).distinct()
+                Box(Modifier.fillMaxWidth()) {
+                    LandmarkThumbnail(selectedPhoto, title, large = true)
+                    if (galleryPhotos.size > 1) {
+                        IconButton(
+                            onClick = { selectedPhotoIndex = (selectedPhotoIndex - 1 + galleryPhotos.size) % galleryPhotos.size },
+                            modifier = Modifier.align(Alignment.CenterStart).padding(6.dp).clip(CircleShape).background(Color(0x99071B2D))
+                        ) {
+                            Icon(Icons.Filled.ChevronLeft, contentDescription = "Previous photo", tint = Color.White)
+                        }
+                        IconButton(
+                            onClick = { selectedPhotoIndex = (selectedPhotoIndex + 1) % galleryPhotos.size },
+                            modifier = Modifier.align(Alignment.CenterEnd).padding(6.dp).clip(CircleShape).background(Color(0x99071B2D))
+                        ) {
+                            Icon(Icons.Filled.ChevronRight, contentDescription = "Next photo", tint = Color.White)
+                        }
+                    }
+                }
                 if (galleryPhotos.isNotEmpty()) {
                     Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top = 11.dp, bottom = 12.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                        galleryPhotos.forEach { photo ->
-                            Box(Modifier.width(78.dp).height(68.dp).clip(RoundedCornerShape(11.dp)).background(Color(0xFF5B94A4))) {
+                        galleryPhotos.forEachIndexed { index, photo ->
+                            Box(
+                                Modifier.width(78.dp).height(68.dp).clip(RoundedCornerShape(11.dp))
+                                    .background(if (index == selectedPhotoIndex) Gold else Color(0xFF5B94A4))
+                                    .clickable { selectedPhotoIndex = index }
+                                    .padding(if (index == selectedPhotoIndex) 2.dp else 0.dp)
+                            ) {
                                 LandmarkThumbnail(photo, title)
                             }
                         }
