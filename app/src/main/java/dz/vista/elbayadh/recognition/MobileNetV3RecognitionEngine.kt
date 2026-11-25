@@ -115,18 +115,25 @@ class MobileNetV3RecognitionEngine(context: Context) : LandmarkRecognitionEngine
      * Returns ranked experimental suggestions from the available seed images.
      * These scores are raw embedding similarities, not probabilities or verified identifications.
      */
-    suspend fun suggestCandidates(image: Bitmap): List<RecognitionCandidate> = withContext(Dispatchers.Default) {
+    suspend fun suggestCandidates(image: Bitmap): List<RecognitionCandidate> =
+        PreviewSuggestionPolicy.filter(rankPreviewCandidates(image))
+
+    /**
+     * Returns the nearest local visual references for the live camera preview.
+     * Scores are raw cosine similarities, not probabilities or verified matches.
+     * The UI must label these as preliminary suggestions.
+     */
+    suspend fun rankPreviewCandidates(image: Bitmap): List<RecognitionCandidate> = withContext(Dispatchers.Default) {
         val runtime = interpreter ?: return@withContext emptyList()
         if (!isModelLoaded || previewVectors.isEmpty()) return@withContext emptyList()
         val query = runCatching { embedWith(runtime, image) }.getOrNull()
             ?: return@withContext emptyList()
-        val ranked = previewVectors.map { (landmarkId, vectors) ->
+        previewVectors.map { (landmarkId, vectors) ->
             RecognitionCandidate(
                 landmarkId = landmarkId,
                 score = vectors.maxOfOrNull { cosineSimilarity(query, it) } ?: -1f
             )
-        }
-        PreviewSuggestionPolicy.filter(ranked)
+        }.sortedByDescending { it.score }.take(3)
     }
 
     override suspend fun recognize(image: Bitmap): RecognitionDecision = withContext(Dispatchers.Default) {
