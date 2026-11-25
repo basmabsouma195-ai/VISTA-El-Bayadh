@@ -37,10 +37,10 @@ private val MapGold = Color(0xFFC39A58)
 private val MapLight = Color(0xFFF6F0E5)
 
 @Composable
-internal fun OfflineMapScreen(language: AppLanguage) {
+internal fun OfflineMapScreen(language: String) {
     val context = LocalContext.current
-    val isArabic = language == AppLanguage.Arabic
-    val isFrench = language == AppLanguage.French
+    val isArabic = language == "Arabic"
+    val isFrench = language == "French"
     val mapFile = remember(context) { bundledMapFile(context) }
     val status = if (mapFile != null) {
         if (isArabic) "الخريطة المحلية جاهزة للعرض." else if (isFrench) "La carte locale est prête." else "The local map is ready."
