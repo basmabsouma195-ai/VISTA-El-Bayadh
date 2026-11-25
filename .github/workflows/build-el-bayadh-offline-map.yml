@@ -69,9 +69,11 @@ jobs:
       - name: Generate Mapsforge vector map
         run: |
           export JAVACMD_OPTIONS="-Xmx5G"
+          BBOX="$(python3 -c 'import json; d=json.load(open("build/el-bayadh/boundary-metadata.json", encoding="utf-8")); print(",".join(str(v) for v in d["bbox"]))')"
+          echo "Using verified El Bayadh boundary bbox: $BBOX"
           tools/osmosis-0.49.2/bin/osmosis \
             --read-pbf file=build/el-bayadh/el-bayadh.osm.pbf \
-            --mapfile-writer file=build/el-bayadh/el-bayadh.map type=hd \
+            --mapfile-writer file=build/el-bayadh/el-bayadh.map type=hd bbox="$BBOX" \
             map-start-position=33.68,1.02 map-start-zoom=8 preferred-languages=ar,fr,en
           test -s build/el-bayadh/el-bayadh.map
           ls -lh build/el-bayadh/el-bayadh.map
