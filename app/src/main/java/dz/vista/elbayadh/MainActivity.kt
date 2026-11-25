@@ -82,6 +82,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -166,13 +167,11 @@ private fun WelcomeScreen(language: AppLanguage, onStart: () -> Unit) {
         LandmarkThumbnail("field-photos/ksar-bent-khass/architecture/1000078259.jpg", "El Bayadh", large = true, fullBleed = true)
         Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0x22071B2D), Color(0x44071B2D), Color(0xF5071B2D)))))
         Column(Modifier.align(Alignment.Center).fillMaxWidth().padding(horizontal = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(Modifier.size(150.dp).clip(RoundedCornerShape(44.dp)).background(Color(0xEE071B2D)), contentAlignment = Alignment.Center) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("⌒", color = Color(0xFFD5A64B), fontSize = 46.sp, lineHeight = 38.sp, fontWeight = FontWeight.Bold)
-                    Text("🏰", fontSize = 43.sp)
-                    Text("◢ QR ◣", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                }
-            }
+            Image(
+                painter = painterResource(id = R.drawable.ic_vista_launcher),
+                contentDescription = "VISTA El Bayadh emblem",
+                modifier = Modifier.size(154.dp)
+            )
             Text("Vista", color = Color(0xFFF8F1E4), fontSize = 52.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
             Text("El Bayadh", color = Color(0xFFD5A64B), fontSize = 29.sp, fontWeight = FontWeight.Bold)
             Text("Explore the Beauty of El Bayadh", color = Color(0xFFF8F1E4), fontSize = 13.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 5.dp))
@@ -557,10 +556,16 @@ private fun LandmarkDetailDialog(
         title = { Text(title, color = Forest, fontWeight = FontWeight.Bold) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                LandmarkThumbnail(landmark.image, title, large = true)
-                photos.filter { it != landmark.image }.forEachIndexed { index, photo ->
-                    Spacer(Modifier.height(10.dp))
-                    LandmarkThumbnail(photo, "$title ${index + 2}", large = true)
+                LandmarkThumbnail(photos.firstOrNull() ?: landmark.image, title, large = true)
+                val galleryPhotos = (photos + listOfNotNull(landmark.image)).distinct()
+                if (galleryPhotos.isNotEmpty()) {
+                    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top = 11.dp, bottom = 12.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                        galleryPhotos.forEach { photo ->
+                            Box(Modifier.width(78.dp).height(68.dp).clip(RoundedCornerShape(11.dp)).background(Color(0xFF5B94A4))) {
+                                LandmarkThumbnail(photo, title)
+                            }
+                        }
+                    }
                 }
                 Spacer(Modifier.height(12.dp))
                 Text(
