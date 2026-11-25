@@ -807,20 +807,30 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                             if (frame != null && !disposed) {
                                 recognitionScope.launch {
                                     try {
-                                        val ranked = recognitionEngine.rankPreviewCandidates(frame)
+                                        val decision = recognitionEngine.recognize(frame)
                                         if (disposed) return@launch
-                                        val visibleCandidates = ranked.take(1)
-                                        liveSuggestedLandmarks = visibleCandidates
-                                            .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
-                                        val best = visibleCandidates.firstOrNull()
-                                        if (best == null || liveSuggestedLandmarks.isEmpty()) {
-                                            stableCandidateFrames.set(0)
-                                            lastCandidateId.set(null)
-                                            liveStatus = if (isArabic) "لم يتم التعرف على معلم في هذه الصورة. حاول توجيه الكاميرا بوضوح ثم أعد المسح." else if (isFrench) "Aucun site reconnu dans cette image. Cadrez plus clairement puis réessayez." else "No landmark result was returned for this frame. Aim more clearly and scan again."
-                                        } else {
-                                            lastCandidateId.set(best.landmarkId)
-                                            stableCandidateFrames.incrementAndGet()
-                                            liveStatus = if (isArabic) "نتيجة المسح — اضغط على بطاقة المعلم لعرض التفاصيل." else if (isFrench) "Résultat du scan — appuyez sur la fiche pour voir les détails." else "Scan result — tap the landmark card to view details."
+                                        when (decision) {
+                                            is dz.vista.elbayadh.recognition.RecognitionDecision.Match -> {
+                                                val found = landmarks.firstOrNull { it.id == decision.candidate.landmarkId }
+                                                liveSuggestedLandmarks = listOfNotNull(found)
+                                                liveStatus = if (found == null) {
+                                                    if (isArabic) "المعلم غير موجود في الموسوعة المحلية." else if (isFrench) "Ce site est absent du catalogue local." else "This site is missing from the local catalogue."
+                                                } else {
+                                                    if (isArabic) "تم التعرف على المعلم وفق مجموعة التحقق المحلية." else if (isFrench) "Site identifié selon l’index local validé." else "Landmark matched against the validated local index."
+                                                }
+                                            }
+                                            is dz.vista.elbayadh.recognition.RecognitionDecision.Ambiguous -> {
+                                                liveSuggestedLandmarks = emptyList()
+                                                liveStatus = if (isArabic) "لم أتمكن من تحديد المعلم بثقة. النتيجة ملتبسة؛ جرّب زاوية أخرى." else if (isFrench) "Identification incertaine. Essayez un autre angle." else "I cannot identify this landmark confidently. Try another angle."
+                                            }
+                                            dz.vista.elbayadh.recognition.RecognitionDecision.Unknown -> {
+                                                liveSuggestedLandmarks = emptyList()
+                                                liveStatus = if (isArabic) "لا أعرف هذا المشهد؛ لم يتم التعرف على معلم من معالم ولاية البيض." else if (isFrench) "Scène inconnue : aucun site d’El Bayadh reconnu." else "I don't know this scene; no El Bayadh landmark was recognized."
+                                            }
+                                            dz.vista.elbayadh.recognition.RecognitionDecision.ModelUnavailable -> {
+                                                liveSuggestedLandmarks = emptyList()
+                                                liveStatus = if (isArabic) "التعرّف الموثوق غير مفعّل بعد؛ لن أخمّن اسم معلم. نحتاج إلى استكمال صور المرجع وصور التحقق." else if (isFrench) "La reconnaissance fiable n’est pas encore activée ; aucun site ne sera deviné. Les références et images de validation doivent être complétées." else "Reliable recognition is not enabled yet; I will not guess a landmark. Reference and validation photos are still needed."
+                                            }
                                         }
                                     } catch (_: Exception) {
                                         liveSuggestedLandmarks = emptyList()
@@ -1020,24 +1030,8 @@ private suspend fun analyzeLandmarkPhoto(
                     onStatus(if (isArabic) "محرك التعرّف غير جاهز." else if (isFrench) "Le moteur n’est pas prêt." else "Recognition engine is not ready.")
             }
         } else {
-            val suggestions = engine.suggestCandidates(snapshot)
-            val matchedLandmarks = suggestions.mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
-            onSuggestions(matchedLandmarks)
-            val names = matchedLandmarks.map { landmark ->
-                landmark.name(when (language) {
-                    AppLanguage.Arabic -> CatalogueLanguage.AR
-                    AppLanguage.French -> CatalogueLanguage.FR
-                    AppLanguage.English -> CatalogueLanguage.EN
-                })
-            }
-            onStatus(if (names.isEmpty()) {
-                if (isArabic) "لم تتوفر اقتراحات لهذه الصورة." else if (isFrench) "Aucune suggestion disponible pour cette image." else "No suggestions available for this image."
-            } else {
-                val list = names.joinToString("، ")
-                if (isArabic) "اقتراحات تجريبية غير مؤكدة: $list. هذه ليست نتيجة تعرّف موثوقة بعد."
-                else if (isFrench) "Suggestions expérimentales non confirmées : $list. L’identification n’est pas encore validée."
-                else "Unverified experimental suggestions: $list. This is not a validated identification."
-            })
+            onSuggestions(emptyList())
+            onStatus(if (isArabic) "التعرّف الموثوق غير مفعّل بعد؛ لن نخمن اسم معلم من هذه الصورة. نحتاج إلى استكمال صور المرجع وصور التحقق." else if (isFrench) "La reconnaissance fiable n’est pas encore activée ; aucun site ne sera deviné à partir de cette image." else "Reliable recognition is not enabled yet; no landmark will be guessed from this photo. Reference and validation images are still required.")
         }
     } catch (_: Exception) {
         onStatus(if (isArabic) "حدث خطأ أثناء تحليل الصورة." else if (isFrench) "Une erreur est survenue pendant l’analyse." else "An error occurred while analyzing the image.")
