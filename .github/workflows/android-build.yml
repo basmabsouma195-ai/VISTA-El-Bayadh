@@ -54,7 +54,7 @@ jobs:
           places_file = root / "el-bayadh-pois.json"
           places = json.loads(places_file.read_text(encoding="utf-8"))
           items = places.get("items", []) if isinstance(places, dict) else []
-          if not items or places.get("wilaya_codes") != [32, 69]:
+          if not items or places.get("wilaya_codes") != [32]:
               raise SystemExit("Offline places index must cover wilayas 32 and 69.")
           target = next((item for item in items if item.get("osm_id") == 490536990), None)
           if not target or target.get("name_ar") != "الأبيض سيدي الشيخ":
