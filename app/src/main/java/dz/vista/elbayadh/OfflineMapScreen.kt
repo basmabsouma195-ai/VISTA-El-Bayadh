@@ -35,7 +35,6 @@ import java.io.FileInputStream
 private val MapNavy = Color(0xFF071B2D)
 private val MapGold = Color(0xFFC39A58)
 private val MapLight = Color(0xFFF6F0E5)
-private val MapMuted = Color(0xFF9EADBB)
 
 @Composable
 internal fun OfflineMapScreen(language: AppLanguage) {
@@ -96,10 +95,6 @@ internal fun OfflineMapScreen(language: AppLanguage) {
                 }
             }
         }
-        Text(
-            if (isArabic) "المصدر: OpenStreetMap — المساهمون في OpenStreetMap، ترخيص ODbL 1.0." else if (isFrench) "Source : OpenStreetMap — contributeurs OpenStreetMap, licence ODbL 1.0." else "Source: OpenStreetMap contributors, ODbL 1.0.",
-            color = MapMuted
-        )
     }
 }
 
