@@ -162,24 +162,30 @@ class MainActivity : ComponentActivity() {
 private fun WelcomeScreen(language: AppLanguage, onStart: () -> Unit) {
     val ar = language == AppLanguage.Arabic
     val fr = language == AppLanguage.French
-    Box(Modifier.fillMaxSize().background(ForestDeep)) {
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(Modifier.weight(1f).fillMaxWidth()) {
-                LandmarkThumbnail("field-photos/ksar-bent-khass/architecture/1000078259.jpg", "Ksar Bent Khass", large = true, fullBleed = true)
-                Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, ForestDeep.copy(alpha = 0.96f)))))
-                Column(Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 26.dp, vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("VISTA", color = Gold, fontSize = 38.sp, fontWeight = FontWeight.Bold, letterSpacing = 5.sp)
-                    Text("EL BAYADH", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Medium, letterSpacing = 4.sp)
-                    Text("البيض فيستا", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
-                    Text(if (ar) "دليلك السياحي الذكي لولاية البيض" else if (fr) "Votre guide touristique intelligent d’El Bayadh" else "Your smart tourism guide to El Bayadh", color = Color(0xFFE8DDCB), fontSize = 14.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 8.dp))
+    Box(Modifier.fillMaxSize().background(Color(0xFF071B2D))) {
+        LandmarkThumbnail("field-photos/ksar-bent-khass/architecture/1000078259.jpg", "El Bayadh", large = true, fullBleed = true)
+        Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0x22071B2D), Color(0x44071B2D), Color(0xF5071B2D)))))
+        Column(Modifier.align(Alignment.Center).fillMaxWidth().padding(horizontal = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(Modifier.size(150.dp).clip(RoundedCornerShape(44.dp)).background(Color(0xEE071B2D)), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("⌒", color = Color(0xFFD5A64B), fontSize = 46.sp, lineHeight = 38.sp, fontWeight = FontWeight.Bold)
+                    Text("🏰", fontSize = 43.sp)
+                    Text("◢ QR ◣", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
                 }
             }
-            Button(onClick = onStart, modifier = Modifier.fillMaxWidth().padding(horizontal = 28.dp, vertical = 26.dp).height(54.dp), shape = RoundedCornerShape(28.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Gold)) {
-                Text(if (ar) "ابدأ" else if (fr) "Commencer" else "Get started", color = ForestDeep, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-            }
+            Text("Vista", color = Color(0xFFF8F1E4), fontSize = 52.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
+            Text("El Bayadh", color = Color(0xFFD5A64B), fontSize = 29.sp, fontWeight = FontWeight.Bold)
+            Text("Explore the Beauty of El Bayadh", color = Color(0xFFF8F1E4), fontSize = 13.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 5.dp))
+            Text(if (ar) "اكتشف جمال ولاية البيض" else if (fr) "Découvrez la beauté d’El Bayadh" else "Discover the beauty of El Bayadh", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 22.dp))
+            Text(if (ar) "الدليل السياحي الذكي لولاية البيض" else if (fr) "Le guide touristique intelligent d’El Bayadh" else "The smart tourism guide to El Bayadh", color = Color(0xFFE7DCC8), fontSize = 13.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 7.dp))
+        }
+        Button(onClick = onStart, modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 28.dp, vertical = 32.dp).height(55.dp), shape = RoundedCornerShape(18.dp), colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Color(0xFFD5A64B))) {
+            Text(if (ar) "ابدأ الرحلة" else if (fr) "Commencer" else "Start exploring", color = Color(0xFF071B2D), fontSize = 17.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
+
+
 @Composable
 private fun VistaApp() {
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -215,13 +221,13 @@ private fun VistaApp() {
 
     MaterialTheme {
         CompositionLocalProvider(LocalLayoutDirection provides direction) {
-            Surface(modifier = Modifier.fillMaxSize(), color = Ivory) {
+            Surface(modifier = Modifier.fillMaxSize(), color = Color(0xFF071B2D)) {
                 if (showWelcome) {
                     WelcomeScreen(language, onStart = { preferences.edit().putBoolean("welcome_completed", true).apply(); showWelcome = false })
                 } else androidx.compose.material3.Scaffold(
-                    containerColor = Ivory,
+                    containerColor = Color(0xFF071B2D),
                     bottomBar = {
-                        NavigationBar(containerColor = Color.White, tonalElevation = 8.dp) {
+                        NavigationBar(containerColor = Color(0xFF071B2D), tonalElevation = 0.dp) {
                             val items = listOf(
                                 Icons.Filled.Home to c.home,
                                 Icons.Filled.Map to c.map,
@@ -237,8 +243,10 @@ private fun VistaApp() {
                                     label = { Text(item.second, fontSize = 10.sp, maxLines = 1) },
                                     colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
                                         selectedIconColor = Gold,
-                                        selectedTextColor = Forest,
-                                        indicatorColor = Sand
+                                        selectedTextColor = Gold,
+                                        unselectedIconColor = Color(0xFF9AAABD),
+                                        unselectedTextColor = Color(0xFF9AAABD),
+                                        indicatorColor = Color(0xFF173B5B)
                                     )
                                 )
                             }
@@ -299,80 +307,86 @@ private fun HomeScreen(
     val lang = when (language) { AppLanguage.Arabic -> CatalogueLanguage.AR; AppLanguage.French -> CatalogueLanguage.FR; AppLanguage.English -> CatalogueLanguage.EN }
     val ar = language == AppLanguage.Arabic
     val fr = language == AppLanguage.French
+    val navy = Color(0xFF071B2D); val card = Color(0xFF0D2A45); val light = Color(0xFFF6F0E5); val muted = Color(0xFF9EADBB)
     val featured = landmarks.filter { photosByLandmark[it.id].orEmpty().isNotEmpty() || !it.image.isNullOrBlank() }
     val hero = featured.firstOrNull { it.id == "ksar-bent-khass" } ?: featured.firstOrNull()
     val results = landmarks.filter { searchQuery.isNotBlank() && (it.name(lang).contains(searchQuery.trim(), true) || it.description(lang).contains(searchQuery.trim(), true)) }
-    Column(Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState())) {
-        Box(Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(Forest, ForestDeep)))) {
-            Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 18.dp)) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column {
-                        Text("VISTA", color = Gold, fontSize = 29.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp)
-                        Text("EL BAYADH", color = Color.White, fontSize = 11.sp, letterSpacing = 4.sp)
-                        Text(if (ar) "دليلك السياحي الذكي لولاية البيض" else if (fr) "Guide touristique intelligent d’El Bayadh" else "Smart tourism guide to El Bayadh", color = Color(0xFFE8DDCB), fontSize = 11.sp)
-                    }
+    Column(Modifier.fillMaxSize().background(navy).verticalScroll(rememberScrollState())) {
+        Column(Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(Color(0xFF0D2B48), navy))).padding(horizontal = 20.dp, vertical = 18.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                Column {
+                    Text(if (ar) "مرحبًا بك في" else if (fr) "Bienvenue à" else "Welcome to", color = muted, fontSize = 13.sp)
+                    Text("Vista", color = light, fontSize = 31.sp, fontWeight = FontWeight.Bold)
+                    Text("El Bayadh", color = Gold, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 }
-                Spacer(Modifier.height(22.dp))
-                Text(c.welcome, color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-                Text(c.subtitle, color = Color(0xFFE8DDCB), fontSize = 13.sp, modifier = Modifier.padding(top = 5.dp))
-                Spacer(Modifier.height(16.dp))
-                OutlinedTextField(
-                    value = searchQuery, onValueChange = onSearchChange, modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text(c.search, color = Muted, fontSize = 13.sp) },
-                    leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = Forest) },
-                    shape = RoundedCornerShape(18.dp), singleLine = true,
-                    colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = Color.White, unfocusedContainerColor = Color.White,
-                        disabledContainerColor = Color.White, focusedBorderColor = Gold, unfocusedBorderColor = Color.Transparent
-                    )
-                )
+                Box(Modifier.size(54.dp).clip(CircleShape).background(Brush.radialGradient(listOf(Gold, Color(0xFF4D492F)))), contentAlignment = Alignment.Center) {
+                    Text("V", color = navy, fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
+                }
             }
+            Spacer(Modifier.height(14.dp))
+            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).background(Color(0xFF18364E)).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Language, contentDescription = null, tint = Gold, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(9.dp))
+                Text(if (ar) "المحتوى المحلي متاح للتصفح" else if (fr) "Contenu local disponible" else "Local content available", color = light, fontSize = 11.sp, modifier = Modifier.weight(1f))
+                Text("●", color = Gold, fontSize = 10.sp)
+            }
+            Spacer(Modifier.height(14.dp))
+            OutlinedTextField(value = searchQuery, onValueChange = onSearchChange, modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(c.search, color = muted, fontSize = 13.sp) },
+                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null, tint = Gold) },
+                shape = RoundedCornerShape(18.dp), singleLine = true,
+                colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = light, unfocusedTextColor = light, focusedContainerColor = card, unfocusedContainerColor = card,
+                    focusedPlaceholderColor = muted, unfocusedPlaceholderColor = muted, focusedBorderColor = Gold,
+                    unfocusedBorderColor = Color(0xFF23435B), cursorColor = Gold
+                ))
         }
         if (searchQuery.isNotBlank()) {
-            Text(if (ar) "نتائج البحث" else if (fr) "Résultats" else "Search results", color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
-            if (results.isEmpty()) Text(if (ar) "لا توجد نتائج مطابقة" else if (fr) "Aucun résultat" else "No matching places", color = Muted, modifier = Modifier.padding(horizontal = 20.dp))
+            Text(if (ar) "نتائج البحث" else if (fr) "Résultats" else "Search results", color = Gold, fontSize = 19.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(20.dp))
+            if (results.isEmpty()) Text(if (ar) "لا توجد نتائج مطابقة" else if (fr) "Aucun résultat" else "No matching places", color = muted, modifier = Modifier.padding(horizontal = 20.dp))
             else results.forEach { item -> LandmarkCard(item, lang, item.id in favoriteIds, { onFavoriteToggle(item.id) }, { onOpenLandmark(item) }, Modifier.padding(horizontal = 16.dp, vertical = 5.dp)) }
         } else {
-            Row(Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 18.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Column {
-                    Text(if (ar) "وجهة تستحق الاكتشاف" else if (fr) "À découvrir" else "Worth discovering", color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    Text(if (ar) "تراث أصيل وطبيعة استثنائية" else if (fr) "Patrimoine et paysages" else "Heritage and remarkable landscapes", color = Muted, fontSize = 11.sp)
+                    Text(if (ar) "أماكن سياحية في البيض" else if (fr) "Sites touristiques" else "Places to discover", color = light, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text(if (ar) "اكتشف جمال الولاية وتراثها" else if (fr) "Patrimoine et paysages" else "Heritage, culture and landscapes", color = muted, fontSize = 11.sp)
                 }
-                Text("WILAYA 32", color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                Text(if (ar) "عرض الكل" else if (fr) "Tout voir" else "View all", color = Gold, fontSize = 12.sp, fontWeight = FontWeight.Bold)
             }
             hero?.let { item ->
-                Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable { onOpenLandmark(item) }, shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.cardElevation(3.dp)) {
-                    Column {
+                Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable { onOpenLandmark(item) }, shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = card), elevation = CardDefaults.cardElevation(5.dp)) {
+                    Box {
                         LandmarkThumbnail(photosByLandmark[item.id].orEmpty().firstOrNull() ?: item.image, item.name(lang), large = true)
-                        Column(Modifier.padding(15.dp)) {
-                            Text(if (ar) "اختيار VISTA" else if (fr) "SÉLECTION VISTA" else "VISTA SELECTION", color = Gold, fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-                            Text(item.name(lang), color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 5.dp))
-                            Text(item.description(lang), color = Muted, fontSize = 12.sp, lineHeight = 18.sp, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
+                        Box(Modifier.fillMaxWidth().height(150.dp).align(Alignment.BottomCenter).background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xF0071B2D)))))
+                        Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(17.dp)) {
+                            Text(if (ar) "وجهة مميزة ★" else if (fr) "À LA UNE ★" else "FEATURED ★", color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                            Text(item.name(lang), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 5.dp))
+                            Text(if (ar) "ولاية البيض" else if (fr) "Wilaya d’El Bayadh" else "El Bayadh Province", color = light.copy(alpha = 0.85f), fontSize = 12.sp)
                         }
                     }
                 }
             }
-            Text(if (ar) "استكشف حسب النوع" else if (fr) "Explorer par catégorie" else "Explore by category", color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 20.dp, top = 22.dp, bottom = 10.dp))
+            Text(if (ar) "استكشف حسب النوع" else if (fr) "Explorer par catégorie" else "Explore by category", color = light, fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 20.dp, top = 23.dp, bottom = 11.dp))
             val cats = listOf(
                 Triple(if (ar) "القصور والواحات" else if (fr) "Ksour et oasis" else "Ksour & oases", "ksour", Gold),
-                Triple(if (ar) "المواقع الطبيعية" else if (fr) "Sites naturels" else "Natural sites", "natural-sites", Color(0xFF7B927E)),
-                Triple(if (ar) "النقوش الصخرية" else if (fr) "Art rupestre" else "Rock art", "rock-art", Color(0xFFB18A69)),
-                Triple(if (ar) "التراث الديني" else if (fr) "Patrimoine religieux" else "Religious heritage", "religious-heritage", Color(0xFF77869A))
+                Triple(if (ar) "المواقع الطبيعية" else if (fr) "Sites naturels" else "Natural sites", "natural-sites", Color(0xFF8AAE9B)),
+                Triple(if (ar) "النقوش الصخرية" else if (fr) "Art rupestre" else "Rock art", "rock-art", Color(0xFFB58B67)),
+                Triple(if (ar) "التراث الديني" else if (fr) "Patrimoine religieux" else "Religious heritage", "religious-heritage", Color(0xFF9AAFC5))
             )
             Column(Modifier.padding(horizontal = 16.dp)) {
                 cats.chunked(2).forEach { pair ->
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         pair.forEach { cat ->
                             val count = landmarks.count { it.categoryId == cat.second }
-                            Card(Modifier.weight(1f).padding(bottom = 9.dp), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-                                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Box(Modifier.size(36.dp).clip(CircleShape).background(cat.third.copy(alpha = 0.18f)), contentAlignment = Alignment.Center) {
-                                        Icon(when (cat.second) { "ksour" -> Icons.Filled.Home; "natural-sites" -> Icons.Filled.Map; "rock-art" -> Icons.Filled.Search; else -> Icons.Filled.Language }, contentDescription = null, tint = Forest, modifier = Modifier.size(19.dp))
+                            Card(Modifier.weight(1f).padding(bottom = 9.dp), shape = RoundedCornerShape(17.dp), colors = CardDefaults.cardColors(containerColor = card), border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF1D405A))) {
+                                Row(Modifier.fillMaxWidth().padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Box(Modifier.size(39.dp).clip(CircleShape).background(cat.third.copy(alpha = 0.17f)), contentAlignment = Alignment.Center) {
+                                        Icon(when (cat.second) { "ksour" -> Icons.Filled.Home; "natural-sites" -> Icons.Filled.Map; "rock-art" -> Icons.Filled.Search; else -> Icons.Filled.Language }, contentDescription = null, tint = cat.third, modifier = Modifier.size(20.dp))
                                     }
                                     Spacer(Modifier.width(9.dp))
                                     Column {
-                                        Text(cat.first, color = Forest, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                                        Text(count.toString() + if (ar) " معالم" else if (fr) " sites" else " places", color = Muted, fontSize = 10.sp)
+                                        Text(cat.first, color = light, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                        Text(count.toString() + if (ar) " معالم" else if (fr) " sites" else " places", color = muted, fontSize = 10.sp)
                                     }
                                 }
                             }
@@ -380,42 +394,46 @@ private fun HomeScreen(
                     }
                 }
             }
-            Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).clickable(onClick = onOpenScanner), shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = ForestDeep)) {
+            Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 13.dp).clickable(onClick = onOpenScanner), shape = RoundedCornerShape(22.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF10385A)), border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF31536B))) {
                 Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(58.dp).clip(CircleShape).background(Gold), contentAlignment = Alignment.Center) {
-                        Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = ForestDeep, modifier = Modifier.size(31.dp))
+                    Box(Modifier.size(58.dp).clip(RoundedCornerShape(18.dp)).background(Gold), contentAlignment = Alignment.Center) {
+                        Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = navy, modifier = Modifier.size(31.dp))
                     }
                     Spacer(Modifier.width(14.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(if (ar) "اكتشف من هنا" else if (fr) "Découvrez ici" else "Discover here", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                        Text(if (ar) "امسح واكتشف" else if (fr) "Scanner et découvrir" else "Scan & discover", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                        Text(if (ar) "وجّه الكاميرا نحو المعلم للتعرّف عليه" else if (fr) "Pointez la caméra vers un site" else "Point your camera at a landmark", color = light.copy(alpha = 0.8f), fontSize = 11.sp, modifier = Modifier.padding(top = 4.dp))
                     }
+                    Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = Gold, modifier = Modifier.size(25.dp))
                 }
             }
-            Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                Text(if (ar) "وجهات مميزة" else if (fr) "Destinations vedettes" else "Featured destinations", color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text(featured.size.toString() + if (ar) " وجهات" else if (fr) " sites" else " places", color = Muted, fontSize = 10.sp)
+            Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text(if (ar) "وجهات مميزة" else if (fr) "Destinations vedettes" else "Featured destinations", color = light, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(featured.size.toString() + if (ar) " وجهات" else if (fr) " sites" else " places", color = muted, fontSize = 10.sp)
             }
             Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 featured.take(8).forEach { item ->
-                    Card(Modifier.width(218.dp).clickable { onOpenLandmark(item) }, shape = RoundedCornerShape(18.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+                    Card(Modifier.width(218.dp).clickable { onOpenLandmark(item) }, shape = RoundedCornerShape(19.dp), colors = CardDefaults.cardColors(containerColor = card), border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF1D405A))) {
                         Column {
                             LandmarkThumbnail(photosByLandmark[item.id].orEmpty().firstOrNull() ?: item.image, item.name(lang), large = true)
                             Column(Modifier.padding(12.dp)) {
-                                Text(item.name(lang), color = Forest, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-                                Text(if (ar) "ولاية البيض" else if (fr) "Wilaya d’El Bayadh" else "El Bayadh Province", color = Muted, fontSize = 10.sp, modifier = Modifier.padding(top = 4.dp))
+                                Text(item.name(lang), color = light, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                                Text(if (ar) "ولاية البيض" else if (fr) "Wilaya d’El Bayadh" else "El Bayadh Province", color = muted, fontSize = 10.sp, modifier = Modifier.padding(top = 4.dp))
                             }
                         }
                     }
                 }
             }
-            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 18.dp).clip(RoundedCornerShape(14.dp)).background(Sand).padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(34.dp).clip(CircleShape).background(Gold), contentAlignment = Alignment.Center) { Icon(Icons.Filled.Language, contentDescription = null, tint = Forest) }
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 18.dp).clip(RoundedCornerShape(14.dp)).background(Color(0xFF102A42)).padding(13.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Language, contentDescription = null, tint = Gold)
                 Spacer(Modifier.width(10.dp))
-                Text(c.offline, color = Forest, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                Text(c.offline, color = light, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
             }
         }
+        Spacer(Modifier.height(14.dp))
     }
 }
+
 
 @Composable
 private fun CategoryCard(title: String, brush: Brush, modifier: Modifier = Modifier) {
