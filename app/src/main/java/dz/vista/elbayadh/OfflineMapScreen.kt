@@ -102,11 +102,6 @@ internal fun OfflineMapScreen(language: String) {
     var searchQuery by remember { mutableStateOf("") }
     var mapStyle by remember { mutableStateOf("roads") }
     var locationMessage by remember { mutableStateOf("") }
-    val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
-        if (grants.values.any { it }) {
-            centerOnCurrentLocation(context, mapView)?.let { locationMessage = it }
-        } else locationMessage = if (isArabic) "لم تسمح بالوصول إلى الموقع." else if (isFrench) "Accès à la position refusé." else "Location permission denied."
-    }
     var selectedPlace by remember { mutableStateOf<OfflinePlace?>(null) }
 
     val mapSetup = remember(mapFile, mapStyle) {
@@ -117,6 +112,11 @@ internal fun OfflineMapScreen(language: String) {
         }
     }
     val mapView = mapSetup.getOrNull()
+    val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+        if (grants.values.any { it }) {
+            centerOnCurrentLocation(context, mapView)?.let { locationMessage = it }
+        } else locationMessage = if (isArabic) "لم تسمح بالوصول إلى الموقع." else if (isFrench) "Accès à la position refusé." else "Location permission denied."
+    }
     val setupError = mapSetup.exceptionOrNull()?.localizedMessage
     val searchResults = remember(places, searchQuery) {
         if (searchQuery.isBlank()) emptyList()
@@ -133,11 +133,11 @@ internal fun OfflineMapScreen(language: String) {
         )
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            listOf("roads", "terrain", "night").forEach { style ->
+            listOf("roads", "terrain", "standard").forEach { style ->
                 val label = when (style) {
                     "roads" -> if (isArabic) "طرق" else if (isFrench) "Routes" else "Roads"
                     "terrain" -> if (isArabic) "تضاريس" else if (isFrench) "Relief" else "Terrain"
-                    else -> if (isArabic) "ليلي" else if (isFrench) "Nuit" else "Night"
+                    else -> if (isArabic) "قياسي" else if (isFrench) "Standard" else "Standard"
                 }
                 Button(onClick = { mapStyle = style }, colors = ButtonDefaults.buttonColors(containerColor = if (mapStyle == style) MapGold else Color(0xFF153650), contentColor = if (mapStyle == style) MapNavy else MapLight), modifier = Modifier.weight(1f)) { Text(label) }
             }
@@ -147,7 +147,7 @@ internal fun OfflineMapScreen(language: String) {
                 else locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
             }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF153650), contentColor = MapGold), modifier = Modifier.weight(1f)) { Text(if (isArabic) "موقعي" else if (isFrench) "Ma position" else "My location") }
         }
-        if (mapStyle == "night") Text(if (isArabic) "النمط الليلي يغيّر ألوان الطرق؛ صور الأقمار الصناعية تحتاج حزمة صور مستقلة." else if (isFrench) "Le mode nuit adapte le rendu; le satellite nécessite des images dédiées." else "Night styling changes map colors; satellite imagery requires a separate imagery package.", color = MapMuted)
+        Text(if (isArabic) "القمر الصناعي يحتاج صوراً جوية مرخّصة وحزمة خرائط مستقلة؛ لن نعرض صورة وهمية." else if (isFrench) "Le satellite nécessite des images aériennes sous licence et un pack dédié." else "Satellite requires licensed aerial imagery and a dedicated offline image package.", color = MapMuted)
         if (locationMessage.isNotBlank()) Text(locationMessage, color = MapGold)
 
         OutlinedTextField(
@@ -345,7 +345,7 @@ private fun createOfflineMapView(
             }
         }
         // MOTORIDER is the theme used by the official Mapsforge Android sample.
-        layer.setXmlRenderTheme(when (mapStyle) { "terrain" -> MapsforgeThemes.HILLSHADING; "night" -> MapsforgeThemes.BIKER; else -> MapsforgeThemes.OSMARENDER })
+        layer.setXmlRenderTheme(when (mapStyle) { "terrain" -> MapsforgeThemes.HILLSHADING; "standard" -> MapsforgeThemes.DEFAULT; else -> MapsforgeThemes.OSMARENDER })
         layerManager.layers.add(layer)
 
         // Read the initial camera from the map file itself. A hard-coded centre/zoom
