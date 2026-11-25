@@ -53,6 +53,23 @@ for feature in data.get("features", []):
         "osm_id": props.get("@id")
     })
 
+# Ensure the principal settlement is searchable even if the upstream GeoJSON
+# omits the OSM place node during polygon clipping/export. Coordinates and OSM
+# identity are tied to the existing place=town node 490536990.
+el_abiodh = {
+    "name": "El Abiodh Sidi Cheikh",
+    "name_ar": "الأبيض سيدي الشيخ",
+    "name_fr": "El Abiodh Sidi Cheikh",
+    "name_en": "El Abiodh Sidi Cheikh",
+    "category": "town",
+    "latitude": 32.89648,
+    "longitude": 0.54639,
+    "osm_type": "node",
+    "osm_id": 490536990
+}
+if not any(item.get("osm_id") == 490536990 for item in items):
+    items.append(el_abiodh)
+
 items.sort(key=lambda item: (item["name"].casefold(), item["latitude"], item["longitude"]))
 destination.write_text(json.dumps({
     "schema_version": 1,
