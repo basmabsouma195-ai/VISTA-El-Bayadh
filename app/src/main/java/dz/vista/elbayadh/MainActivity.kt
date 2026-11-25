@@ -33,6 +33,7 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
+import androidx.camera.core.toBitmap
 import androidx.camera.lifecycle.ProcessCameraProvider
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
@@ -741,7 +742,6 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                         val analysis = ImageAnalysis.Builder()
                             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                             .build()
                         analysis.setAnalyzer(analyzerExecutor) { proxy ->
                             val now = SystemClock.elapsedRealtime()
@@ -971,32 +971,19 @@ private suspend fun analyzeLandmarkPhoto(
 
 private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
     return runCatching {
-        val plane = proxy.planes.first()
-        val buffer = plane.buffer.duplicate()
-        val width = proxy.width
-        val height = proxy.height
-        val rowStride = plane.rowStride
-        val pixelStride = plane.pixelStride
-        val bytes = ByteArray(buffer.remaining())
-        buffer.get(bytes)
-        val pixels = IntArray(width * height)
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                val offset = y * rowStride + x * pixelStride
-                require(offset >= 0 && offset + 3 < bytes.size) { "RGBA camera frame buffer is incomplete" }
-                val r = bytes[offset].toInt() and 0xFF
-                val g = bytes[offset + 1].toInt() and 0xFF
-                val b = bytes[offset + 2].toInt() and 0xFF
-                val a = bytes[offset + 3].toInt() and 0xFF
-                pixels[y * width + x] = android.graphics.Color.argb(a, r, g, b)
-            }
-        }
-        val raw = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        raw.setPixels(pixels, 0, width, 0, 0, width, height)
+        // Let CameraX perform the YUV_420_888 conversion. Manual plane/stride
+        // decoding can produce corrupted colors or offsets on some devices.
+        val cameraBitmap = proxy.toBitmap()
         val rotation = proxy.imageInfo.rotationDegrees
-        if (rotation == 0) raw else {
+        if (rotation == 0) {
+            cameraBitmap
+        } else {
             val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
-            Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true).also { raw.recycle() }
+            Bitmap.createBitmap(
+                cameraBitmap, 0, 0, cameraBitmap.width, cameraBitmap.height, matrix, true
+            ).also {
+                if (it !== cameraBitmap && !cameraBitmap.isRecycled) cameraBitmap.recycle()
+            }
         }
     }.getOrNull()
 }
