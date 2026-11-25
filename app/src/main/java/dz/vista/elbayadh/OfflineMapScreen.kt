@@ -288,9 +288,11 @@ private fun createOfflineMapView(
     return MapView(context).apply {
         setBuiltInZoomControls(true)
         mapScaleBar.isVisible = true
+        // Use a fresh cache namespace so tiles from an older bundled map cannot mask
+        // the current map after an in-place app update.
         val cache = AndroidUtil.createTileCache(
             context,
-            "vista-el-bayadh-map",
+            "vista-el-bayadh-map-v2",
             model.displayModel.tileSize,
             1f,
             model.frameBufferModel.overdrawFactor
@@ -308,19 +310,28 @@ private fun createOfflineMapView(
                 return true
             }
         }
-        layer.setXmlRenderTheme(MapsforgeThemes.DEFAULT)
+        // MOTORIDER is the theme used by the official Mapsforge Android sample.
+        layer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER)
         layerManager.layers.add(layer)
-        setCenter(LatLong(33.68, 1.02))
-        setZoomLevel(8.toByte())
+
+        // Read the initial camera from the map file itself. A hard-coded centre/zoom
+        // can point outside the map's actual coverage and produce an empty canvas.
+        setCenter(store.startPosition())
+        setZoomLevel(store.startZoomLevel())
+        layerManager.redrawLayers()
     }
 }
 
 private fun bundledMapFile(context: Context): File? = runCatching {
+    // Always refresh the private copy from the APK asset. Android preserves app
+    // files across upgrades, so an older non-empty map file must not be reused.
+    val destination = File(context.filesDir, "el-bayadh-current.map")
+    val temporary = File(context.filesDir, "el-bayadh-current.map.tmp")
     context.assets.open("maps/el-bayadh.map").use { input ->
-        val destination = File(context.filesDir, "el-bayadh.map")
-        if (!destination.exists() || destination.length() == 0L) {
-            destination.outputStream().use { output -> input.copyTo(output) }
-        }
-        destination.takeIf { it.exists() && it.length() > 0L }
+        temporary.outputStream().use { output -> input.copyTo(output) }
     }
+    check(temporary.length() > 0L) { "Bundled offline map is empty." }
+    if (destination.exists()) destination.delete()
+    check(temporary.renameTo(destination)) { "Could not install the bundled offline map." }
+    destination.takeIf { it.exists() && it.length() > 0L }
 }.getOrNull()
