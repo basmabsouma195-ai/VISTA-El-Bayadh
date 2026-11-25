@@ -1,32 +1,9 @@
 {
-  "region": {
-    "name": "El Bayadh",
-    "name_ar": "البيض",
-    "wilaya_code": 32,
-    "country": "Algeria"
-  },
-  "boundary": {
-    "source": "GeoAlgeria",
-    "repository": "https://github.com/yasserstudio/geoalgeria",
-    "file": "packages/dataset/data/geojson/wilaya-boundaries-detailed.geojson",
-    "feature_property": "code",
-    "feature_value": 32,
-    "geometry_note": "Detailed boundary is derived from the union of the wilaya's commune outlines.",
-    "osm_relation_id": 1258649,
-    "osm_relation_url": "https://www.openstreetmap.org/relation/1258649",
-    "license": "ODbL-1.0"
-  },
-  "map_data": {
-    "source": "Geofabrik",
-    "url": "https://download.geofabrik.de/africa/algeria.html",
-    "input_format": "OSM PBF",
-    "required_processing": "Clip Algeria PBF to the verified El Bayadh boundary before converting to Mapsforge .map"
-  },
-  "output": {
-    "expected_asset": "app/src/main/assets/maps/el-bayadh.map",
-    "renderer": "Mapsforge Android",
-    "bundled_offline": true
-  },
-  "attribution": "© OpenStreetMap contributors, ODbL 1.0. Boundary compilation: GeoAlgeria; see its LICENSE and NOTICE for mixed package terms.",
-  "status": "Boundary source identified; generated Mapsforge asset, local POI index, saved pins, and airplane-mode validation are not yet complete."
+  "region": {"name": "El Bayadh", "name_ar": "البيض", "wilaya_code": 32, "country": "Algeria", "communes_expected": 22},
+  "boundary": {"source": "GeoAlgeria", "repository": "https://github.com/yasserstudio/geoalgeria", "file": "packages/dataset/data/geojson/wilaya-boundaries-detailed.geojson", "feature_property": "code", "feature_value": 32, "osm_relation_id": 1258649, "osm_relation_url": "https://www.openstreetmap.org/relation/1258649", "license": "ODbL-1.0"},
+  "map_data": {"source": "Geofabrik Algeria OSM extract", "url": "https://download.geofabrik.de/africa/algeria-latest.osm.pbf", "input_format": "OSM PBF", "clip_to_wilaya_boundary": true, "tile_generator": "Planetiler with pinned OpenMapTiles profile", "output_format": "PMTiles vector archive"},
+  "android": {"renderer": "MapLibre Native Android", "minimum_sdk": "11.7.0", "planned_dependency": "org.maplibre.gl:android-sdk:13.6.1", "tile_uri_scheme": "pmtiles://asset://", "fully_offline": true, "local_style_and_glyphs_required": true},
+  "outputs": {"archive": "app/src/main/assets/maps/el-bayadh.pmtiles", "style": "app/src/main/assets/maps/style.json", "poi_index": "app/src/main/assets/maps/places.json", "boundary_metadata": "app/src/main/assets/maps/boundary.json"},
+  "attribution": "© OpenStreetMap contributors, ODbL 1.0. Wilaya boundary source: GeoAlgeria; see its LICENSE and NOTICE.",
+  "status": "Architecture selected. New PMTiles data pipeline and MapLibre renderer are not yet implemented or runtime-validated."
 }
