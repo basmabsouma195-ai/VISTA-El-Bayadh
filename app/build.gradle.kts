@@ -66,6 +66,8 @@ dependencies {
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
     implementation("com.google.ai.edge.litert:litert:1.4.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+    implementation("org.mapsforge:mapsforge-map-android:0.25.0")
+    implementation("org.mapsforge:mapsforge-themes:0.25.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
     testImplementation("junit:junit:4.13.2")
 }
