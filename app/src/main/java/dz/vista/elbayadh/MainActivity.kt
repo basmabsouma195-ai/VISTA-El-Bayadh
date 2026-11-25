@@ -229,16 +229,16 @@ private fun VistaApp() {
                     bottomBar = {
                         NavigationBar(containerColor = Color(0xFF071B2D), tonalElevation = 0.dp) {
                             val items = listOf(
-                                Icons.Filled.Home to c.home,
-                                Icons.Filled.Map to c.map,
-                                Icons.Filled.CenterFocusStrong to c.scan,
-                                Icons.Filled.Favorite to c.favorites,
-                                Icons.Filled.MoreHoriz to c.more
+                                Triple(Icons.Filled.MoreHoriz, if (language == AppLanguage.Arabic) "الحساب" else if (language == AppLanguage.French) "Compte" else "Account", 4),
+                                Triple(Icons.Filled.Favorite, c.favorites, 3),
+                                Triple(Icons.Filled.CenterFocusStrong, c.scan, 2),
+                                Triple(Icons.Filled.Map, c.map, 1),
+                                Triple(Icons.Filled.Home, if (language == AppLanguage.Arabic) "استكشاف" else if (language == AppLanguage.French) "Explorer" else "Explore", 0)
                             )
-                            items.forEachIndexed { index, item ->
+                            items.forEach { item ->
                                 NavigationBarItem(
-                                    selected = selectedTab == index,
-                                    onClick = { selectedTab = index },
+                                    selected = selectedTab == item.third,
+                                    onClick = { selectedTab = item.third },
                                     icon = { Icon(item.first, contentDescription = item.second) },
                                     label = { Text(item.second, fontSize = 10.sp, maxLines = 1) },
                                     colors = androidx.compose.material3.NavigationBarItemDefaults.colors(
@@ -834,7 +834,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         }
     }
 
-    Column(Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState()).padding(16.dp)) {
+    Column(Modifier.fillMaxSize().background(Color(0xFF071B2D)).verticalScroll(rememberScrollState()).padding(16.dp)) {
         if (hasCameraPermission) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth().height(300.dp).clip(RoundedCornerShape(22.dp)),
@@ -850,7 +850,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     scanRequestSignal.set(true)
                 },
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = ForestDeep)
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Gold)
             ) {
                 Text(
                     if (liveScanInProgress) {
@@ -865,26 +865,26 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(top = 10.dp, bottom = 10.dp),
                     shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(containerColor = Sand)
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0D2A45))
                 ) {
-                    Text(status, color = Forest, fontSize = 14.sp, lineHeight = 20.sp, modifier = Modifier.padding(14.dp))
+                    Text(status, color = Color(0xFFF6F0E5), fontSize = 14.sp, lineHeight = 20.sp, modifier = Modifier.padding(14.dp))
                 }
             }
             liveSuggestedLandmarks.forEachIndexed { index, candidate ->
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).clickable { onOpenLandmark(candidate) },
                     shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0D2A45))
                 ) {
                     Column(Modifier.fillMaxWidth().padding(12.dp)) {
                         Text(candidate.name(when (language) {
                             AppLanguage.Arabic -> CatalogueLanguage.AR
                             AppLanguage.French -> CatalogueLanguage.FR
                             AppLanguage.English -> CatalogueLanguage.EN
-                        }), color = Forest, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        }), color = Color(0xFFF6F0E5), fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         Text(
                             if (isArabic) "اضغط لعرض تفاصيل المعلم" else if (isFrench) "Appuyez pour voir le site" else "Tap to view landmark details",
-                            color = Muted, fontSize = 11.sp
+                            color = Color(0xFF9EADBB), fontSize = 11.sp
                         )
                     }
                 }
@@ -898,7 +898,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
             }
             galleryStatus?.let { status ->
                 Card(Modifier.fillMaxWidth().padding(top = 12.dp), shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = Sand)) {
-                    Text(status, color = Forest, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(12.dp))
+                    Text(status, color = Color(0xFFF6F0E5), fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(12.dp))
                 }
             }
             gallerySuggestedLandmarks.forEach { candidate ->
