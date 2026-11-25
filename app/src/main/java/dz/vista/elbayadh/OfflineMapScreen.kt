@@ -1,6 +1,9 @@
 package dz.vista.elbayadh
 
 import android.content.Context
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import org.json.JSONObject
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,6 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import org.mapsforge.core.model.LatLong
@@ -92,13 +100,20 @@ internal fun OfflineMapScreen(language: String) {
     }
     val latestPins = rememberUpdatedState(pins)
     var searchQuery by remember { mutableStateOf("") }
+    var mapStyle by remember { mutableStateOf("roads") }
+    var locationMessage by remember { mutableStateOf("") }
+    val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+        if (grants.values.any { it }) {
+            centerOnCurrentLocation(context, mapView)?.let { locationMessage = it }
+        } else locationMessage = if (isArabic) "لم تسمح بالوصول إلى الموقع." else if (isFrench) "Accès à la position refusé." else "Location permission denied."
+    }
     var selectedPlace by remember { mutableStateOf<OfflinePlace?>(null) }
 
-    val mapSetup = remember(mapFile) {
+    val mapSetup = remember(mapFile, mapStyle) {
         if (mapFile == null) {
             Result.failure<MapView>(IllegalStateException("Offline map file is missing."))
         } else {
-            runCatching { createOfflineMapView(context, mapFile, pinStore, latestPins) }
+            runCatching { createOfflineMapView(context, mapFile, pinStore, latestPins, mapStyle) }
         }
     }
     val mapView = mapSetup.getOrNull()
@@ -116,6 +131,24 @@ internal fun OfflineMapScreen(language: String) {
             if (isArabic) "خريطة ولاية البيض" else if (isFrench) "Carte de la wilaya d’El Bayadh" else "El Bayadh Wilaya map",
             color = MapLight
         )
+
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            listOf("roads", "terrain", "night").forEach { style ->
+                val label = when (style) {
+                    "roads" -> if (isArabic) "طرق" else if (isFrench) "Routes" else "Roads"
+                    "terrain" -> if (isArabic) "تضاريس" else if (isFrench) "Relief" else "Terrain"
+                    else -> if (isArabic) "ليلي" else if (isFrench) "Nuit" else "Night"
+                }
+                Button(onClick = { mapStyle = style }, colors = ButtonDefaults.buttonColors(containerColor = if (mapStyle == style) MapGold else Color(0xFF153650), contentColor = if (mapStyle == style) MapNavy else MapLight), modifier = Modifier.weight(1f)) { Text(label) }
+            }
+            Button(onClick = {
+                val granted = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                if (granted) locationMessage = centerOnCurrentLocation(context, mapView) ?: ""
+                else locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+            }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF153650), contentColor = MapGold), modifier = Modifier.weight(1f)) { Text(if (isArabic) "موقعي" else if (isFrench) "Ma position" else "My location") }
+        }
+        if (mapStyle == "night") Text(if (isArabic) "النمط الليلي يغيّر ألوان الطرق؛ صور الأقمار الصناعية تحتاج حزمة صور مستقلة." else if (isFrench) "Le mode nuit adapte le rendu; le satellite nécessite des images dédiées." else "Night styling changes map colors; satellite imagery requires a separate imagery package.", color = MapMuted)
+        if (locationMessage.isNotBlank()) Text(locationMessage, color = MapGold)
 
         OutlinedTextField(
             value = searchQuery,
@@ -280,7 +313,8 @@ private fun createOfflineMapView(
     context: Context,
     mapFile: File,
     pinStore: OfflineMapPinStore,
-    latestPins: androidx.compose.runtime.State<MutableList<OfflineMapPin>>
+    latestPins: androidx.compose.runtime.State<MutableList<OfflineMapPin>>,
+    mapStyle: String
 ): MapView {
     if (AndroidGraphicFactory.INSTANCE == null) {
         AndroidGraphicFactory.createInstance(context.applicationContext)
@@ -311,7 +345,7 @@ private fun createOfflineMapView(
             }
         }
         // MOTORIDER is the theme used by the official Mapsforge Android sample.
-        layer.setXmlRenderTheme(MapsforgeThemes.MOTORIDER)
+        layer.setXmlRenderTheme(when (mapStyle) { "terrain" -> MapsforgeThemes.HILLSHADING; "night" -> MapsforgeThemes.BIKER; else -> MapsforgeThemes.OSMARENDER })
         layerManager.layers.add(layer)
 
         // Read the initial camera from the map file itself. A hard-coded centre/zoom
@@ -335,3 +369,24 @@ private fun bundledMapFile(context: Context): File? = runCatching {
     check(temporary.renameTo(destination)) { "Could not install the bundled offline map." }
     destination.takeIf { it.exists() && it.length() > 0L }
 }.getOrNull()
+
+
+private fun centerOnCurrentLocation(context: Context, mapView: MapView?): String? {
+    if (mapView == null) return "Map is not ready."
+    val fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    val coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    if (!fine && !coarse) return "Location permission is required."
+    return runCatching {
+        val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val location = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
+            .asSequence()
+            .filter { provider -> runCatching { manager.isProviderEnabled(provider) }.getOrDefault(false) }
+            .mapNotNull { provider -> runCatching { manager.getLastKnownLocation(provider) }.getOrNull() }
+            .maxByOrNull { it.time }
+            ?: return "No recent location fix. Enable GPS and try again."
+        mapView.setCenter(LatLong(location.latitude, location.longitude))
+        mapView.setZoomLevel(15.toByte())
+        mapView.layerManager.redrawLayers()
+        "Location: %.5f, %.5f".format(location.latitude, location.longitude)
+    }.getOrElse { "Unable to read current location: ${it.localizedMessage ?: "unknown error"}" }
+}
