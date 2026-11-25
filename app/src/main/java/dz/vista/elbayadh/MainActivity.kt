@@ -2,6 +2,8 @@ package dz.vista.elbayadh
 
 import android.os.Bundle
 import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.os.SystemClock
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.ComponentActivity
@@ -38,6 +40,8 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicInteger
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -719,11 +723,10 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         var boundProvider: ProcessCameraProvider? = null
         var boundPreview: Preview? = null
         var boundAnalysis: ImageAnalysis? = null
-        val scanner = BarcodeScanning.getClient(
-            BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build()
-        )
         val analyzerExecutor = Executors.newSingleThreadExecutor()
-        val processing = AtomicBoolean(false)
+        val lastAnalysisAt = AtomicLong(0L)
+        val lastCandidateId = java.util.concurrent.atomic.AtomicReference<String?>(null)
+        val stableCandidateFrames = AtomicInteger(0)
 
         if (hasCameraPermission) {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -736,17 +739,39 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                         val analysis = ImageAnalysis.Builder()
                             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                             .build()
                         analysis.setAnalyzer(analyzerExecutor) { proxy ->
-                            analyzeVistaQr(proxy, scanner, processing, landmarks,
-                                onFound = { found ->
-                                    if (!disposed && qrMatchedLandmark?.id != found.id) {
-                                        qrMatchedLandmark = found
-                                        qrMessage = null
+                            val now = SystemClock.elapsedRealtime()
+                            val frame = if (now - lastAnalysisAt.get() >= 1100L &&
+                                lastAnalysisAt.compareAndSet(lastAnalysisAt.get(), now)
+                            ) imageProxyToBitmap(proxy) else null
+                            proxy.close()
+                            if (frame != null && !disposed) {
+                                recognitionScope.launch {
+                                    val found = runCatching {
+                                        recognitionEngine.suggestCandidates(frame)
+                                    }.getOrDefault(emptyList())
+                                    frame.recycle()
+                                    if (disposed) return@launch
+                                    val best = found.firstOrNull()
+                                    if (best == null) {
+                                        stableCandidateFrames.set(0)
+                                        lastCandidateId.set(null)
+                                        suggestedLandmarks = emptyList()
+                                        recognitionStatus = if (isArabic) "وجّه الكاميرا نحو معلم واضح…" else if (isFrench) "Dirigez la caméra vers un site clairement visible…" else "Point the camera at a clearly visible landmark…"
+                                    } else {
+                                        val previous = lastCandidateId.getAndSet(best.landmarkId)
+                                        val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
+                                            stableCandidateFrames.set(1); 1
+                                        }
+                                        if (stable >= 2) {
+                                            suggestedLandmarks = found.mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
+                                            recognitionStatus = if (isArabic) "تم العثور على تطابق محتمل. تحقق من المعلم." else if (isFrench) "Correspondance possible. Vérifiez le site." else "Possible match found. Please verify the landmark."
+                                        }
                                     }
-                                },
-                                onUnknown = { if (!disposed) qrMessage = it }
-                            )
+                                }
+                            }
                         }
                         provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis)
                         boundProvider = provider
@@ -769,7 +794,6 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 analysis?.let(useCases::add)
                 if (useCases.isNotEmpty()) runCatching { provider.unbind(*useCases.toTypedArray()) }
             }
-            scanner.close()
             analyzerExecutor.shutdown()
         }
     }
@@ -956,6 +980,37 @@ private suspend fun analyzeLandmarkPhoto(
     } finally {
         if (!snapshot.isRecycled) snapshot.recycle()
     }
+}
+
+private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
+    return runCatching {
+        val plane = proxy.planes.first()
+        val buffer = plane.buffer.duplicate()
+        val width = proxy.width
+        val height = proxy.height
+        val rowStride = plane.rowStride
+        val pixelStride = plane.pixelStride
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val offset = y * rowStride + x * pixelStride
+                val r = bytes[offset].toInt() and 0xFF
+                val g = bytes[offset + 1].toInt() and 0xFF
+                val b = bytes[offset + 2].toInt() and 0xFF
+                val a = bytes[offset + 3].toInt() and 0xFF
+                pixels[y * width + x] = android.graphics.Color.argb(a, r, g, b)
+            }
+        }
+        val raw = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        raw.setPixels(pixels, 0, width, 0, 0, width, height)
+        val rotation = proxy.imageInfo.rotationDegrees
+        if (rotation == 0) raw else {
+            val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
+            Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true).also { raw.recycle() }
+        }
+    }.getOrNull()
 }
 
 private fun analyzeVistaQr(
