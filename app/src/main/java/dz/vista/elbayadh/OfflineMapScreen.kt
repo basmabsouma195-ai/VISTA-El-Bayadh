@@ -266,7 +266,27 @@ internal fun OfflineMapScreen(language: String, landmarks: List<Landmark>, onOpe
                 mapView.layerManager.redrawLayers()
             }
 
-            AndroidView(factory = { mapView }, modifier = Modifier.fillMaxWidth().weight(1f))
+            AndroidView(
+                factory = {
+                    mapView.apply {
+                        // Compose attaches and measures this native view after the
+                        // renderer layer is created. Trigger a second render once the
+                        // view has a real size, rather than relying only on the
+                        // pre-attachment redraw.
+                        post {
+                            layerManager.redrawLayers()
+                            invalidate()
+                        }
+                    }
+                },
+                update = { view ->
+                    view.post {
+                        view.layerManager.redrawLayers()
+                        view.invalidate()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth().weight(1f)
+            )
             DisposableEffect(mapView) {
                 onDispose { runCatching { mapView.destroyAll() } }
             }
@@ -365,8 +385,8 @@ private fun createOfflineMapView(
                 return true
             }
         }
-        // MOTORIDER is the theme used by the official Mapsforge Android sample.
-        layer.setXmlRenderTheme(when (mapStyle) { "terrain" -> MapsforgeThemes.HILLSHADING; "standard" -> MapsforgeThemes.DEFAULT; else -> MapsforgeThemes.OSMARENDER })
+        // Use the same proven default theme as the official Mapsforge Android sample.
+        layer.setXmlRenderTheme(when (mapStyle) { "terrain" -> MapsforgeThemes.HILLSHADING; "standard" -> MapsforgeThemes.DEFAULT; else -> MapsforgeThemes.MOTORIDER })
         layerManager.layers.add(layer)
 
         // Read the initial camera from the map file itself. A hard-coded centre/zoom
