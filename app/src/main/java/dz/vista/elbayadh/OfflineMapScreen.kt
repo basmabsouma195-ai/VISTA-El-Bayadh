@@ -114,7 +114,7 @@ internal fun OfflineMapScreen(language: String) {
     val mapView = mapSetup.getOrNull()
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         if (grants.values.any { it }) {
-            centerOnCurrentLocation(context, mapView)?.let { locationMessage = it }
+            locationMessage = centerOnCurrentLocation(context, mapView) ?: ""
         } else locationMessage = if (isArabic) "لم تسمح بالوصول إلى الموقع." else if (isFrench) "Accès à la position refusé." else "Location permission denied."
     }
     val setupError = mapSetup.exceptionOrNull()?.localizedMessage
