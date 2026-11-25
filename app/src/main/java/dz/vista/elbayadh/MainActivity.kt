@@ -34,12 +34,7 @@ import androidx.camera.core.Preview
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicInteger
 import androidx.camera.view.PreviewView
@@ -687,8 +682,6 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
-    var qrMessage by remember { mutableStateOf<String?>(null) }
-    var qrMatchedLandmark by remember { mutableStateOf<Landmark?>(null) }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasCameraPermission = granted }
@@ -749,17 +742,20 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                             proxy.close()
                             if (frame != null && !disposed) {
                                 recognitionScope.launch {
-                                    val found = runCatching {
+                                    val found = try {
                                         recognitionEngine.suggestCandidates(frame)
-                                    }.getOrDefault(emptyList())
-                                    frame.recycle()
+                                    } catch (_: Exception) {
+                                        emptyList()
+                                    } finally {
+                                        if (!frame.isRecycled) frame.recycle()
+                                    }
                                     if (disposed) return@launch
                                     val best = found.firstOrNull()
                                     if (best == null) {
                                         stableCandidateFrames.set(0)
                                         lastCandidateId.set(null)
                                         suggestedLandmarks = emptyList()
-                                        recognitionStatus = if (isArabic) "وجّه الكاميرا نحو معلم واضح…" else if (isFrench) "Dirigez la caméra vers un site clairement visible…" else "Point the camera at a clearly visible landmark…"
+                                        recognitionStatus = if (isArabic) "وجّه الكاميرا نحو معلم واضح؛ التحليل يجري تلقائيًا…" else if (isFrench) "Visez un site clairement visible ; l’analyse est automatique…" else "Point at a clearly visible landmark; analysis is automatic…"
                                     } else {
                                         val previous = lastCandidateId.getAndSet(best.landmarkId)
                                         val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
@@ -767,7 +763,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                         }
                                         if (stable >= 2) {
                                             suggestedLandmarks = found.mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
-                                            recognitionStatus = if (isArabic) "تم العثور على تطابق محتمل. تحقق من المعلم." else if (isFrench) "Correspondance possible. Vérifiez le site." else "Possible match found. Please verify the landmark."
+                                            recognitionStatus = if (isArabic) "تطابق بصري محتمل — اضغط على اسم المعلم لعرض معلوماته." else if (isFrench) "Correspondance visuelle possible — touchez le site pour ses informations." else "Possible visual match — tap the landmark to view its details."
                                         }
                                     }
                                 }
@@ -777,6 +773,8 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         boundProvider = provider
                         boundPreview = preview
                         boundAnalysis = analysis
+                    }.onFailure {
+                        if (!disposed) recognitionStatus = if (isArabic) "تعذّر تشغيل تحليل الكاميرا. أعد فتح شاشة الماسح." else if (isFrench) "Impossible de démarrer l’analyse caméra. Rouvrez le scanner." else "Could not start camera analysis. Reopen the scanner."
                     }
                 }
             }, ContextCompat.getMainExecutor(context))
@@ -799,35 +797,12 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     }
 
     Column(Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState()).padding(16.dp)) {
-        qrMatchedLandmark?.let { found ->
-            AlertDialog(
-                onDismissRequest = { qrMatchedLandmark = null },
-                title = { Text(found.name(when (language) {
-                    AppLanguage.Arabic -> CatalogueLanguage.AR
-                    AppLanguage.French -> CatalogueLanguage.FR
-                    AppLanguage.English -> CatalogueLanguage.EN
-                })) },
-                text = { Text(if (isArabic) "تمت قراءة رمز هذا المعلم." else if (isFrench) "Le QR de ce site a été lu." else "This landmark's QR code was read.") },
-                confirmButton = {
-                    TextButton(onClick = {
-                        qrMatchedLandmark = null
-                        onOpenLandmark(found)
-                    }) { Text(if (isArabic) "اكتشف المعلم" else if (isFrench) "Découvrir" else "Discover") }
-                },
-                dismissButton = {
-                    TextButton(onClick = { qrMatchedLandmark = null }) {
-                        Text(if (isArabic) "إغلاق" else if (isFrench) "Fermer" else "Close")
-                    }
-                }
-            )
-        }
         if (hasCameraPermission) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth().height(300.dp).clip(RoundedCornerShape(22.dp)),
                 factory = { previewView }
             )
             Spacer(Modifier.height(14.dp))
-            qrMessage?.let { Text(it, color = Muted, fontSize = 12.sp, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)) }
             recognitionStatus?.let { status ->
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
@@ -855,29 +830,6 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         )
                     }
                 }
-            }
-            Button(
-                enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
-                onClick = {
-                    val snapshot = previewView.bitmap?.copy(Bitmap.Config.ARGB_8888, false)
-                    if (snapshot == null) {
-                        recognitionStatus = if (isArabic) "تعذّر التقاط الصورة. حاول مجددًا." else if (isFrench) "Capture impossible. Réessayez." else "Could not capture the image. Try again."
-                    } else {
-                        recognitionStatus = if (isArabic) "جارٍ تحليل الصورة..." else if (isFrench) "Analyse de l’image..." else "Analyzing image..."
-                        recognitionScope.launch {
-                            analyzeLandmarkPhoto(
-                                snapshot, recognitionEngine, recognitionReady, landmarks, language,
-                                onOpenLandmark = onOpenLandmark,
-                                onSuggestions = { suggestedLandmarks = it },
-                                onStatus = { recognitionStatus = it }
-                            )
-                        }
-                    }
-                },
-                colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Forest),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(if (isArabic) "امسح بالكاميرا" else if (isFrench) "Scanner avec la caméra" else "Scan with camera", color = Color.White)
             }
             OutlinedButton(
                 enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
@@ -996,6 +948,7 @@ private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
         for (y in 0 until height) {
             for (x in 0 until width) {
                 val offset = y * rowStride + x * pixelStride
+                require(offset >= 0 && offset + 3 < bytes.size) { "RGBA camera frame buffer is incomplete" }
                 val r = bytes[offset].toInt() and 0xFF
                 val g = bytes[offset + 1].toInt() and 0xFF
                 val b = bytes[offset + 2].toInt() and 0xFF
@@ -1011,35 +964,6 @@ private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
             Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true).also { raw.recycle() }
         }
     }.getOrNull()
-}
-
-private fun analyzeVistaQr(
-    proxy: ImageProxy,
-    scanner: com.google.mlkit.vision.barcode.BarcodeScanner,
-    processing: AtomicBoolean,
-    landmarks: List<Landmark>,
-    onFound: (Landmark) -> Unit,
-    onUnknown: (String) -> Unit
-) {
-    val mediaImage = proxy.image
-    if (mediaImage == null || !processing.compareAndSet(false, true)) {
-        proxy.close()
-        return
-    }
-    val input = InputImage.fromMediaImage(mediaImage, proxy.imageInfo.rotationDegrees)
-    scanner.process(input)
-        .addOnSuccessListener { codes ->
-            val raw = codes.firstOrNull { it.format == Barcode.FORMAT_QR_CODE }?.rawValue ?: return@addOnSuccessListener
-            val id = raw.substringAfterLast('/').removePrefix("vista:landmark:").substringBefore('?').trim()
-            val found = landmarks.firstOrNull { it.id == id }
-            if (found != null) onFound(found)
-            else onUnknown("QR detected, but it does not contain a known VISTA landmark ID.")
-        }
-        .addOnFailureListener { onUnknown("QR scan failed. Try holding the camera steady.") }
-        .addOnCompleteListener {
-            processing.set(false)
-            proxy.close()
-        }
 }
 
 @Composable
