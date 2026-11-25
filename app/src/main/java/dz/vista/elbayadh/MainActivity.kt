@@ -700,7 +700,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
             recognitionScope.launch {
                 val selected = decodeGalleryImage(context, uri)
                 if (selected == null) {
-                    recognitionStatus = if (isArabic) "تعذّر فتح الصورة. جرّب صورة أخرى." else if (isFrench) "Impossible d’ouvrir cette image. Essayez-en une autre." else "Could not open this image. Try another photo."
+                    galleryStatus = if (isArabic) "تعذّر فتح الصورة. جرّب صورة أخرى." else if (isFrench) "Impossible d’ouvrir cette image. Essayez-en une autre." else "Could not open this image. Try another photo."
                 } else {
                     analyzeLandmarkPhoto(
                         selected, recognitionEngine, recognitionReady, landmarks, language,
@@ -789,7 +789,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         boundPreview = preview
                         boundAnalysis = analysis
                     }.onFailure {
-                        if (!disposed) recognitionStatus = if (isArabic) "تعذّر تشغيل تحليل الكاميرا. أعد فتح شاشة الماسح." else if (isFrench) "Impossible de démarrer l’analyse caméra. Rouvrez le scanner." else "Could not start camera analysis. Reopen the scanner."
+                        if (!disposed) liveStatus = if (isArabic) "تعذّر تشغيل تحليل الكاميرا. أعد فتح شاشة الماسح." else if (isFrench) "Impossible de démarrer l’analyse caméra. Rouvrez le scanner." else "Could not start camera analysis. Reopen the scanner."
                     }
                 }
             }, ContextCompat.getMainExecutor(context))
