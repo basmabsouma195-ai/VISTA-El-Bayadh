@@ -755,7 +755,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                     try {
                                         val ranked = recognitionEngine.rankPreviewCandidates(frame)
                                         if (disposed) return@launch
-                                        val visibleCandidates = ranked.take(3)
+                                        val visibleCandidates = ranked.take(1)
                                         liveSuggestedLandmarks = visibleCandidates
                                             .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
                                         val best = visibleCandidates.firstOrNull()
@@ -766,7 +766,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                         } else {
                                             lastCandidateId.set(best.landmarkId)
                                             stableCandidateFrames.incrementAndGet()
-                                            liveStatus = if (isArabic) "تحليل حي — أقرب الصور المرجعية (اقتراحات أولية غير مؤكدة). اضغط لفتح بطاقة المعلم." else if (isFrench) "Analyse en direct — références les plus proches (suggestions non confirmées)." else "Live analysis — nearest reference images (unverified suggestions)."
+                                            liveStatus = if (isArabic) "المعلم الأقرب الذي رصده التحليل — اضغط لعرض بطاقته." else if (isFrench) "Résultat visuel le plus proche — appuyez pour ouvrir la fiche." else "Single closest visual result — tap to open its landmark page."
                                         }
                                     } catch (_: Exception) {
                                         liveStatus = if (isArabic) "تعذّر تحليل إطار الكاميرا؛ ستتم إعادة المحاولة تلقائيًا." else if (isFrench) "Échec de l’analyse de l’image ; nouvelle tentative automatique." else "Camera frame analysis failed; retrying automatically."
