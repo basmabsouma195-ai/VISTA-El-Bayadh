@@ -29,10 +29,8 @@ def representative_point(geometry):
 
 for feature in data.get("features", []):
     props = feature.get("properties") or {}
-    tags = props.get("all_tags") or {}
-    if not isinstance(tags, dict):
-        tags = {}
-    name = props.get("name") or tags.get("name")
+    tags = props
+    name = props.get("name")
     if not name:
         continue
     point = representative_point(feature.get("geometry"))
@@ -45,9 +43,9 @@ for feature in data.get("features", []):
     seen.add(key)
     items.append({
         "name": str(name).strip(),
-        "name_ar": tags.get("name:ar"),
-        "name_fr": tags.get("name:fr"),
-        "name_en": tags.get("name:en"),
+        "name_ar": props.get("name:ar"),
+        "name_fr": props.get("name:fr"),
+        "name_en": props.get("name:en"),
         "category": tags.get("amenity") or tags.get("tourism") or tags.get("historic") or tags.get("shop") or tags.get("leisure") or tags.get("natural") or tags.get("place") or "place",
         "latitude": lat,
         "longitude": lon,
