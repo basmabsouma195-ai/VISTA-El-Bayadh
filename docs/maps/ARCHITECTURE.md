@@ -2,9 +2,7 @@
 
 ## Decision
 
-Replace the retired Mapsforge implementation with **MapLibre Native Android + a locally packaged PMTiles vector-tile archive**.
-
-This is a new implementation, not a patch to the former renderer. The map screen stays intentionally empty until the first complete MapLibre slice passes its runtime acceptance tests.
+Replace the retired Mapsforge implementation with **MapLibre Native Android + a locally packaged PMTiles vector-tile archive**. This is a new implementation, not a patch to the former renderer. The map screen stays intentionally empty until the first complete MapLibre slice passes runtime acceptance tests.
 
 ## Geographic scope
 
@@ -14,7 +12,7 @@ This is a new implementation, not a patch to the former renderer. The map screen
 - Coverage: the verified wilaya boundary and all 22 communes
 - The map must not silently expand to all Algeria or confuse El Bayadh with another wilaya.
 
-The boundary source and its ODbL attribution are tracked in `dataset/maps/el-bayadh-map-source.json`.
+The boundary source and its ODbL attribution are tracked in dataset/maps/el-bayadh-map-source.json.
 
 ## Runtime architecture
 
@@ -29,12 +27,12 @@ The boundary source and its ODbL attribution are tracked in `dataset/maps/el-bay
 ## Data build pipeline
 
 - Fetch a pinned Geofabrik Algeria OSM PBF snapshot.
-- Obtain and validate the official/source-tracked Wilaya 32 boundary.
+- Obtain and validate the source-tracked Wilaya 32 boundary.
 - Extract the boundary polygon and clip the PBF to it, preserving required relation context.
 - Generate vector tiles with a pinned Planetiler/OpenMapTiles profile and write a PMTiles archive.
 - Generate and package the matching local style, glyph/font assets, boundary metadata and POI index.
 - Validate archive metadata, tile coverage at the province centre and representative communes, expected source layers, POI coordinates, and checksums before publishing an artifact.
-- Keep the raw source, boundary, style and build versions recorded so the map can be reproduced.
+- Keep the raw source, boundary, style and build versions recorded so the map is reproducible.
 
 ## Runtime acceptance gates
 
@@ -45,7 +43,7 @@ A build is not considered a working map merely because the APK contains a PMTile
 3. The test captures a screenshot and checks that the map is not blank/solid grey.
 4. The test verifies at least one road, water/land feature and place label in the El Bayadh viewport.
 5. The test repeats with network access disabled.
-6. The test checks lifecycle recreation (background/foreground and rotation where supported) and confirms the renderer remains visible.
+6. The test checks lifecycle recreation and confirms the renderer remains visible.
 7. A human visual review checks the province boundary, styling, labels and attribution before release.
 
 ## Delivery phases
@@ -62,4 +60,4 @@ A build is not considered a working map merely because the APK contains a PMTile
 - No network-dependent style, glyph or sprite resources.
 - No claiming turn-by-turn navigation until a separate offline routing engine and routable graph have been implemented and tested.
 - No changes to the app's existing visual identity or other tabs.
-- Do not merge this feature branch into `main` without approval.
+- Do not merge this feature branch into main without approval.
