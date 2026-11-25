@@ -1,0 +1,97 @@
+name: Build El Bayadh offline map data
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-offline-map:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install OSM tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y osmium-tool
+          python3 --version
+          osmium --version
+
+      - name: Download and verify Algeria OSM extract
+        run: |
+          curl --fail --location --retry 3 --output algeria.osm.pbf https://download.geofabrik.de/africa/algeria-latest.osm.pbf
+          curl --fail --location --retry 3 --output algeria.osm.pbf.md5 https://download.geofabrik.de/africa/algeria-latest.osm.pbf.md5
+          md5sum --check algeria.osm.pbf.md5
+
+      - name: Create verified El Bayadh clipping polygon
+        run: |
+          mkdir -p build/el-bayadh
+          python3 scripts/prepare_el_bayadh_map.py --boundary build/el-bayadh/wilaya-boundaries-detailed.geojson --poly build/el-bayadh/el-bayadh.poly | tee build/el-bayadh/boundary-metadata.json
+
+      - name: Clip OSM data to El Bayadh
+        run: |
+          osmium extract --polygon=build/el-bayadh/el-bayadh.poly --strategy=complete_ways --output=build/el-bayadh/el-bayadh.osm.pbf algeria.osm.pbf
+          test -s build/el-bayadh/el-bayadh.osm.pbf
+          ls -lh build/el-bayadh/el-bayadh.osm.pbf
+
+      - name: Build offline named-place index
+        run: |
+          osmium tags-filter build/el-bayadh/el-bayadh.osm.pbf nwr/name nwr/place nwr/amenity nwr/tourism nwr/historic nwr/shop nwr/leisure nwr/natural --output=build/el-bayadh/named-places.osm.pbf
+          osmium export build/el-bayadh/named-places.osm.pbf --output=build/el-bayadh/named-places.geojson
+          python3 scripts/build_el_bayadh_poi_index.py build/el-bayadh/named-places.geojson build/el-bayadh/el-bayadh-pois.json
+          python3 -m json.tool build/el-bayadh/el-bayadh-pois.json > /dev/null
+
+      - name: Install Mapsforge writer plugin
+        run: |
+          mkdir -p "$HOME/.openstreetmap/osmosis/plugins"
+          curl --fail --location --retry 3 \
+            https://github.com/mapsforge/mapsforge/releases/download/0.26.1/mapsforge-map-writer-0.26.1-jar-with-dependencies.jar \
+            --output "$HOME/.openstreetmap/osmosis/plugins/mapsforge-map-writer-0.26.1-jar-with-dependencies.jar"
+          curl --fail --location --retry 3 \
+            https://github.com/openstreetmap/osmosis/releases/download/0.49.2/osmosis-0.49.2.zip \
+            --output osmosis.zip
+          unzip -q osmosis.zip -d tools
+          chmod +x tools/osmosis-0.49.2/bin/osmosis
+          tools/osmosis-0.49.2/bin/osmosis --help | grep -q mapfile-writer
+
+      - name: Generate Mapsforge vector map
+        run: |
+          export JAVACMD_OPTIONS="-Xmx5G"
+          tools/osmosis-0.49.2/bin/osmosis \
+            --read-pbf file=build/el-bayadh/el-bayadh.osm.pbf \
+            --mapfile-writer file=build/el-bayadh/el-bayadh.map type=hd \
+            map-start-position=33.68,1.02 map-start-zoom=8 preferred-languages=ar,fr,en
+          test -s build/el-bayadh/el-bayadh.map
+          ls -lh build/el-bayadh/el-bayadh.map
+
+      - name: Package attribution and provenance
+        run: |
+          cat > build/el-bayadh/ATTRIBUTION.txt <<'EOF'
+          Map data: © OpenStreetMap contributors.
+          Licence: Open Database Licence (ODbL) 1.0.
+          Source: https://www.openstreetmap.org/
+          Wilaya boundary: GeoAlgeria detailed wilaya boundary dataset, feature code 32,
+          derived from OpenStreetMap commune boundary outlines. See the GeoAlgeria
+          repository LICENSE and NOTICE for its mixed package terms:
+          https://github.com/yasserstudio/geoalgeria
+          Extract: Geofabrik Algeria, https://download.geofabrik.de/africa/algeria.html
+          This file is an offline regional extract, not a survey-grade legal boundary.
+          EOF
+          sha256sum build/el-bayadh/el-bayadh.map build/el-bayadh/el-bayadh-pois.json > build/el-bayadh/SHA256SUMS
+
+      - name: Upload El Bayadh offline map package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vista-el-bayadh-offline-map-data
+          path: |
+            build/el-bayadh/el-bayadh.map
+            build/el-bayadh/el-bayadh-pois.json
+            build/el-bayadh/ATTRIBUTION.txt
+            build/el-bayadh/boundary-metadata.json
+            build/el-bayadh/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 30
