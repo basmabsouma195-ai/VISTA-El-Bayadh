@@ -9,7 +9,7 @@
         android:label="Vista El Bayadh"
         android:icon="@drawable/ic_vista_launcher"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        android:theme="@style/VistaTheme">
         <activity
             android:name=".MainActivity"
             android:exported="true">
