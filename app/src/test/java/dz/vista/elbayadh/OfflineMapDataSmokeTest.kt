@@ -14,9 +14,9 @@ import kotlin.math.cos
 class OfflineMapDataSmokeTest {
     private fun tile(latitude: Double, longitude: Double, zoom: Int): Tile {
         val scale = 1 shl zoom
-        val x = floor((longitude + 180.0) / 360.0 * scale)
+        val x = floor((longitude + 180.0) / 360.0 * scale).toInt()
         val latRad = Math.toRadians(latitude)
-        val y = floor((1.0 - ln(tan(latRad) + 1.0 / cos(latRad)) / PI) / 2.0 * scale).toLong()
+        val y = floor((1.0 - ln(tan(latRad) + 1.0 / cos(latRad)) / PI) / 2.0 * scale).toInt()
         return Tile(x, y, zoom.toByte(), 256)
     }
 
