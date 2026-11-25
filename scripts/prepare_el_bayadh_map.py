@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Prepare the verified El Bayadh boundary and a compact offline OSM place index."""
+"""Prepare a combined offline map boundary for El Bayadh (32) and El Abiodh Sidi Cheikh (69)."""
 import argparse
 import json
-import math
 import urllib.request
 from pathlib import Path
 
@@ -10,24 +9,28 @@ BOUNDARY_URL = (
     "https://raw.githubusercontent.com/yasserstudio/geoalgeria/main/"
     "packages/dataset/data/geojson/wilaya-boundaries-detailed.geojson"
 )
+REGIONS = {
+    32: {"name": "El Bayadh", "name_ar": "البيض"},
+    69: {"name": "El Abiodh Sidi Cheikh", "name_ar": "الأبيض سيدي الشيخ"},
+}
 
-def rings_for_geometry(geometry):
-    kind = geometry["type"]
-    coords = geometry["coordinates"]
+def polygons_for_geometry(geometry):
+    kind, coords = geometry["type"], geometry["coordinates"]
     if kind == "Polygon":
         return [coords]
     if kind == "MultiPolygon":
         return coords
     raise ValueError(f"Unsupported boundary geometry: {kind}")
 
-def write_poly(feature, output):
-    rings = rings_for_geometry(feature["geometry"])
+def write_poly(features, output):
+    polygons = []
+    for feature in features:
+        polygons.extend(polygons_for_geometry(feature["geometry"]))
     with output.open("w", encoding="utf-8") as stream:
-        stream.write("El_Bayadh\n")
-        for polygon_index, polygon in enumerate(rings):
+        stream.write("El_Bayadh_and_El_Abiodh_Sidi_Cheikh\n")
+        for polygon_index, polygon in enumerate(polygons):
             for ring_index, ring in enumerate(polygon):
-                is_hole = ring_index > 0
-                name = f"!ring_{polygon_index}_{ring_index}" if is_hole else f"ring_{polygon_index}_{ring_index}"
+                name = f"!ring_{polygon_index}_{ring_index}" if ring_index > 0 else f"ring_{polygon_index}_{ring_index}"
                 stream.write(name + "\n")
                 for lon, lat in ring:
                     stream.write(f"  {lon:.7f}  {lat:.7f}\n")
@@ -39,29 +42,38 @@ def main():
     parser.add_argument("--boundary", type=Path, required=True)
     parser.add_argument("--poly", type=Path, required=True)
     args = parser.parse_args()
+    args.boundary.parent.mkdir(parents=True, exist_ok=True)
     if not args.boundary.exists():
         with urllib.request.urlopen(BOUNDARY_URL, timeout=60) as response:
             args.boundary.write_bytes(response.read())
     dataset = json.loads(args.boundary.read_text(encoding="utf-8"))
     features = dataset.get("features", [])
-    matches = [f for f in features if f.get("properties", {}).get("code") == 32]
-    if len(matches) != 1:
-        raise SystemExit(f"Expected exactly one GeoAlgeria feature for wilaya code 32, found {len(matches)}")
-    feature = matches[0]
-    write_poly(feature, args.poly)
-    coords = []
-    for polygon in rings_for_geometry(feature["geometry"]):
-        coords.extend(polygon[0])
-    lons = [p[0] for p in coords]
-    lats = [p[1] for p in coords]
+    selected = {}
+    for code in REGIONS:
+        matches = [f for f in features if int(f.get("properties", {}).get("code", -1)) == code]
+        if len(matches) != 1:
+            raise SystemExit(f"Expected exactly one boundary feature for wilaya code {code}, found {len(matches)}")
+        selected[code] = matches[0]
+    ordered = [selected[32], selected[69]]
+    write_poly(ordered, args.poly)
+
+    coordinates = []
+    for feature in ordered:
+        for polygon in polygons_for_geometry(feature["geometry"]):
+            coordinates.extend(point for point in polygon[0])
+    lons = [point[0] for point in coordinates]
+    lats = [point[1] for point in coordinates]
     print(json.dumps({
-        "wilaya": "El Bayadh",
-        "code": 32,
-        "osm_relation_id": 1258649,
+        "regions": [{"code": code, **REGIONS[code]} for code in REGIONS],
+        "wilaya_codes": [32, 69],
+        "osm_relation_ids": {
+            str(code): feature.get("properties", {}).get("osm_id")
+            for code, feature in selected.items()
+        },
         "boundary_source": BOUNDARY_URL,
         "boundary_license": "ODbL-1.0 (OpenStreetMap-derived; see GeoAlgeria LICENSE/NOTICE)",
         "bbox": [min(lats), min(lons), max(lats), max(lons)],
-        "outer_rings": len(rings_for_geometry(feature["geometry"])),
+        "outer_rings": sum(len(polygons_for_geometry(feature["geometry"])) for feature in ordered),
         "poly": str(args.poly)
     }, ensure_ascii=False, indent=2))
 
