@@ -36,6 +36,7 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.viewinterop.AndroidView
@@ -669,12 +670,19 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     val recognitionEngine = remember(context) { MobileNetV3RecognitionEngine(context) }
     var recognitionModelLoaded by remember { mutableStateOf(false) }
     var recognitionReady by remember { mutableStateOf(false) }
-    var recognitionStatus by remember { mutableStateOf<String?>(null) }
-    var suggestedLandmarks by remember { mutableStateOf<List<Landmark>>(emptyList()) }
+    var liveStatus by remember { mutableStateOf<String?>(if (isArabic) "تهيئة محرك التحليل البصري…" else if (isFrench) "Initialisation du moteur visuel…" else "Preparing visual analysis engine…") }
+    var galleryStatus by remember { mutableStateOf<String?>(null) }
+    var liveSuggestedLandmarks by remember { mutableStateOf<List<Landmark>>(emptyList()) }
+    var gallerySuggestedLandmarks by remember { mutableStateOf<List<Landmark>>(emptyList()) }
     val recognitionScope = rememberCoroutineScope()
     LaunchedEffect(recognitionEngine) {
         recognitionReady = recognitionEngine.prepare()
         recognitionModelLoaded = recognitionEngine.isModelLoaded
+        liveStatus = when {
+            !recognitionModelLoaded -> if (isArabic) "تعذّر تحميل محرك التحليل البصري." else if (isFrench) "Impossible de charger le moteur visuel." else "Could not load the visual analysis engine."
+            !recognitionReady -> if (isArabic) "المحرك محمّل؛ يعمل حاليًا بترشيح بصري أولي غير مؤكد." else if (isFrench) "Moteur chargé ; suggestions visuelles préliminaires non confirmées." else "Engine loaded; preliminary, unverified visual suggestions are active."
+            else -> if (isArabic) "وجّه الكاميرا نحو معلم؛ يجري تحليل الصورة تلقائيًا." else if (isFrench) "Pointez la caméra vers un site ; analyse automatique." else "Point the camera at a landmark; automatic analysis is active."
+        }
     }
     DisposableEffect(recognitionEngine) {
         onDispose { recognitionEngine.close() }
@@ -697,8 +705,8 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     analyzeLandmarkPhoto(
                         selected, recognitionEngine, recognitionReady, landmarks, language,
                         onOpenLandmark = onOpenLandmark,
-                        onSuggestions = { suggestedLandmarks = it },
-                        onStatus = { recognitionStatus = it }
+                        onSuggestions = { gallerySuggestedLandmarks = it },
+                        onStatus = { galleryStatus = it }
                     )
                 }
             }
@@ -720,6 +728,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         val lastAnalysisAt = AtomicLong(0L)
         val lastCandidateId = java.util.concurrent.atomic.AtomicReference<String?>(null)
         val stableCandidateFrames = AtomicInteger(0)
+        val analysisInFlight = AtomicBoolean(false)
 
         if (hasCameraPermission) {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -736,37 +745,43 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                             .build()
                         analysis.setAnalyzer(analyzerExecutor) { proxy ->
                             val now = SystemClock.elapsedRealtime()
-                            val frame = if (now - lastAnalysisAt.get() >= 1100L &&
-                                lastAnalysisAt.compareAndSet(lastAnalysisAt.get(), now)
-                            ) imageProxyToBitmap(proxy) else null
+                            val previousAnalysisAt = lastAnalysisAt.get()
+                            val shouldAnalyze = now - previousAnalysisAt >= 1100L &&
+                                lastAnalysisAt.compareAndSet(previousAnalysisAt, now) &&
+                                analysisInFlight.compareAndSet(false, true)
+                            val frame = if (shouldAnalyze) imageProxyToBitmap(proxy) else null
                             proxy.close()
                             if (frame != null && !disposed) {
                                 recognitionScope.launch {
-                                    val found = try {
-                                        recognitionEngine.suggestCandidates(frame)
+                                    try {
+                                        val ranked = recognitionEngine.rankPreviewCandidates(frame)
+                                        if (disposed) return@launch
+                                        val best = ranked.firstOrNull()?.takeIf { it.score >= 0.45f }
+                                        if (best == null) {
+                                            stableCandidateFrames.set(0)
+                                            lastCandidateId.set(null)
+                                            liveStatus = if (isArabic) "تم تحليل الإطار؛ لم يظهر تشابه بصري كافٍ مع الصور المرجعية. حرّك الهاتف ببطء نحو المعلم." else if (isFrench) "Image analysée ; aucune similarité suffisante avec les références. Déplacez lentement le téléphone." else "Frame analyzed; no sufficient visual similarity to the references. Slowly move the phone toward the landmark."
+                                        } else {
+                                            val previous = lastCandidateId.getAndSet(best.landmarkId)
+                                            val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
+                                                stableCandidateFrames.set(1); 1
+                                            }
+                                            if (stable >= 2) {
+                                                liveSuggestedLandmarks = ranked
+                                                    .filter { it.score >= 0.35f }
+                                                    .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
+                                                liveStatus = if (isArabic) "أقرب تطابق بصري مبدئي — ترشيح غير مؤكد، اضغط لفتح بطاقة المعلم." else if (isFrench) "Meilleure similarité visuelle préliminaire — suggestion non confirmée." else "Closest preliminary visual match — unverified suggestion; tap to open."
+                                            }
+                                        }
                                     } catch (_: Exception) {
-                                        emptyList()
+                                        liveStatus = if (isArabic) "تعذّر تحليل إطار الكاميرا؛ ستتم إعادة المحاولة تلقائيًا." else if (isFrench) "Échec de l’analyse de l’image ; nouvelle tentative automatique." else "Camera frame analysis failed; retrying automatically."
                                     } finally {
                                         if (!frame.isRecycled) frame.recycle()
-                                    }
-                                    if (disposed) return@launch
-                                    val best = found.firstOrNull()
-                                    if (best == null) {
-                                        stableCandidateFrames.set(0)
-                                        lastCandidateId.set(null)
-                                        suggestedLandmarks = emptyList()
-                                        recognitionStatus = if (isArabic) "وجّه الكاميرا نحو معلم واضح؛ التحليل يجري تلقائيًا…" else if (isFrench) "Visez un site clairement visible ; l’analyse est automatique…" else "Point at a clearly visible landmark; analysis is automatic…"
-                                    } else {
-                                        val previous = lastCandidateId.getAndSet(best.landmarkId)
-                                        val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
-                                            stableCandidateFrames.set(1); 1
-                                        }
-                                        if (stable >= 2) {
-                                            suggestedLandmarks = found.mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
-                                            recognitionStatus = if (isArabic) "تطابق بصري محتمل — اضغط على اسم المعلم لعرض معلوماته." else if (isFrench) "Correspondance visuelle possible — touchez le site pour ses informations." else "Possible visual match — tap the landmark to view its details."
-                                        }
+                                        analysisInFlight.set(false)
                                     }
                                 }
+                            } else if (shouldAnalyze) {
+                                analysisInFlight.set(false)
                             }
                         }
                         provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis)
@@ -803,7 +818,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 factory = { previewView }
             )
             Spacer(Modifier.height(14.dp))
-            recognitionStatus?.let { status ->
+            liveStatus?.let { status ->
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
                     shape = RoundedCornerShape(14.dp),
@@ -812,7 +827,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     Text(status, color = Forest, fontSize = 14.sp, lineHeight = 20.sp, modifier = Modifier.padding(14.dp))
                 }
             }
-            suggestedLandmarks.forEachIndexed { index, candidate ->
+            liveSuggestedLandmarks.forEachIndexed { index, candidate ->
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).clickable { onOpenLandmark(candidate) },
                     shape = RoundedCornerShape(12.dp),
@@ -837,6 +852,27 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             ) {
                 Text(if (isArabic) "اختيار صورة من المعرض" else if (isFrench) "Choisir depuis la galerie" else "Choose from gallery", color = Forest)
+            }
+            galleryStatus?.let { status ->
+                Card(Modifier.fillMaxWidth().padding(top = 12.dp), shape = RoundedCornerShape(14.dp), colors = CardDefaults.cardColors(containerColor = Sand)) {
+                    Text(status, color = Forest, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(12.dp))
+                }
+            }
+            gallerySuggestedLandmarks.forEach { candidate ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp).clickable { onOpenLandmark(candidate) },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(Modifier.fillMaxWidth().padding(12.dp)) {
+                        Text(candidate.name(when (language) {
+                            AppLanguage.Arabic -> CatalogueLanguage.AR
+                            AppLanguage.French -> CatalogueLanguage.FR
+                            AppLanguage.English -> CatalogueLanguage.EN
+                        }), color = Forest, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Text(if (isArabic) "اقتراح من صورة المعرض — اضغط لفتح التفاصيل" else if (isFrench) "Suggestion depuis la galerie — touchez pour ouvrir" else "Gallery suggestion — tap to open details", color = Muted, fontSize = 11.sp)
+                    }
+                }
             }
         } else {
             Box(
