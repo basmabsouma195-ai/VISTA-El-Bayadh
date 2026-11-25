@@ -51,6 +51,18 @@ jobs:
           osmium export build/el-bayadh/named-places.osm.pbf --output=build/el-bayadh/named-places.geojson
           python3 scripts/build_el_bayadh_poi_index.py build/el-bayadh/named-places.geojson build/el-bayadh/el-bayadh-pois.json
           python3 -m json.tool build/el-bayadh/el-bayadh-pois.json > /dev/null
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          metadata = json.loads(Path("build/el-bayadh/boundary-metadata.json").read_text(encoding="utf-8"))
+          places = json.loads(Path("build/el-bayadh/el-bayadh-pois.json").read_text(encoding="utf-8"))
+          if metadata.get("wilaya_codes") != [32] or places.get("wilaya_codes") != [32]:
+              raise SystemExit("The offline package must represent El Bayadh wilaya 32 only; El Abiodh Sidi Cheikh is inside it, not wilaya 69.")
+          town = next((item for item in places.get("items", []) if item.get("osm_id") == 490536990), None)
+          if not town or town.get("name_ar") != "الأبيض سيدي الشيخ":
+              raise SystemExit("The El Abiodh Sidi Cheikh settlement must remain searchable within wilaya 32.")
+          print("Verified: wilaya 32 only, including El Abiodh Sidi Cheikh.")
+          PY
 
       - name: Install Mapsforge writer plugin
         run: |
