@@ -2,6 +2,8 @@ package dz.vista.elbayadh
 
 import android.os.Bundle
 import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.os.SystemClock
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.ComponentActivity
@@ -32,12 +34,9 @@ import androidx.camera.core.Preview
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.lifecycle.ProcessCameraProvider
-import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
-import com.google.mlkit.vision.barcode.BarcodeScannerOptions
-import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.atomic.AtomicInteger
 import androidx.camera.view.PreviewView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -683,8 +682,6 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
-    var qrMessage by remember { mutableStateOf<String?>(null) }
-    var qrMatchedLandmark by remember { mutableStateOf<Landmark?>(null) }
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasCameraPermission = granted }
@@ -719,11 +716,10 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
         var boundProvider: ProcessCameraProvider? = null
         var boundPreview: Preview? = null
         var boundAnalysis: ImageAnalysis? = null
-        val scanner = BarcodeScanning.getClient(
-            BarcodeScannerOptions.Builder().setBarcodeFormats(Barcode.FORMAT_QR_CODE).build()
-        )
         val analyzerExecutor = Executors.newSingleThreadExecutor()
-        val processing = AtomicBoolean(false)
+        val lastAnalysisAt = AtomicLong(0L)
+        val lastCandidateId = java.util.concurrent.atomic.AtomicReference<String?>(null)
+        val stableCandidateFrames = AtomicInteger(0)
 
         if (hasCameraPermission) {
             val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
@@ -736,22 +732,49 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                         val analysis = ImageAnalysis.Builder()
                             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                             .build()
                         analysis.setAnalyzer(analyzerExecutor) { proxy ->
-                            analyzeVistaQr(proxy, scanner, processing, landmarks,
-                                onFound = { found ->
-                                    if (!disposed && qrMatchedLandmark?.id != found.id) {
-                                        qrMatchedLandmark = found
-                                        qrMessage = null
+                            val now = SystemClock.elapsedRealtime()
+                            val frame = if (now - lastAnalysisAt.get() >= 1100L &&
+                                lastAnalysisAt.compareAndSet(lastAnalysisAt.get(), now)
+                            ) imageProxyToBitmap(proxy) else null
+                            proxy.close()
+                            if (frame != null && !disposed) {
+                                recognitionScope.launch {
+                                    val found = try {
+                                        recognitionEngine.suggestCandidates(frame)
+                                    } catch (_: Exception) {
+                                        emptyList()
+                                    } finally {
+                                        if (!frame.isRecycled) frame.recycle()
                                     }
-                                },
-                                onUnknown = { if (!disposed) qrMessage = it }
-                            )
+                                    if (disposed) return@launch
+                                    val best = found.firstOrNull()
+                                    if (best == null) {
+                                        stableCandidateFrames.set(0)
+                                        lastCandidateId.set(null)
+                                        suggestedLandmarks = emptyList()
+                                        recognitionStatus = if (isArabic) "وجّه الكاميرا نحو معلم واضح؛ التحليل يجري تلقائيًا…" else if (isFrench) "Visez un site clairement visible ; l’analyse est automatique…" else "Point at a clearly visible landmark; analysis is automatic…"
+                                    } else {
+                                        val previous = lastCandidateId.getAndSet(best.landmarkId)
+                                        val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
+                                            stableCandidateFrames.set(1); 1
+                                        }
+                                        if (stable >= 2) {
+                                            suggestedLandmarks = found.mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
+                                            recognitionStatus = if (isArabic) "تطابق بصري محتمل — اضغط على اسم المعلم لعرض معلوماته." else if (isFrench) "Correspondance visuelle possible — touchez le site pour ses informations." else "Possible visual match — tap the landmark to view its details."
+                                        }
+                                    }
+                                }
+                            }
                         }
                         provider.bindToLifecycle(lifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis)
                         boundProvider = provider
                         boundPreview = preview
                         boundAnalysis = analysis
+                    }.onFailure {
+                        if (!disposed) recognitionStatus = if (isArabic) "تعذّر تشغيل تحليل الكاميرا. أعد فتح شاشة الماسح." else if (isFrench) "Impossible de démarrer l’analyse caméra. Rouvrez le scanner." else "Could not start camera analysis. Reopen the scanner."
                     }
                 }
             }, ContextCompat.getMainExecutor(context))
@@ -769,152 +792,51 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                 analysis?.let(useCases::add)
                 if (useCases.isNotEmpty()) runCatching { provider.unbind(*useCases.toTypedArray()) }
             }
-            scanner.close()
             analyzerExecutor.shutdown()
         }
     }
 
     Column(Modifier.fillMaxSize().background(Ivory).verticalScroll(rememberScrollState()).padding(16.dp)) {
-        qrMatchedLandmark?.let { found ->
-            AlertDialog(
-                onDismissRequest = { qrMatchedLandmark = null },
-                title = { Text(found.name(when (language) {
-                    AppLanguage.Arabic -> CatalogueLanguage.AR
-                    AppLanguage.French -> CatalogueLanguage.FR
-                    AppLanguage.English -> CatalogueLanguage.EN
-                })) },
-                text = { Text(if (isArabic) "تمت قراءة رمز هذا المعلم." else if (isFrench) "Le QR de ce site a été lu." else "This landmark's QR code was read.") },
-                confirmButton = {
-                    TextButton(onClick = {
-                        qrMatchedLandmark = null
-                        onOpenLandmark(found)
-                    }) { Text(if (isArabic) "اكتشف المعلم" else if (isFrench) "Découvrir" else "Discover") }
-                },
-                dismissButton = {
-                    TextButton(onClick = { qrMatchedLandmark = null }) {
-                        Text(if (isArabic) "إغلاق" else if (isFrench) "Fermer" else "Close")
-                    }
-                }
-            )
-        }
-        Text(
-            if (isArabic) "التعرّف البصري على المعالم" else if (isFrench) "Reconnaissance visuelle des sites" else "Visual landmark recognition",
-            color = Forest, fontSize = 23.sp, fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            if (isArabic) "وجّه الكاميرا نحو المعلم ثم اضغط زر التحليل أسفل المعاينة. النتائج الحالية اقتراحات تجريبية غير مؤكدة."
-            else if (isFrench) "Dirigez la caméra vers le site puis appuyez sur le bouton d’analyse sous l’aperçu. Les résultats actuels sont expérimentaux."
-            else "Point the camera at the landmark, then tap the analysis button below the preview. Current results are experimental suggestions.",
-            color = Muted, fontSize = 13.sp, lineHeight = 20.sp
-        )
-        Spacer(Modifier.height(14.dp))
-        Text(
-            if (isArabic) "الأساسي: تحليل صورة المعلم · QR اختياري فقط" else if (isFrench) "Principal : analyse visuelle · QR facultatif" else "Primary: visual analysis · optional QR fallback",
-            color = Forest, fontWeight = FontWeight.SemiBold, fontSize = 12.sp
-        )
-        qrMessage?.let { Text(it, color = Muted, fontSize = 11.sp) }
         if (hasCameraPermission) {
             AndroidView(
-                modifier = Modifier.fillMaxWidth().height(260.dp).clip(RoundedCornerShape(22.dp)),
+                modifier = Modifier.fillMaxWidth().height(300.dp).clip(RoundedCornerShape(22.dp)),
                 factory = { previewView }
             )
-            Spacer(Modifier.height(12.dp))
-            Card(
-                shape = RoundedCornerShape(14.dp),
-                colors = CardDefaults.cardColors(containerColor = Sand)
-            ) {
-                Column(Modifier.padding(14.dp)) {
-                    Text(
-                        if (isArabic) "الكاميرا جاهزة" else if (isFrench) "Caméra prête" else "Camera ready",
-                        color = Forest, fontWeight = FontWeight.Bold, fontSize = 13.sp
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        if (isArabic) "صور مرجعية محلية: ${localReferences.size}"
-                        else if (isFrench) "Images de référence locales : ${localReferences.size}"
-                        else "Local reference images: ${localReferences.size}",
-                        color = Forest, fontSize = 12.sp
-                    )
-                    localReferences.forEach { reference ->
+            Spacer(Modifier.height(14.dp))
+            recognitionStatus?.let { status ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = Sand)
+                ) {
+                    Text(status, color = Forest, fontSize = 14.sp, lineHeight = 20.sp, modifier = Modifier.padding(14.dp))
+                }
+            }
+            suggestedLandmarks.forEachIndexed { index, candidate ->
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp).clickable { onOpenLandmark(candidate) },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                ) {
+                    Column(Modifier.fillMaxWidth().padding(12.dp)) {
+                        Text(candidate.name(when (language) {
+                            AppLanguage.Arabic -> CatalogueLanguage.AR
+                            AppLanguage.French -> CatalogueLanguage.FR
+                            AppLanguage.English -> CatalogueLanguage.EN
+                        }), color = Forest, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                         Text(
-                            when (language) {
-                                AppLanguage.Arabic -> reference.labelAr
-                                AppLanguage.French -> reference.labelFr.ifBlank { reference.labelAr }
-                                AppLanguage.English -> reference.labelEn.ifBlank { reference.labelAr }
-                            },
-                            color = Ink, fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp)
-                        )
-                        if (reference.attribution.isNotBlank() || reference.license.isNotBlank()) {
-                            Text(
-                                listOfNotNull(
-                                    reference.attribution.takeIf { it.isNotBlank() },
-                                    reference.license.takeIf { it.isNotBlank() }
-                                ).joinToString(" · "),
-                                color = Muted,
-                                fontSize = 10.sp,
-                                modifier = Modifier.padding(top = 1.dp)
-                            )
-                        }
-                    }
-                    Text(
-                        if (isArabic) { if (recognitionModelLoaded && recognitionReady) "النموذج المحلي جاهز. التعرّف النهائي مفعّل بعد المعايرة." else if (recognitionModelLoaded) "النموذج محمّل دون إنترنت. يمكنك تجربة اقتراحات بصرية أولية، لكنها غير مؤكدة. يلزم جمع صور ميدانية واختبارها قبل اعتماد التعرّف النهائي." else "تعذّر تحميل نموذج الرؤية المحلي." }
-                        else if (isFrench) { if (recognitionModelLoaded && recognitionReady) "Modèle local prêt. Identification finale activée après calibration." else if (recognitionModelLoaded) "Modèle chargé hors ligne. Des suggestions visuelles préliminaires sont disponibles, sans garantie. Des photos terrain et des tests sont nécessaires avant validation." else "Impossible de charger le modèle visuel local." }
-                        else { if (recognitionModelLoaded && recognitionReady) "Local model ready. Final identification is enabled after calibration." else if (recognitionModelLoaded) "Model loaded offline. Preliminary visual suggestions are available but unverified. Field photos and testing are required before final validation." else "Could not load the local vision model." },
-                        color = Muted, fontSize = 11.sp, lineHeight = 17.sp, modifier = Modifier.padding(top = 6.dp)
-                    )
-                    recognitionStatus?.let { status ->
-                        Text(status, color = Forest, fontSize = 11.sp, lineHeight = 16.sp, modifier = Modifier.padding(top = 6.dp))
-                    }
-                    suggestedLandmarks.forEachIndexed { index, candidate ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth().padding(top = 7.dp).clickable { onOpenLandmark(candidate) },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
-                        ) {
-                            Column(Modifier.fillMaxWidth().padding(12.dp)) {
-                                Text(if (isArabic) "مرشح ${index + 1}" else if (isFrench) "Candidat ${index + 1}" else "Candidate ${index + 1}", color = Gold, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text(candidate.name(when (language) { AppLanguage.Arabic -> CatalogueLanguage.AR; AppLanguage.French -> CatalogueLanguage.FR; AppLanguage.English -> CatalogueLanguage.EN }), color = Forest, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                Text(if (isArabic) "اقتراح تجريبي — اضغط لفتح البطاقة، وليس تأكيداً لهوية الصورة." else if (isFrench) "Suggestion expérimentale — appuyez pour ouvrir la fiche, sans confirmer l’identité de l’image." else "Experimental suggestion — tap to open the profile; this does not confirm the image identity.", color = Muted, fontSize = 10.sp)
-                            }
-                        }
-                    }
-                    Button(
-                        enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
-                        onClick = {
-                            val snapshot = previewView.bitmap?.copy(Bitmap.Config.ARGB_8888, false)
-                            if (snapshot == null) {
-                                recognitionStatus = if (isArabic) "تعذّر التقاط صورة من الكاميرا." else if (isFrench) "Impossible de capturer l’image de la caméra." else "Could not capture a camera frame."
-                            } else {
-                                recognitionScope.launch {
-                                    analyzeLandmarkPhoto(
-                                        snapshot, recognitionEngine, recognitionReady, landmarks, language,
-                                        onOpenLandmark = onOpenLandmark,
-                                        onSuggestions = { suggestedLandmarks = it },
-                                        onStatus = { recognitionStatus = it }
-                                    )
-                                }
-                            }
-                        },
-                        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Forest),
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                    ) {
-                        Text(
-                            if (isArabic) "حلّل صورة المعلم بالكاميرا" else if (isFrench) "Analyser le site avec la caméra" else "Analyze landmark with camera",
-                            color = Color.White
-                        )
-                    }
-                    OutlinedButton(
-                        enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
-                        onClick = { galleryLauncher.launch("image/*") },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                    ) {
-                        Text(
-                            if (isArabic) "اختر صورة للمعلم من المعرض" else if (isFrench) "Choisir une photo depuis la galerie" else "Choose a landmark photo",
-                            color = Forest
+                            if (isArabic) "اضغط لعرض تفاصيل المعلم" else if (isFrench) "Appuyez pour voir le site" else "Tap to view landmark details",
+                            color = Muted, fontSize = 11.sp
                         )
                     }
                 }
+            }
+            OutlinedButton(
+                enabled = recognitionModelLoaded && localReferences.isNotEmpty(),
+                onClick = { galleryLauncher.launch("image/*") },
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            ) {
+                Text(if (isArabic) "اختيار صورة من المعرض" else if (isFrench) "Choisir depuis la galerie" else "Choose from gallery", color = Forest)
             }
         } else {
             Box(
@@ -925,9 +847,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                     Icon(Icons.Filled.CenterFocusStrong, contentDescription = null, tint = Gold, modifier = Modifier.size(58.dp))
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        if (isArabic) "اسمح لـ VISTA باستخدام الكاميرا"
-                        else if (isFrench) "Autorisez VISTA à utiliser la caméra"
-                        else "Allow VISTA to use the camera",
+                        if (isArabic) "اسمح لـ VISTA باستخدام الكاميرا" else if (isFrench) "Autorisez VISTA à utiliser la caméra" else "Allow VISTA to use the camera",
                         color = Color.White, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(14.dp))
@@ -935,10 +855,7 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         onClick = { permissionLauncher.launch(android.Manifest.permission.CAMERA) },
                         colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = Gold)
                     ) {
-                        Text(
-                            if (isArabic) "السماح بالكاميرا" else if (isFrench) "Autoriser la caméra" else "Allow camera",
-                            color = ForestDeep
-                        )
+                        Text(if (isArabic) "السماح بالكاميرا" else if (isFrench) "Autoriser la caméra" else "Allow camera", color = ForestDeep)
                     }
                 }
             }
@@ -1017,33 +934,36 @@ private suspend fun analyzeLandmarkPhoto(
     }
 }
 
-private fun analyzeVistaQr(
-    proxy: ImageProxy,
-    scanner: com.google.mlkit.vision.barcode.BarcodeScanner,
-    processing: AtomicBoolean,
-    landmarks: List<Landmark>,
-    onFound: (Landmark) -> Unit,
-    onUnknown: (String) -> Unit
-) {
-    val mediaImage = proxy.image
-    if (mediaImage == null || !processing.compareAndSet(false, true)) {
-        proxy.close()
-        return
-    }
-    val input = InputImage.fromMediaImage(mediaImage, proxy.imageInfo.rotationDegrees)
-    scanner.process(input)
-        .addOnSuccessListener { codes ->
-            val raw = codes.firstOrNull { it.format == Barcode.FORMAT_QR_CODE }?.rawValue ?: return@addOnSuccessListener
-            val id = raw.substringAfterLast('/').removePrefix("vista:landmark:").substringBefore('?').trim()
-            val found = landmarks.firstOrNull { it.id == id }
-            if (found != null) onFound(found)
-            else onUnknown("QR detected, but it does not contain a known VISTA landmark ID.")
+private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
+    return runCatching {
+        val plane = proxy.planes.first()
+        val buffer = plane.buffer.duplicate()
+        val width = proxy.width
+        val height = proxy.height
+        val rowStride = plane.rowStride
+        val pixelStride = plane.pixelStride
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        val pixels = IntArray(width * height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val offset = y * rowStride + x * pixelStride
+                require(offset >= 0 && offset + 3 < bytes.size) { "RGBA camera frame buffer is incomplete" }
+                val r = bytes[offset].toInt() and 0xFF
+                val g = bytes[offset + 1].toInt() and 0xFF
+                val b = bytes[offset + 2].toInt() and 0xFF
+                val a = bytes[offset + 3].toInt() and 0xFF
+                pixels[y * width + x] = android.graphics.Color.argb(a, r, g, b)
+            }
         }
-        .addOnFailureListener { onUnknown("QR scan failed. Try holding the camera steady.") }
-        .addOnCompleteListener {
-            processing.set(false)
-            proxy.close()
+        val raw = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        raw.setPixels(pixels, 0, width, 0, 0, width, height)
+        val rotation = proxy.imageInfo.rotationDegrees
+        if (rotation == 0) raw else {
+            val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
+            Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true).also { raw.recycle() }
         }
+    }.getOrNull()
 }
 
 @Composable
