@@ -2,6 +2,13 @@ name: Build El Bayadh offline map data
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feature/el-bayadh-offline-map
+    paths:
+      - '.github/workflows/build-el-bayadh-offline-map.yml'
+      - 'scripts/prepare_el_bayadh_map.py'
+      - 'scripts/build_el_bayadh_poi_index.py'
 
 permissions:
   contents: read
