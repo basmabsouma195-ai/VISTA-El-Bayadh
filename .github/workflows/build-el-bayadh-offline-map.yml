@@ -84,7 +84,7 @@ jobs:
           Map data: © OpenStreetMap contributors.
           Licence: Open Database Licence (ODbL) 1.0.
           Source: https://www.openstreetmap.org/
-          Wilaya boundary: GeoAlgeria detailed wilaya boundary dataset, feature code 32,
+          Wilaya boundaries: GeoAlgeria detailed wilaya boundary dataset, feature codes 32 and 69,
           derived from OpenStreetMap commune boundary outlines. See the GeoAlgeria
           repository LICENSE and NOTICE for its mixed package terms:
           https://github.com/yasserstudio/geoalgeria
