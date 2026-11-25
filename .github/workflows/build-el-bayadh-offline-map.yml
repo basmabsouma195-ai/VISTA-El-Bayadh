@@ -44,6 +44,9 @@ jobs:
           osmium extract --polygon=build/el-bayadh/el-bayadh.poly --strategy=complete_ways --output=build/el-bayadh/el-bayadh.osm.pbf algeria-latest.osm.pbf
           test -s build/el-bayadh/el-bayadh.osm.pbf
           ls -lh build/el-bayadh/el-bayadh.osm.pbf
+          # Preserve detailed element counts so a tiny/empty extract cannot silently
+          # become a blank-looking Mapsforge map.
+          osmium fileinfo -e build/el-bayadh/el-bayadh.osm.pbf | tee build/el-bayadh/osm-extract-diagnostics.txt
 
       - name: Build offline named-place index
         run: |
@@ -125,5 +128,6 @@ jobs:
             build/el-bayadh/ATTRIBUTION.txt
             build/el-bayadh/boundary-metadata.json
             build/el-bayadh/SHA256SUMS
+            build/el-bayadh/osm-extract-diagnostics.txt
           if-no-files-found: error
           retention-days: 30
