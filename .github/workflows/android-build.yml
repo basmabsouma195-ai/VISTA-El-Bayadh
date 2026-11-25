@@ -53,10 +53,11 @@ jobs:
           map_file = root / "el-bayadh.map"
           places_file = root / "el-bayadh-pois.json"
           places = json.loads(places_file.read_text(encoding="utf-8"))
-          if not isinstance(places, list) or not places:
-              raise SystemExit("Offline places index is empty or has an unexpected format.")
+          items = places.get("items", []) if isinstance(places, dict) else []
+          if not items or places.get("wilaya_code") != 32:
+              raise SystemExit("Offline El Bayadh places index is empty or has an unexpected region.")
           print(f"Bundled map: {map_file.stat().st_size:,} bytes")
-          print(f"Bundled named places: {len(places)}")
+          print(f"Bundled named places: {len(items)}")
           PY
 
       - name: Install optional user-confirmed field photo bundle
