@@ -12,13 +12,22 @@ android {
         applicationId = "dz.vista.elbayadh"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.1.2"
     }
 
-    // Enable both legacy and modern APK signatures for broad installer compatibility.
+    // Release signing is loaded only from GitHub Actions secrets.
+    // Never commit a keystore or passwords to the repository.
     signingConfigs {
         getByName("debug") {
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+        create("release") {
+            storeFile = file(System.getenv("VISTA_KEYSTORE_PATH") ?: "missing-release-key.jks")
+            storePassword = System.getenv("VISTA_KEYSTORE_PASSWORD") ?: ""
+            keyAlias = System.getenv("VISTA_KEY_ALIAS") ?: ""
+            keyPassword = System.getenv("VISTA_KEY_PASSWORD") ?: ""
             enableV1Signing = true
             enableV2Signing = true
         }
@@ -26,6 +35,10 @@ android {
     buildTypes {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
+        }
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
         }
     }
 
