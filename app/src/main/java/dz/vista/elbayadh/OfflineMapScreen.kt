@@ -54,6 +54,7 @@ import org.mapsforge.map.rendertheme.internal.MapsforgeThemes
 import java.io.File
 import dz.vista.elbayadh.data.OfflineMapPin
 import dz.vista.elbayadh.data.OfflineMapPinStore
+import dz.vista.elbayadh.data.Landmark
 
 private val MapNavy = Color(0xFF071B2D)
 private val MapGold = Color(0xFFC39A58)
@@ -88,7 +89,7 @@ private fun normalizePlaceText(value: String): String = value
     .trim()
 
 @Composable
-internal fun OfflineMapScreen(language: String) {
+internal fun OfflineMapScreen(language: String, landmarks: List<Landmark>, onOpenLandmark: (Landmark) -> Unit) {
     val context = LocalContext.current
     val isArabic = language == "Arabic"
     val isFrench = language == "French"
@@ -108,7 +109,7 @@ internal fun OfflineMapScreen(language: String) {
         if (mapFile == null) {
             Result.failure<MapView>(IllegalStateException("Offline map file is missing."))
         } else {
-            runCatching { createOfflineMapView(context, mapFile, pinStore, latestPins, mapStyle) }
+            runCatching { createOfflineMapView(context, mapFile, pinStore, latestPins, mapStyle, landmarks, onOpenLandmark) }
         }
     }
     val mapView = mapSetup.getOrNull()
@@ -195,6 +196,10 @@ internal fun OfflineMapScreen(language: String) {
                                 mapView?.setCenter(LatLong(place.latitude, place.longitude))
                                 mapView?.setZoomLevel(13.toByte())
                                 mapView?.layerManager?.redrawLayers()
+                                val match = landmarks.filter { it.latitude != null && it.longitude != null }
+                                    .minByOrNull { landmark -> distanceMeters(place.latitude, place.longitude, landmark.latitude!!, landmark.longitude!!) }
+                                    ?.takeIf { distanceMeters(place.latitude, place.longitude, it.latitude!!, it.longitude!!) < 500.0 }
+                                if (match != null) onOpenLandmark(match)
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -242,11 +247,16 @@ internal fun OfflineMapScreen(language: String) {
                 }
             }
 
-            LaunchedEffect(mapView, pins.size) {
+            LaunchedEffect(mapView, pins.size, landmarks) {
                 val layers = mapView.layerManager.layers
                 layers.filterIsInstance<Marker>().toList().forEach { marker ->
                     layers.remove(marker)
                     marker.onDestroy()
+                }
+                landmarks.filter { it.latitude != null && it.longitude != null }.forEach { landmark ->
+                    val drawable = context.getDrawable(R.drawable.ic_map_pin) ?: return@forEach
+                    val bitmap = AndroidGraphicFactory.convertToBitmap(drawable)
+                    layers.add(Marker(LatLong(landmark.latitude!!, landmark.longitude!!), bitmap, 0, -bitmap.height / 2))
                 }
                 pins.toList().forEach { pin ->
                     val drawable = context.getDrawable(R.drawable.ic_map_pin) ?: return@forEach
@@ -314,7 +324,9 @@ private fun createOfflineMapView(
     mapFile: File,
     pinStore: OfflineMapPinStore,
     latestPins: androidx.compose.runtime.State<MutableList<OfflineMapPin>>,
-    mapStyle: String
+    mapStyle: String,
+    landmarks: List<Landmark>,
+    onOpenLandmark: (Landmark) -> Unit
 ): MapView {
     if (AndroidGraphicFactory.INSTANCE == null) {
         AndroidGraphicFactory.createInstance(context.applicationContext)
@@ -334,6 +346,15 @@ private fun createOfflineMapView(
         val store = MapFile(mapFile)
         val layer = object : TileRendererLayer(cache, store, model.mapViewPosition, AndroidGraphicFactory.INSTANCE) {
             override fun onTap(tapLatLong: LatLong, layerXY: Point, tapXY: Point): Boolean {
+                val nearbyLandmark = landmarks.asSequence()
+                    .filter { it.latitude != null && it.longitude != null }
+                    .map { it to distanceMeters(tapLatLong.latitude, tapLatLong.longitude, it.latitude!!, it.longitude!!) }
+                    .filter { it.second <= 350.0 }
+                    .minByOrNull { it.second }?.first
+                if (nearbyLandmark != null) {
+                    onOpenLandmark(nearbyLandmark)
+                    return true
+                }
                 val nextPin = OfflineMapPin(
                     latitude = tapLatLong.latitude,
                     longitude = tapLatLong.longitude,
@@ -389,4 +410,14 @@ private fun centerOnCurrentLocation(context: Context, mapView: MapView?): String
         mapView.layerManager.redrawLayers()
         "Location: %.5f, %.5f".format(location.latitude, location.longitude)
     }.getOrElse { "Unable to read current location: ${it.localizedMessage ?: "unknown error"}" }
+}
+
+private fun distanceMeters(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    val earthRadius = 6_371_000.0
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLon = Math.toRadians(lon2 - lon1)
+    val a = kotlin.math.sin(dLat / 2) * kotlin.math.sin(dLat / 2) +
+        kotlin.math.cos(Math.toRadians(lat1)) * kotlin.math.cos(Math.toRadians(lat2)) *
+        kotlin.math.sin(dLon / 2) * kotlin.math.sin(dLon / 2)
+    return earthRadius * 2 * kotlin.math.atan2(kotlin.math.sqrt(a), kotlin.math.sqrt(1 - a))
 }
