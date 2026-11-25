@@ -7,6 +7,7 @@ Android-first tourism guide for El Bayadh Province, Algeria.
 - Offline-first landmark catalogue and locally bundled media.
 - Landmark camera recognition without requiring QR codes; QR remains an optional fallback.
 - Audio guides, offline maps, saved places and itineraries are planned capabilities and must not be described as complete until implemented and tested.
+- Map system replacement is underway: MapLibre Native + locally packaged PMTiles vector tiles. See docs/maps/ARCHITECTURE.md; no working map is claimed until emulator and airplane-mode tests pass.
 - Private editorial tools for maintaining verified tourism content.
 
 ## Visual identity
