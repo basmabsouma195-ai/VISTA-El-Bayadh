@@ -741,7 +741,6 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                         }
                         val analysis = ImageAnalysis.Builder()
                             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                            .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                             .build()
                         analysis.setAnalyzer(analyzerExecutor) { proxy ->
                             val now = SystemClock.elapsedRealtime()
@@ -756,22 +755,18 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                     try {
                                         val ranked = recognitionEngine.rankPreviewCandidates(frame)
                                         if (disposed) return@launch
-                                        val best = ranked.firstOrNull()?.takeIf { it.score >= 0.45f }
+                                        val visibleCandidates = ranked.take(3)
+                                        liveSuggestedLandmarks = visibleCandidates
+                                            .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
+                                        val best = visibleCandidates.firstOrNull()
                                         if (best == null) {
                                             stableCandidateFrames.set(0)
                                             lastCandidateId.set(null)
-                                            liveStatus = if (isArabic) "تم تحليل الإطار؛ لم يظهر تشابه بصري كافٍ مع الصور المرجعية. حرّك الهاتف ببطء نحو المعلم." else if (isFrench) "Image analysée ; aucune similarité suffisante avec les références. Déplacez lentement le téléphone." else "Frame analyzed; no sufficient visual similarity to the references. Slowly move the phone toward the landmark."
+                                            liveStatus = if (isArabic) "وصل إطار الكاميرا، لكن محرك الصور لم يُرجع مرشحين. تحقق من الصور المرجعية المحلية." else if (isFrench) "Image caméra reçue, mais aucun candidat visuel retourné." else "Camera frame received, but the visual engine returned no candidates."
                                         } else {
-                                            val previous = lastCandidateId.getAndSet(best.landmarkId)
-                                            val stable = if (previous == best.landmarkId) stableCandidateFrames.incrementAndGet() else {
-                                                stableCandidateFrames.set(1); 1
-                                            }
-                                            if (stable >= 2) {
-                                                liveSuggestedLandmarks = ranked
-                                                    .filter { it.score >= 0.35f }
-                                                    .mapNotNull { candidate -> landmarks.firstOrNull { it.id == candidate.landmarkId } }
-                                                liveStatus = if (isArabic) "أقرب تطابق بصري مبدئي — ترشيح غير مؤكد، اضغط لفتح بطاقة المعلم." else if (isFrench) "Meilleure similarité visuelle préliminaire — suggestion non confirmée." else "Closest preliminary visual match — unverified suggestion; tap to open."
-                                            }
+                                            lastCandidateId.set(best.landmarkId)
+                                            stableCandidateFrames.incrementAndGet()
+                                            liveStatus = if (isArabic) "تحليل حي — أقرب الصور المرجعية (اقتراحات أولية غير مؤكدة). اضغط لفتح بطاقة المعلم." else if (isFrench) "Analyse en direct — références les plus proches (suggestions non confirmées)." else "Live analysis — nearest reference images (unverified suggestions)."
                                         }
                                     } catch (_: Exception) {
                                         liveStatus = if (isArabic) "تعذّر تحليل إطار الكاميرا؛ ستتم إعادة المحاولة تلقائيًا." else if (isFrench) "Échec de l’analyse de l’image ; nouvelle tentative automatique." else "Camera frame analysis failed; retrying automatically."
@@ -781,6 +776,9 @@ private fun ScannerScreen(language: AppLanguage, landmarks: List<Landmark>, onOp
                                     }
                                 }
                             } else if (shouldAnalyze) {
+                                if (!disposed) {
+                                    liveStatus = if (isArabic) "تعذّر تحويل إطار الكاميرا إلى صورة للتحليل؛ أُعيدت المحاولة." else if (isFrench) "Impossible de convertir l’image caméra pour l’analyse ; nouvelle tentative." else "Could not convert camera frame for analysis; retrying."
+                                }
                                 analysisInFlight.set(false)
                             }
                         }
@@ -972,32 +970,60 @@ private suspend fun analyzeLandmarkPhoto(
 
 private fun imageProxyToBitmap(proxy: ImageProxy): Bitmap? {
     return runCatching {
-        val plane = proxy.planes.first()
-        val buffer = plane.buffer.duplicate()
+        // Convert the CameraX YUV_420_888 planes to RGB explicitly while
+        // respecting row/pixel strides. This avoids relying on an unavailable
+        // CameraX toBitmap extension in the project's pinned CameraX version.
+        val yPlane = proxy.planes[0]
+        val uPlane = proxy.planes[1]
+        val vPlane = proxy.planes[2]
         val width = proxy.width
         val height = proxy.height
-        val rowStride = plane.rowStride
-        val pixelStride = plane.pixelStride
-        val bytes = ByteArray(buffer.remaining())
-        buffer.get(bytes)
+        val yBuffer = yPlane.buffer.duplicate()
+        val uBuffer = uPlane.buffer.duplicate()
+        val vBuffer = vPlane.buffer.duplicate()
+        val yBytes = ByteArray(yBuffer.remaining()).also { yBuffer.get(it) }
+        val uBytes = ByteArray(uBuffer.remaining()).also { uBuffer.get(it) }
+        val vBytes = ByteArray(vBuffer.remaining()).also { vBuffer.get(it) }
+        val yRowStride = yPlane.rowStride
+        val yPixelStride = yPlane.pixelStride
+        val uRowStride = uPlane.rowStride
+        val uPixelStride = uPlane.pixelStride
+        val vRowStride = vPlane.rowStride
+        val vPixelStride = vPlane.pixelStride
         val pixels = IntArray(width * height)
         for (y in 0 until height) {
             for (x in 0 until width) {
-                val offset = y * rowStride + x * pixelStride
-                require(offset >= 0 && offset + 3 < bytes.size) { "RGBA camera frame buffer is incomplete" }
-                val r = bytes[offset].toInt() and 0xFF
-                val g = bytes[offset + 1].toInt() and 0xFF
-                val b = bytes[offset + 2].toInt() and 0xFF
-                val a = bytes[offset + 3].toInt() and 0xFF
-                pixels[y * width + x] = android.graphics.Color.argb(a, r, g, b)
+                val yIndex = y * yRowStride + x * yPixelStride
+                val uvX = x / 2
+                val uvY = y / 2
+                val uIndex = uvY * uRowStride + uvX * uPixelStride
+                val vIndex = uvY * vRowStride + uvX * vPixelStride
+                require(yIndex in yBytes.indices && uIndex in uBytes.indices && vIndex in vBytes.indices) {
+                    "Camera YUV frame planes are incomplete"
+                }
+                val yy = (yBytes[yIndex].toInt() and 0xFF) - 16
+                val uu = (uBytes[uIndex].toInt() and 0xFF) - 128
+                val vv = (vBytes[vIndex].toInt() and 0xFF) - 128
+                val c = maxOf(0, yy)
+                val red = ((298 * c + 409 * vv + 128) shr 8).coerceIn(0, 255)
+                val green = ((298 * c - 100 * uu - 208 * vv + 128) shr 8).coerceIn(0, 255)
+                val blue = ((298 * c + 516 * uu + 128) shr 8).coerceIn(0, 255)
+                pixels[y * width + x] = android.graphics.Color.rgb(red, green, blue)
             }
         }
-        val raw = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-        raw.setPixels(pixels, 0, width, 0, 0, width, height)
+        val cameraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888).apply {
+            setPixels(pixels, 0, width, 0, 0, width, height)
+        }
         val rotation = proxy.imageInfo.rotationDegrees
-        if (rotation == 0) raw else {
+        if (rotation == 0) {
+            cameraBitmap
+        } else {
             val matrix = Matrix().apply { postRotate(rotation.toFloat()) }
-            Bitmap.createBitmap(raw, 0, 0, raw.width, raw.height, matrix, true).also { raw.recycle() }
+            Bitmap.createBitmap(
+                cameraBitmap, 0, 0, cameraBitmap.width, cameraBitmap.height, matrix, true
+            ).also {
+                if (it !== cameraBitmap && !cameraBitmap.isRecycled) cameraBitmap.recycle()
+            }
         }
     }.getOrNull()
 }
