@@ -69,18 +69,17 @@ jobs:
       - name: Generate Mapsforge vector map
         run: |
           export JAVACMD_OPTIONS="-Xmx5G"
-          # GeoJSON metadata stores [south, west, north, east], while Osmosis
-          # mapfile-writer expects [left, bottom, right, top] = [west, south, east, north].
-          BBOX="$(python3 -c 'import json; d=json.load(open("build/el-bayadh/boundary-metadata.json", encoding="utf-8")); south, west, north, east = d["bbox"]; print(",".join(str(v) for v in (west, south, east, north)))')"
-          echo "Using Osmosis bbox (west,south,east,north): $BBOX"
+          # Mapsforge expects bbox in minLatitude,minLongitude,maxLatitude,maxLongitude order.
+          BBOX="$(python3 -c 'import json; d=json.load(open("build/el-bayadh/boundary-metadata.json", encoding="utf-8")); south, west, north, east = d["bbox"]; print(",".join(str(v) for v in (south, west, north, east)))')"
+          echo "Using Mapsforge bbox (south,west,north,east): $BBOX"
           python3 - "$BBOX" <<'PY'
           import sys
-          west, south, east, north = map(float, sys.argv[1].split(","))
-          if not (-180 <= west < east <= 180 and -90 <= south < north <= 90):
-              raise SystemExit(f"Invalid Osmosis bbox ordering or bounds: {sys.argv[1]}")
+          south, west, north, east = map(float, sys.argv[1].split(","))
+          if not (-90 <= south < north <= 90 and -180 <= west < east <= 180):
+              raise SystemExit(f"Invalid Mapsforge bbox ordering or bounds: {sys.argv[1]}")
           if not (west < 0 < east and 25 < south < north < 40):
               raise SystemExit(f"Unexpected El Bayadh region bounds: {sys.argv[1]}")
-          print("Osmosis bounding box validated.")
+          print("Mapsforge bounding box validated.")
           PY
           tools/osmosis-0.49.2/bin/osmosis \
             --read-pbf file=build/el-bayadh/el-bayadh.osm.pbf \
@@ -95,7 +94,7 @@ jobs:
           Map data: © OpenStreetMap contributors.
           Licence: Open Database Licence (ODbL) 1.0.
           Source: https://www.openstreetmap.org/
-          Wilaya boundaries: GeoAlgeria detailed wilaya boundary dataset, feature codes 32 and 69,
+          Wilaya boundary: GeoAlgeria detailed wilaya boundary dataset, feature code 32 (El Bayadh),
           derived from OpenStreetMap commune boundary outlines. See the GeoAlgeria
           repository LICENSE and NOTICE for its mixed package terms:
           https://github.com/yasserstudio/geoalgeria
