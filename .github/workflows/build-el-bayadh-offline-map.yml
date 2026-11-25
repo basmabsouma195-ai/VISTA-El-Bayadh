@@ -64,7 +64,7 @@ jobs:
           unzip -q osmosis.zip -d tools
           chmod +x tools/osmosis-0.49.2/bin/osmosis
           test -s "$HOME/.openstreetmap/osmosis/plugins/mapsforge-map-writer-0.26.1-jar-with-dependencies.jar"
-          tools/osmosis-0.49.2/bin/osmosis --version
+          echo "Mapsforge writer plugin installed; actual task loading is verified during map generation."
 
       - name: Generate Mapsforge vector map
         run: |
