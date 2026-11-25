@@ -73,8 +73,9 @@ if not any(item.get("osm_id") == 490536990 for item in items):
 items.sort(key=lambda item: (item["name"].casefold(), item["latitude"], item["longitude"]))
 destination.write_text(json.dumps({
     "schema_version": 1,
-    "region": "El Bayadh",
-    "wilaya_code": 32,
+    "region": "El Bayadh + El Abiodh Sidi Cheikh",
+    "regions": [{"code": 32, "name": "El Bayadh", "name_ar": "البيض"}, {"code": 69, "name": "El Abiodh Sidi Cheikh", "name_ar": "الأبيض سيدي الشيخ"}],
+    "wilaya_codes": [32, 69],
     "source": "OpenStreetMap contributors",
     "licence": "ODbL-1.0",
     "count": len(items),
