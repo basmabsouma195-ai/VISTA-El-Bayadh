@@ -42,7 +42,7 @@ jobs:
           test -s "$PACKAGE/el-bayadh.map"
           test -s "$PACKAGE/el-bayadh-pois.json"
           test -s "$PACKAGE/SHA256SUMS"
-          (cd "$PACKAGE" && sha256sum -c SHA256SUMS)
+          (cd "$PACKAGE" && sed 's#build/el-bayadh/##g' SHA256SUMS | sha256sum -c -)
           mkdir -p app/src/main/assets/maps
           cp "$PACKAGE/el-bayadh.map" app/src/main/assets/maps/el-bayadh.map
           cp "$PACKAGE/el-bayadh-pois.json" app/src/main/assets/maps/el-bayadh-pois.json
