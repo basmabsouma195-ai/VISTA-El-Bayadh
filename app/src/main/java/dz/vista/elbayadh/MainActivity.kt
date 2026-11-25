@@ -264,7 +264,7 @@ private fun VistaApp() {
                                 onFavoriteToggle = ::toggleFavorite,
                                 onOpenLandmark = { selectedLandmark = it }
                             )
-                            1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
+                            1 -> OfflineMapScreen(language)
                             2 -> ScannerScreen(language, catalogue?.landmarks.orEmpty(), onOpenLandmark = { selectedLandmark = it })
                             3 -> FavoritesScreen(
                                 title = c.favorites,
@@ -1164,6 +1164,9 @@ private fun MoreScreen(
                 Spacer(Modifier.height(12.dp))
                 Text(if (isArabic) "دليل الاستخدام" else if (isFrench) "Guide d’utilisation" else "Usage guide", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(if (isArabic) "تصفّح المعالم من الرئيسية، ثم استخدم الماسح لقراءة QR أو الباركود أو التقط صورة للمعلم. افتح بطاقة المعلم لعرض معلوماته وصوره، وأضفه إلى المفضلة عند الحاجة." else if (isFrench) "Parcourez les sites depuis l’accueil. Scannez un QR/code-barres ou prenez une photo du site, puis consultez sa fiche et ses photos." else "Browse landmarks from Home. Scan a QR/barcode or photograph a landmark, then open its profile to view details and photos.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
+                Spacer(Modifier.height(12.dp))
+                Text(if (isArabic) "مصدر بيانات الخريطة" else if (isFrench) "Source des données cartographiques" else "Map data source", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(if (isArabic) "بيانات OpenStreetMap — المساهمون في OpenStreetMap، مرخّصة بموجب ODbL 1.0. ستتوفر تفاصيل المصدر ورابط الترخيص هنا عند إدراج ملف الخريطة." else if (isFrench) "Données OpenStreetMap — contributeurs OpenStreetMap, sous licence ODbL 1.0. Les détails et le lien de licence seront affichés ici avec l’intégration du fichier cartographique." else "OpenStreetMap data — © OpenStreetMap contributors, licensed under ODbL 1.0. Source details and the license link will be provided here when the map file is bundled.")
                 Spacer(Modifier.height(12.dp))
                 Text(if (isArabic) "عن المشروع" else if (isFrench) "Le projet" else "Project", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(if (isArabic) "يهدف VISTA إلى إبراز المقومات السياحية والتراثية والطبيعية لولاية البيض في دليل موحد." else if (isFrench) "VISTA valorise les ressources touristiques, patrimoniales et naturelles de la wilaya d’El Bayadh." else "VISTA showcases the tourism, heritage and natural assets of El Bayadh in one guide.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
