@@ -56,8 +56,12 @@ jobs:
           items = places.get("items", []) if isinstance(places, dict) else []
           if not items or places.get("wilaya_code") != 32:
               raise SystemExit("Offline El Bayadh places index is empty or has an unexpected region.")
+          target = next((item for item in items if item.get("osm_id") == 490536990), None)
+          if not target or target.get("name_ar") != "الأبيض سيدي الشيخ":
+              raise SystemExit("Offline places index is missing El Abiodh Sidi Cheikh.")
           print(f"Bundled map: {map_file.stat().st_size:,} bytes")
           print(f"Bundled named places: {len(items)}")
+          print(f"Verified town: {target['name']} ({target['name_ar']})")
           PY
 
       - name: Install optional user-confirmed field photo bundle
