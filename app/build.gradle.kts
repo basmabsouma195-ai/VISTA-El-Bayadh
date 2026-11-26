@@ -53,7 +53,7 @@ android {
 dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
     implementation("androidx.core:core-ktx:1.15.0")
-    implementation("org.maplibre.gl:android-sdk:13.6.1")
+    implementation("org.maplibre.gl:android-sdk:13.7.1")
     implementation("androidx.activity:activity-compose:1.10.0")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
