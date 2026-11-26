@@ -207,14 +207,11 @@
       "layout": {
         "text-field": [
           "coalesce",
-          [
-            "get",
-            "name:ar"
-          ],
-          [
-            "get",
-            "name"
-          ]
+          ["get", "name:ar"],
+          ["get", "name:fr"],
+          ["get", "name:en"],
+          ["get", "name:latin"],
+          ["get", "name"]
         ],
         "text-font": [
           "Open Sans Regular"
@@ -253,22 +250,16 @@
       "source": "el-bayadh",
       "source-layer": "transportation",
       "minzoom": 11,
-      "filter": [
-        "has",
-        "name"
-      ],
+      "filter": ["any", ["has", "name"], ["has", "name:ar"], ["has", "name:fr"], ["has", "name:en"]],
       "layout": {
         "symbol-placement": "line",
         "text-field": [
           "coalesce",
-          [
-            "get",
-            "name:ar"
-          ],
-          [
-            "get",
-            "name"
-          ]
+          ["get", "name:ar"],
+          ["get", "name:fr"],
+          ["get", "name:en"],
+          ["get", "name:latin"],
+          ["get", "name"]
         ],
         "text-font": [
           "Open Sans Regular"
