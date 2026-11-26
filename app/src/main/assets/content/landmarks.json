@@ -151,8 +151,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:El-Bayadh_Centre.jpg",
           "publisher": "Wikimedia Commons (وصف الصورة)",
           "note": "وصف توثيقي للموقع واللوحات الرخامية؛ ليس مرجعاً رسمياً لتاريخ إنشاء الساحة."
+        },
+        {
+          "title": "Jardin El Houriya / ساحة الشهداء – Mapcarta / OpenStreetMap",
+          "url": "https://mapcarta.com/fr/W244157784",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "الموضع المسجل باسم Jardin El Houriya ويُعرف أيضاً باسم ساحة الشهداء: 33.68042, 1.02030. وصف الصورة التوثيقية على Wikimedia Commons يؤكد أن ساحة الشهداء في مدينة البيض."
         }
-      ]
+      ],
+      "latitude": 33.68042,
+      "longitude": 1.0203
     },
     {
       "id": "cheikh-bouamama-statue-el-bayadh",
@@ -170,8 +178,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:El_Bayadh_-_Cheikh_Bouamama_%D8%A7%D9%84%D8%A8%D9%8A%D8%B6_-_%D8%A7%D9%84%D8%B4%D9%8A%D8%AE_%D8%A8%D9%88%D8%B9%D9%85%D8%A7%D9%85%D8%A9.jpg",
           "publisher": "Wikimedia Commons – Habib Kaki, 23 octobre 2015",
           "note": "توثيق بصري لموضع التمثال؛ لا يثبت وحده تفاصيل تاريخ المعلم."
+        },
+        {
+          "title": "شيخ بوعمامة – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/N7683176185",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "نقطة المعلم المسجلة باسم شيخ بوعمامة: 33.66746, 1.04365؛ كما توثق صورة Habib Kaki أن التمثال يقع عند مدخل مدينة البيض."
         }
-      ]
+      ],
+      "latitude": 33.66746,
+      "longitude": 1.04365
     },
     {
       "id": "rock-art-ksar-el-hamar",
