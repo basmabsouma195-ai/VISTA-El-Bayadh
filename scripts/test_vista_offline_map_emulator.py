@@ -85,7 +85,8 @@ def main() -> None:
     adb("pull", device_path, str(screenshot_path), timeout=30)
 
     print("VISTA_MAP_LOGCAT_START")
-    logcat = adb("logcat", "-d", "-v", "brief", timeout=20)\n    print("\\n".join(line for line in logcat.splitlines() if "VISTA_MAP" in line or "MapLibre" in line or "mbgl" in line)[-12000:])
+    logcat = adb("logcat", "-d", "-v", "brief", timeout=20)
+    print("\n".join(line for line in logcat.splitlines() if "VISTA_MAP" in line or "MapLibre" in line or "mbgl" in line)[-12000:])
     print("VISTA_MAP_LOGCAT_END")
 
     image = Image.open(screenshot_path).convert("RGB")
