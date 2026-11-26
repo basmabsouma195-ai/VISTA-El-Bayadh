@@ -8,6 +8,7 @@ import android.location.LocationManager
 import android.location.Location
 import android.location.LocationListener
 import android.os.Looper
+import android.os.Handler
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
@@ -272,6 +273,14 @@ internal fun OfflineMapScreen(
         }
         if (!requested && last == null) {
             locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "تعذر تحديد الموقع. تحقق من تشغيل GPS وخدمات الموقع." else "Location unavailable. Check GPS and location services."
+        } else {
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (activeLocationListener === listener && locationMessage.contains("جارٍ")) {
+                    runCatching { manager.removeUpdates(listener) }
+                    activeLocationListener = null
+                    locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "لم يصلنا موقعك. تحقق من GPS أو خدمات الموقع ثم أعد المحاولة." else "No location fix received. Check GPS or location services and retry."
+                }
+            }, 15000L)
         }
     }
 
@@ -381,7 +390,6 @@ internal fun OfflineMapScreen(
                         remotePlaces.forEach { place ->
                             Row(Modifier.fillMaxWidth().clickable {
                                 mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(place.latitude, place.longitude), 13.0))
-                                searchText = place.name.substringBefore(",")
                             }.padding(horizontal = 10.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Text(place.name, color = MapIvory, modifier = Modifier.weight(1f), fontSize = 12.sp, maxLines = 2)
                                 Text(if (catalogueLanguage == CatalogueLanguage.AR) "انتقال" else "Go", color = MapGold, fontSize = 10.sp)
