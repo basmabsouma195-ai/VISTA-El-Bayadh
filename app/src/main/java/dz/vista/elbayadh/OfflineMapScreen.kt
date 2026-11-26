@@ -351,6 +351,22 @@ internal fun OfflineMapScreen(
                     PropertyFactory.lineOpacity(0.94f)
                 ))
 
+                // Populate the bundled GeoJSON source directly from the verified local index.
+                // This avoids relying on native asset URL resolution for a GeoJSON source.
+                val localFeatures = localMapPlaces.map { place ->
+                    Feature.fromGeometry(Point.fromLngLat(place.longitude, place.latitude)).apply {
+                        addStringProperty("place_name", place.displayName(catalogueLanguage))
+                        addStringProperty("category", place.category)
+                    }
+                }
+                val localSource = style.getSourceAs<GeoJsonSource>("vista-local-places")
+                if (localSource != null) {
+                    localSource.setGeoJson(FeatureCollection.fromFeatures(localFeatures))
+                    Log.i("VISTA_MAP", "Injected ${localFeatures.size} offline places into style GeoJSON source")
+                } else {
+                    Log.e("VISTA_MAP", "Style is missing vista-local-places GeoJSON source")
+                }
+
                 // Settlement and POI labels are loaded from the bundled GeoJSON source in the local map style.
 
                 map.addOnMapClickListener { coordinate ->
