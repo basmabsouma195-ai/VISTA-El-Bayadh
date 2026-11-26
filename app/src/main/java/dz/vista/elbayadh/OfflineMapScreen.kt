@@ -14,6 +14,7 @@ import java.net.URL
 import java.net.URLEncoder
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
