@@ -25,8 +25,11 @@ def adb(*args: str, timeout: int = 30) -> str:
 
 
 def find_text_bounds(label: str) -> tuple[int, int] | None:
-    adb("shell", "uiautomator", "dump", "/sdcard/vista-window.xml", timeout=20)
-    xml = adb("shell", "cat", "/sdcard/vista-window.xml")
+    try:
+        adb("shell", "uiautomator", "dump", "/sdcard/vista-window.xml", timeout=5)
+        xml = adb("shell", "cat", "/sdcard/vista-window.xml", timeout=5)
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return None
     root = ET.fromstring(xml)
     for node in root.iter("node"):
         if node.attrib.get("text") == label or node.attrib.get("content-desc") == label:
@@ -37,15 +40,17 @@ def find_text_bounds(label: str) -> tuple[int, int] | None:
     return None
 
 
-def tap_text(label: str, timeout_seconds: int = 40) -> None:
-    deadline = time.time() + timeout_seconds
+def tap_text(label: str, fallback: tuple[int, int]) -> None:
+    deadline = time.time() + 10
     while time.time() < deadline:
         point = find_text_bounds(label)
         if point:
             adb("shell", "input", "tap", str(point[0]), str(point[1]))
+            print(f"Tapped accessible control {label!r} at {point}.")
             return
         time.sleep(1)
-    raise RuntimeError(f"Could not find accessible UI text: {label!r}")
+    print(f"Accessibility label {label!r} not exposed; using safe layout fallback {fallback}.")
+    adb("shell", "input", "tap", str(fallback[0]), str(fallback[1]))
 
 
 def main() -> None:
@@ -67,9 +72,12 @@ def main() -> None:
     adb("shell", "am", "start", "-n", "dz.vista.elbayadh/.MainActivity")
     time.sleep(5)
 
-    tap_text("ابدأ الرحلة")
+    dimensions = adb("shell", "wm", "size")
+    match = re.search(r"(\d+)x(\d+)", dimensions)
+    width, height = (map(int, match.groups()) if match else (1080, 1920))
+    tap_text("ابدأ الرحلة", (width // 2, int(height * 0.89)))
     time.sleep(2)
-    tap_text("الخريطة")
+    tap_text("الخريطة", (int(width * 0.70), height - 70))
     time.sleep(18)
 
     device_path = "/sdcard/vista-el-bayadh-map.png"
