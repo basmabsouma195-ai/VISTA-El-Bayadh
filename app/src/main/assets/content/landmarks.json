@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 23,
+  "contentVersion": 24,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -275,8 +275,16 @@
           "url": "https://www.aps.dz/culture/patrimoine/mmqc7fkd-%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF-%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82-%D8%A8%D8%A8%D9%88%D8%B3%D9%85%D8%BA%D9%88%D9%86-%D9%85%D9%86%D8%A7%D8%B1%D8%A9-%D8%AF%D9%8A%D9%86%D9%8A%D8%A9-%D9%88%D8%AA%D8%AD%D9%81%D8%A9-%D9%85%D8%B9%D9%85%D8%A7%D8%B1%D9%8A%D8%A9-%D8%B4%D8%A7%D9%85%D8%AE%D8%A9-%D9%85%D9%86%D8%B0-%D9%82%D8%B1%D9%88%D9%86",
           "publisher": "وكالة الأنباء الجزائرية، 14 مارس 2026",
           "note": "يدعم الموقع والأهمية الدينية والثقافية؛ لا يثبت وحده تاريخ التأسيس."
+        },
+        {
+          "title": "المسجد العتيق بالقصر القديم – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/4124154648",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة OSM مسماة L’ancienne mosquée داخل قصر بوسمغون القديم؛ تتوافق مع تقرير وكالة الأنباء الجزائرية الذي يحدد المسجد في وسط القصر. إحداثيات النقطة 32.86334, 0.01950."
         }
-      ]
+      ],
+      "latitude": 32.86334,
+      "longitude": 0.0195
     },
     {
       "id": "ksar-bent-khass",
@@ -367,8 +375,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/561",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق المسجد والزاوية التجانية وموقعها داخل القصر ووصف مرافقها."
+        },
+        {
+          "title": "الزاوية التيجانية ببوسمغون – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/4124159511",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة OSM مسماة La Zaouia Tidjaniya؛ وتؤكد الدراسة الأكاديمية أن الزاوية تقع في الركن الشمالي الغربي من قصر بوسمغون القديم. إحداثياتها 32.86322, 0.01917."
         }
-      ]
+      ],
+      "latitude": 32.86322,
+      "longitude": 0.01917
     },
     {
       "id": "rock-art-merdoufa",
