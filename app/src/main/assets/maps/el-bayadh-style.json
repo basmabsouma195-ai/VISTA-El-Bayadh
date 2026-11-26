@@ -145,6 +145,33 @@
       }
     },
     {
+      "id": "roads-network",
+      "type": "line",
+      "source": "el-bayadh",
+      "source-layer": "transportation",
+      "paint": {
+        "line-color": "#c8aa80",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          5,
+          0.45,
+          9,
+          1.05,
+          12,
+          1.9,
+          15,
+          3.2
+        ],
+        "line-opacity": 0.9
+      }
+    },
+    {
       "id": "roads-minor",
       "type": "line",
       "source": "el-bayadh",
