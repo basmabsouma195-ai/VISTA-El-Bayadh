@@ -153,7 +153,7 @@ internal fun MapScreen(
                             val screenPoint = nativeMap.projection.toScreenLocation(tappedPoint)
                             val markerHits = nativeMap.queryRenderedFeatures(
                                 screenPoint,
-                                arrayOf(VISTA_LANDMARK_LAYER_ID)
+                                VISTA_LANDMARK_LAYER_ID
                             )
                             if (markerHits.isNotEmpty()) {
                                 val nearest = landmarks
