@@ -100,9 +100,6 @@ private const val USER_SOURCE_ID = "vista-user-location"
 private const val USER_LAYER_ID = "vista-user-location-point"
 private const val ROUTE_SOURCE_ID = "vista-road-route"
 private const val ROUTE_LAYER_ID = "vista-road-route-line"
-private const val LOCAL_PLACES_SOURCE_ID = "vista-local-places"
-private const val LOCAL_PLACES_LAYER_ID = "vista-local-place-markers"
-private const val LOCAL_PLACES_LABEL_LAYER_ID = "vista-local-place-labels"
 
 private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double, val landmarkId: String? = null)
 private data class LocalMapPlace(
@@ -257,7 +254,7 @@ internal fun OfflineMapScreen(
     fun applyLayerVisibility() {
         val style = mapRef?.style ?: return
         val rasterVisible = baseMap != "standard"
-        listOf(ROADS_LAYER_ID, ROADS_MINOR_LAYER_ID).forEach { id ->
+        listOf(ROADS_LAYER_ID, ROADS_MINOR_LAYER_ID, "roads-network").forEach { id ->
             style.getLayer(id)?.setProperties(
                 PropertyFactory.visibility(if (roadsVisible) Property.VISIBLE else Property.NONE)
             )
@@ -274,7 +271,7 @@ internal fun OfflineMapScreen(
         }
         style.getLayer(SATELLITE_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "satellite") Property.VISIBLE else Property.NONE))
         style.getLayer(TERRAIN_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "terrain") Property.VISIBLE else Property.NONE))
-        listOf("place-points", "vista-place-labels", "vista-road-labels", LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_LABEL_LAYER_ID, SEARCH_LAYER_ID, USER_LAYER_ID, ROUTE_LAYER_ID).forEach { id ->
+        listOf("place-points", "vista-place-labels", "vista-road-labels", "vista-local-settlement-markers", "vista-local-settlement-labels", "vista-local-poi-points", "vista-local-poi-labels", SEARCH_LAYER_ID, USER_LAYER_ID, ROUTE_LAYER_ID).forEach { id ->
             style.getLayer(id)?.setProperties(PropertyFactory.visibility(Property.VISIBLE))
         }
     }
@@ -354,40 +351,7 @@ internal fun OfflineMapScreen(
                     PropertyFactory.lineOpacity(0.94f)
                 ))
 
-                // Render the bundled offline place catalogue directly as GeoJSON.
-                runCatching {
-                    val localPlaceFeatures = localMapPlaces.map { place ->
-                        Feature.fromGeometry(Point.fromLngLat(place.longitude, place.latitude)).apply {
-                            addStringProperty("place_name", place.displayName(catalogueLanguage))
-                            addStringProperty("category", place.category)
-                        }
-                    }
-                    Log.i("VISTA_MAP", "Prepared ${localPlaceFeatures.size} offline GeoJSON place features")
-                    style.addSource(GeoJsonSource(LOCAL_PLACES_SOURCE_ID, FeatureCollection.fromFeatures(localPlaceFeatures)))
-                    Log.i("VISTA_MAP", "Added offline place GeoJSON source")
-                    style.addLayer(CircleLayer(LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
-                        PropertyFactory.circleColor("#B98236"),
-                        PropertyFactory.circleRadius(7.0f),
-                        PropertyFactory.circleOpacity(1.0f),
-                        PropertyFactory.circleStrokeColor("#FFFDF8"),
-                        PropertyFactory.circleStrokeWidth(1.5f),
-                        PropertyFactory.visibility(Property.VISIBLE)
-                    ))
-                    Log.i("VISTA_MAP", "Added offline place marker layer")
-                    style.addLayer(SymbolLayer(LOCAL_PLACES_LABEL_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
-                        PropertyFactory.textField("{place_name}"),
-                        PropertyFactory.textFont(arrayOf("Noto Sans Regular")),
-                        PropertyFactory.textSize(12.5f),
-                        PropertyFactory.textColor("#263746"),
-                        PropertyFactory.textHaloColor("#FFFDF8"),
-                        PropertyFactory.textHaloWidth(1.4f),
-                        PropertyFactory.textOffset(arrayOf(0f, 0.8f)),
-                        PropertyFactory.textAllowOverlap(true),
-                        PropertyFactory.textIgnorePlacement(true),
-                        PropertyFactory.visibility(Property.VISIBLE)
-                    ))
-                    Log.i("VISTA_MAP", "Added offline place label layer")
-                }.onFailure { Log.e("VISTA_MAP", "Failed to add offline place layers", it) }
+                // Settlement and POI labels are loaded from the bundled GeoJSON source in the local map style.
 
                 map.addOnMapClickListener { coordinate ->
                     val screenPoint = map.projection.toScreenLocation(coordinate)

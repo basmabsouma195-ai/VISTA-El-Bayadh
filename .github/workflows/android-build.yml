@@ -151,6 +151,31 @@ jobs:
           places["wilaya_codes"] = [32, 69]
           places_path.write_text(json.dumps(places, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
           assert any(item.get("osm_id") == 490536990 for item in places.get("items", [])), "El Abiodh Sidi Cheikh is missing from the offline search index"
+          geo_features = []
+          for item in places.get("items", []):
+              name = (item.get("name_ar") or item.get("name") or "").strip()
+              try:
+                  latitude = float(item["latitude"])
+                  longitude = float(item["longitude"])
+              except (KeyError, TypeError, ValueError):
+                  continue
+              if not name or not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+                  continue
+              geo_features.append({
+                  "type": "Feature",
+                  "geometry": {"type": "Point", "coordinates": [longitude, latitude]},
+                  "properties": {
+                      "place_name": name,
+                      "category": str(item.get("category") or "place")
+                  }
+              })
+          assert len(geo_features) >= 900, f"GeoJSON place layer unexpectedly small: {len(geo_features)}"
+          (root / "places.geojson").write_text(
+              json.dumps({"type": "FeatureCollection", "features": geo_features}, ensure_ascii=False, separators=(",", ":")) + "\n",
+              encoding="utf-8"
+          )
+          assert (root / "places.geojson").stat().st_size > 10_000
+          print(f"Generated offline GeoJSON display layer: {len(geo_features)} features")
           print(f"Verified bundled regional PMTiles: {archive.stat().st_size} bytes, sha256={digest}; {places.get('count')} named places")
           PY
 

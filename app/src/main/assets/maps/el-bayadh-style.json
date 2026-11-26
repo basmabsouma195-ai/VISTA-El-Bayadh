@@ -12,6 +12,10 @@
       "url": "pmtiles://asset://maps/el-bayadh.pmtiles",
       "attribution": "© OpenMapTiles © OpenStreetMap contributors",
       "maxzoom": 16
+    },
+    "vista-local-places": {
+      "type": "geojson",
+      "data": "asset://maps/places.geojson"
     }
   },
   "layers": [
@@ -550,6 +554,178 @@
       },
       "paint": {
         "text-color": "#40515F",
+        "text-halo-color": "#FFFDF8",
+        "text-halo-width": 1.3
+      }
+    },
+    {
+      "id": "vista-local-settlement-markers",
+      "type": "circle",
+      "source": "vista-local-places",
+      "minzoom": 7,
+      "filter": [
+        "in",
+        "category",
+        "city",
+        "town",
+        "village",
+        "hamlet",
+        "neighbourhood",
+        "suburb",
+        "quarter",
+        "locality",
+        "district"
+      ],
+      "paint": {
+        "circle-color": "#9A7440",
+        "circle-radius": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          7,
+          2.2,
+          10,
+          3.8,
+          13,
+          5
+        ],
+        "circle-stroke-color": "#FFFDF8",
+        "circle-stroke-width": 1.2
+      }
+    },
+    {
+      "id": "vista-local-settlement-labels",
+      "type": "symbol",
+      "source": "vista-local-places",
+      "minzoom": 8,
+      "filter": [
+        "in",
+        "category",
+        "city",
+        "town",
+        "village",
+        "hamlet",
+        "neighbourhood",
+        "suburb",
+        "quarter",
+        "locality",
+        "district"
+      ],
+      "layout": {
+        "text-field": [
+          "get",
+          "place_name"
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          8,
+          10,
+          12,
+          12,
+          15,
+          14
+        ],
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.8
+        ],
+        "text-max-width": 10,
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": "#263746",
+        "text-halo-color": "#FFFDF8",
+        "text-halo-width": 1.4
+      }
+    },
+    {
+      "id": "vista-local-poi-points",
+      "type": "circle",
+      "source": "vista-local-places",
+      "minzoom": 14,
+      "filter": [
+        "!in",
+        "category",
+        "city",
+        "town",
+        "village",
+        "hamlet",
+        "neighbourhood",
+        "suburb",
+        "quarter",
+        "locality",
+        "district"
+      ],
+      "paint": {
+        "circle-color": "#B98236",
+        "circle-radius": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          14,
+          2.5,
+          16,
+          4.5
+        ],
+        "circle-stroke-color": "#FFFDF8",
+        "circle-stroke-width": 1
+      }
+    },
+    {
+      "id": "vista-local-poi-labels",
+      "type": "symbol",
+      "source": "vista-local-places",
+      "minzoom": 15,
+      "filter": [
+        "!in",
+        "category",
+        "city",
+        "town",
+        "village",
+        "hamlet",
+        "neighbourhood",
+        "suburb",
+        "quarter",
+        "locality",
+        "district"
+      ],
+      "layout": {
+        "text-field": [
+          "get",
+          "place_name"
+        ],
+        "text-font": [
+          "Noto Sans Regular"
+        ],
+        "text-size": 10,
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.8
+        ],
+        "text-max-width": 10,
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": "#34485A",
         "text-halo-color": "#FFFDF8",
         "text-halo-width": 1.3
       }
