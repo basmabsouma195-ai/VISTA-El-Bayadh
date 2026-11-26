@@ -5,6 +5,16 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationManager
+import android.location.Location
+import android.location.LocationListener
+import android.os.Looper
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
+import org.json.JSONArray
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +43,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +86,10 @@ private const val SATELLITE_SOURCE_ID = "vista-satellite-source"
 private const val SATELLITE_LAYER_ID = "vista-satellite-layer"
 private const val TERRAIN_SOURCE_ID = "vista-terrain-source"
 private const val TERRAIN_LAYER_ID = "vista-terrain-layer"
+private const val USER_SOURCE_ID = "vista-user-location"
+private const val USER_LAYER_ID = "vista-user-location-point"
+
+private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double)
 
 private val MapNavy = Color(0xFF10263D)
 private val MapGold = Color(0xFFC39A58)
@@ -98,6 +113,9 @@ internal fun OfflineMapScreen(
     var waterVisible by remember { mutableStateOf(true) }
     var baseMap by remember { mutableStateOf("standard") }
     var locationMessage by remember { mutableStateOf("") }
+    var remotePlaces by remember { mutableStateOf<List<PlaceSearchResult>>(emptyList()) }
+    var isSearchingPlaces by remember { mutableStateOf(false) }
+    var activeLocationListener by remember { mutableStateOf<LocationListener?>(null) }
 
     fun applyLayerVisibility() {
         val style = mapRef?.style ?: return
@@ -110,8 +128,11 @@ internal fun OfflineMapScreen(
         val rasterVisible = baseMap != "standard"
         style.getLayer(SATELLITE_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "satellite") Property.VISIBLE else Property.NONE))
         style.getLayer(TERRAIN_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "terrain") Property.VISIBLE else Property.NONE))
-        listOf("background", "landcover", "landuse", "water", "waterway", "place-points", "buildings").forEach { id ->
+        listOf("background", "landcover", "landuse", "water", "waterway", "buildings").forEach { id ->
             style.getLayer(id)?.setProperties(PropertyFactory.visibility(if (rasterVisible) Property.NONE else Property.VISIBLE))
+        }
+        listOf("place-points", "vista-place-labels", "vista-road-labels", ROADS_LAYER_ID, LANDMARK_LAYER_ID, USER_LAYER_ID).forEach { id ->
+            style.getLayer(id)?.setProperties(PropertyFactory.visibility(Property.VISIBLE))
         }
     }
 
@@ -174,15 +195,16 @@ internal fun OfflineMapScreen(
                 }
                 if (features.isNotEmpty()) {
                     style.addSource(GeoJsonSource(LANDMARK_SOURCE_ID, FeatureCollection.fromFeatures(features.toTypedArray())))
-                    style.addLayer(
-                        CircleLayer(LANDMARK_LAYER_ID, LANDMARK_SOURCE_ID).withProperties(
-                            PropertyFactory.circleColor("#C39A58"),
-                            PropertyFactory.circleRadius(7.5f),
-                            PropertyFactory.circleStrokeColor("#FFF8EA"),
-                            PropertyFactory.circleStrokeWidth(2.2f)
-                        )
-                    )
+                    style.addLayer(CircleLayer(LANDMARK_LAYER_ID, LANDMARK_SOURCE_ID).withProperties(
+                        PropertyFactory.circleColor("#C39A58"), PropertyFactory.circleRadius(7.5f),
+                        PropertyFactory.circleStrokeColor("#FFF8EA"), PropertyFactory.circleStrokeWidth(2.2f)
+                    ))
                 }
+                style.addSource(GeoJsonSource(USER_SOURCE_ID, FeatureCollection.fromFeatures(arrayOf())))
+                style.addLayer(CircleLayer(USER_LAYER_ID, USER_SOURCE_ID).withProperties(
+                    PropertyFactory.circleColor("#1677FF"), PropertyFactory.circleRadius(9f),
+                    PropertyFactory.circleStrokeColor("#FFFFFF"), PropertyFactory.circleStrokeWidth(3f)
+                ))
 
                 map.addOnMapClickListener { coordinate ->
                     val screenPoint = map.projection.toScreenLocation(coordinate)
@@ -207,22 +229,83 @@ internal fun OfflineMapScreen(
         }
     }
 
+    fun showUserLocation(location: Location) {
+        val point = Point.fromLngLat(location.longitude, location.latitude)
+        mapRef?.style?.getSourceAs<GeoJsonSource>(USER_SOURCE_ID)?.setGeoJson(Feature.fromGeometry(point))
+        mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 14.0))
+        locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "تم تحديد موقعك" else "Your location found"
+    }
+
+    fun requestFreshLocation() {
+        val fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        val coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (!fine && !coarse) {
+            locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+            return
+        }
+        val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val providers = runCatching { manager.getProviders(true) }.getOrDefault(emptyList())
+        val last = providers.mapNotNull { provider -> runCatching { manager.getLastKnownLocation(provider) }.getOrNull() }.maxByOrNull { it.time }
+        if (last != null) showUserLocation(last)
+        locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "جارٍ تحديد موقعك الحالي…" else "Getting your current location…"
+        activeLocationListener?.let { runCatching { manager.removeUpdates(it) } }
+        val listener = object : LocationListener {
+            override fun onLocationChanged(location: Location) { showUserLocation(location) }
+            @Deprecated("Deprecated by Android")
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) = Unit
+            override fun onProviderEnabled(provider: String) = Unit
+            override fun onProviderDisabled(provider: String) = Unit
+        }
+        activeLocationListener = listener
+        var requested = false
+        providers.forEach { provider ->
+            try {
+                manager.requestLocationUpdates(provider, 1000L, 0f, listener, Looper.getMainLooper())
+                requested = true
+            } catch (_: SecurityException) { } catch (_: IllegalArgumentException) { }
+        }
+        if (!requested && last == null) {
+            locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "تعذر تحديد الموقع. تحقق من تشغيل GPS وخدمات الموقع." else "Location unavailable. Check GPS and location services."
+        }
+    }
+
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         val allowed = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true || grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-        if (allowed) {
+        if (allowed) requestFreshLocation()
+        else locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "اسمح للتطبيق بالوصول إلى موقعك" else "Allow location access to use this feature"
+    }
+
+    LaunchedEffect(searchText) {
+        remotePlaces = emptyList()
+        val query = searchText.trim()
+        if (query.length < 2) { isSearchingPlaces = false; return@LaunchedEffect }
+        delay(1000)
+        isSearchingPlaces = true
+        remotePlaces = withContext(Dispatchers.IO) {
+            runCatching {
+                val encoded = URLEncoder.encode(query, "UTF-8")
+                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=6&countrycodes=dz&accept-language=ar").openConnection() as HttpURLConnection
+                connection.connectTimeout = 8000
+                connection.readTimeout = 8000
+                connection.setRequestProperty("User-Agent", "VISTA-El-Bayadh/0.1.3 (tourism map)")
+                try {
+                    val array = JSONArray(connection.inputStream.bufferedReader().use { it.readText() })
+                    (0 until array.length()).mapNotNull { index ->
+                        val item = array.getJSONObject(index)
+                        val lat = item.optString("lat").toDoubleOrNull() ?: return@mapNotNull null
+                        val lon = item.optString("lon").toDoubleOrNull() ?: return@mapNotNull null
+                        PlaceSearchResult(item.optString("display_name"), lat, lon)
+                    }
+                } finally { connection.disconnect() }
+            }.getOrDefault(emptyList())
+        }
+        isSearchingPlaces = false
+    }
+
+    DisposableEffect(context) {
+        onDispose {
             val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-            val location = runCatching {
-                manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                    ?: manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            }.getOrNull()
-            if (location != null) {
-                mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 14.0))
-                locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "تم تحديد موقعك" else "Your location found"
-            } else {
-                locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "فعّل GPS وانتظر تحديد الموقع ثم حاول مجدداً" else "Enable GPS, wait for a fix and retry"
-            }
-        } else {
-            locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "اسمح للتطبيق بالوصول إلى موقعك" else "Allow location access to use this feature"
+            activeLocationListener?.let { runCatching { manager.removeUpdates(it) } }
         }
     }
 
@@ -261,9 +344,11 @@ internal fun OfflineMapScreen(
             if (searchText.isNotBlank()) {
                 Surface(shape = RoundedCornerShape(16.dp), color = MapNavy.copy(alpha = 0.97f)) {
                     Column(Modifier.fillMaxWidth().padding(8.dp)) {
-                        if (matchingLandmarks.isEmpty()) {
-                            Text(if (catalogueLanguage == CatalogueLanguage.AR) "لا توجد نتائج مطابقة" else "No matching results", color = MapIvory, modifier = Modifier.padding(10.dp))
-                        } else matchingLandmarks.forEach { landmark ->
+                        if (matchingLandmarks.isEmpty() && remotePlaces.isEmpty() && !isSearchingPlaces) {
+                            Text(if (catalogueLanguage == CatalogueLanguage.AR) "لا توجد نتائج بعد" else "No results yet", color = MapIvory, modifier = Modifier.padding(10.dp))
+                        }
+                        if (isSearchingPlaces) Text(if (catalogueLanguage == CatalogueLanguage.AR) "جارٍ البحث عن المدن والقرى…" else "Searching places…", color = MapGold, modifier = Modifier.padding(8.dp))
+                        matchingLandmarks.forEach { landmark ->
                             Row(
                                 modifier = Modifier.fillMaxWidth().clickable {
                                     val lat = landmark.latitude
@@ -277,6 +362,15 @@ internal fun OfflineMapScreen(
                             ) {
                                 Text(landmark.name(catalogueLanguage), color = MapIvory, modifier = Modifier.weight(1f), fontSize = 14.sp)
                                 Text(if (landmark.latitude != null && landmark.longitude != null) "على الخريطة" else "الموقع قيد التحديد", color = MapGold, fontSize = 10.sp)
+                            }
+                        }
+                        remotePlaces.forEach { place ->
+                            Row(Modifier.fillMaxWidth().clickable {
+                                mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(place.latitude, place.longitude), 13.0))
+                                searchText = place.name.substringBefore(",")
+                            }.padding(horizontal = 10.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Text(place.name, color = MapIvory, modifier = Modifier.weight(1f), fontSize = 12.sp, maxLines = 2)
+                                Text(if (catalogueLanguage == CatalogueLanguage.AR) "انتقال" else "Go", color = MapGold, fontSize = 10.sp)
                             }
                         }
                         if (mappedMatches.isEmpty() && matchingLandmarks.isNotEmpty()) {
@@ -293,19 +387,7 @@ internal fun OfflineMapScreen(
         ) {
             MapControlButton(Icons.Filled.ZoomIn, "Zoom in") { mapRef?.animateCamera(CameraUpdateFactory.zoomIn()) }
             MapControlButton(Icons.Filled.ZoomOut, "Zoom out") { mapRef?.animateCamera(CameraUpdateFactory.zoomOut()) }
-            MapControlButton(Icons.Filled.MyLocation, "My location") {
-                val fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                val coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                if (fine || coarse) {
-                    val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                    val location = runCatching {
-                        manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                            ?: manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                    }.getOrNull()
-                    if (location != null) mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 14.0))
-                    else locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "لم يصل GPS إلى موقعك بعد" else "Waiting for a GPS fix"
-                } else locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
-            }
+            MapControlButton(Icons.Filled.MyLocation, "My location") { requestFreshLocation() }
             MapControlButton(Icons.Filled.Layers, "Map layers") { showLayers = !showLayers }
         }
 
