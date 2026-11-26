@@ -9,7 +9,6 @@ on:
       - "dataset/maps/el-bayadh-map-source.json"
       - "scripts/fetch_map_glyphs.py"
       - "scripts/build_el_bayadh_poi_index.py"
-      - "app/src/main/assets/maps/el-bayadh-style.json"
 
 permissions:
   contents: read
