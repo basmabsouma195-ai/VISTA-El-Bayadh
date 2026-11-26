@@ -42,9 +42,24 @@ jobs:
       - name: Download Algeria OSM extract
         run: |
           set -euo pipefail
-          curl --fail --location --retry 5 --retry-all-errors \
-            https://download.geofabrik.de/africa/algeria-latest.osm.pbf \
-            --output build/maps/algeria.osm.pbf
+          set -euo pipefail
+          downloaded=false
+          for url in \
+            "https://download.geofabrik.de/africa/algeria-latest.osm.pbf" \
+            "https://download.openstreetmap.fr/extracts/africa/algeria-latest.osm.pbf"; do
+            echo "Trying OSM extract source: $url"
+            if curl --fail --location --retry 2 --retry-all-errors --connect-timeout 15 --max-time 900 \
+              "$url" --output build/maps/algeria.osm.pbf; then
+              echo "OSM_SOURCE_URL=$url" | tee build/maps/osm-source-url.txt
+              downloaded=true
+              break
+            fi
+            rm -f build/maps/algeria.osm.pbf
+          done
+          if [ "$downloaded" != "true" ]; then
+            echo "All Algeria OSM PBF mirrors failed."
+            exit 1
+          fi
           test -s build/maps/algeria.osm.pbf
           sha256sum build/maps/algeria.osm.pbf | tee build/maps/osm-source.sha256
 

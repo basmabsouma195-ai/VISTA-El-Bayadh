@@ -30,7 +30,9 @@
     "input_format": "OSM PBF",
     "clip_to_combined_wilaya_boundaries": true,
     "tile_generator": "Planetiler with pinned OpenMapTiles profile",
-    "output_format": "PMTiles vector archive"
+    "output_format": "PMTiles vector archive",
+    "fallback_url": "https://download.openstreetmap.fr/extracts/africa/algeria-latest.osm.pbf",
+    "fallback_source": "OpenStreetMap France mirror (used only if Geofabrik is unreachable)"
   },
   "android": {
     "renderer": "MapLibre Native Android",
