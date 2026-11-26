@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 19,
+  "contentVersion": 20,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -667,6 +667,33 @@
           "url": "https://github.com/basmabsouma195-ai/VISTA-El-Bayadh/blob/main/dataset/field-photos/collection_manifest.json",
           "publisher": "تأكيد صاحب الصور الميدانية",
           "note": "هذا المصدر يوثق نسبة الصور إلى الموقع بتأكيد صاحبها فقط؛ ولا يمثل مصدراً مستقلاً لتاريخه أو إحداثياته أو مرافقه."
+        }
+      ]
+    },
+    {
+      "id": "ksar-boussemghoun",
+      "categoryId": "ksour",
+      "nameAr": "قصر بوسمغون",
+      "nameFr": "Ksar de Boussemghoun",
+      "nameEn": "Boussemghoun Ksar",
+      "descriptionAr": "قصر بوسمغون معلم عمراني تاريخي ببلدية بوسمغون في ولاية البيض. توثق بطاقة خريطة التراث الثقافي الجزائري تنظيمه في سبعة أحياء تاريخية، وارتباطه بالواحة والمسجد والزاوية التجانية. وتذكر البطاقة واحة تضم نحو أربعة آلاف نخلة، كما تصف المسجد ومرافق الزاوية داخل نسيج القصر. أدرجت اليونسكو إحداثيات القصر ضمن ملف «قصور الأطلس الصحراوي الجزائري» في القائمة الإرشادية للتراث العالمي. تبقى تفاصيل التأسيس والروايات الشفوية منسوبة إلى مصادرها، ولا تُعرض كتاريخ أثري محسوم.",
+      "descriptionFr": "Le ksar de Boussemghoun est un ensemble historique situé dans la commune de Boussemghoun, wilaya d’El Bayadh. La Carte du patrimoine culturel algérien décrit son organisation en sept quartiers historiques et ses liens avec l’oasis, la mosquée et la zaouïa tijanie. La fiche mentionne une oasis d’environ quatre mille palmiers et décrit la mosquée ainsi que les espaces de la zaouïa intégrés au tissu du ksar. L’UNESCO publie les coordonnées du ksar dans le dossier « Ksour de l’Atlas saharien algérien » inscrit sur sa liste indicative du patrimoine mondial. Les récits oraux et les datations doivent rester attribués à leurs sources et ne pas être présentés comme des faits archéologiques définitivement établis.",
+      "descriptionEn": "Boussemghoun Ksar is a historic built settlement in the municipality of Boussemghoun, El Bayadh Province. The Algerian Cultural Heritage Map describes seven historic quarters and the settlement’s relationship with its oasis, mosque and Tijani zawiya. The heritage record mentions an oasis of around four thousand palm trees and describes the mosque and zawiya facilities within the ksar fabric. UNESCO publishes coordinates for the ksar in the “Ksour de l’Atlas saharien algérien” entry on its Tentative List. Oral accounts and historical dates remain attributed to their sources and should not be presented as conclusively established archaeological facts.",
+      "verification": "under_review",
+      "latitude": 32.8647972,
+      "longitude": 0.0199444,
+      "sources": [
+        {
+          "title": "قصر بوسمغون – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/561",
+          "publisher": "وزارة الثقافة والفنون / مديرية الثقافة لولاية البيض",
+          "note": "المصدر لوصف الأحياء السبعة والواحة والمسجد والزاوية التجانية؛ لا يقدم النص المنشور إحداثيات رقمية."
+        },
+        {
+          "title": "Ksour de l’Atlas Saharien Algérien – UNESCO Tentative List",
+          "url": "https://whc.unesco.org/fr/listesindicatives/6831/",
+          "publisher": "UNESCO World Heritage Centre",
+          "note": "ينشر إحداثيات قصر بوسمغون: 32°51′53.27″N, 0°01′11.8″E؛ حُولت إلى درجات عشرية للدبوس. يلزم التحقق الميداني من نقطة المعلم."
         }
       ]
     }
