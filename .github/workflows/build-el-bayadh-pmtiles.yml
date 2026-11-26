@@ -1,0 +1,146 @@
+name: Build El Bayadh + El Abiodh PMTiles map
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ feature/el-bayadh-offline-map ]
+    paths:
+      - "scripts/prepare_el_bayadh_boundary.py"
+      - "dataset/maps/el-bayadh-map-source.json"
+      - "scripts/fetch_map_glyphs.py"
+      - "scripts/build_el_bayadh_poi_index.py"
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: vista-el-bayadh-pmtiles
+  cancel-in-progress: true
+
+jobs:
+  build-map:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install OSM extraction tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes osmium-tool
+
+      - name: Prepare combined Wilaya 32 and 69 boundaries
+        run: |
+          set -euo pipefail
+          python3 scripts/prepare_el_bayadh_boundary.py build/maps
+          test -s build/maps/el-bayadh.poly
+          test -s build/maps/boundary.json
+
+      - name: Download Algeria OSM extract
+        run: |
+          set -euo pipefail
+          set -euo pipefail
+          downloaded=false
+          for url in \
+            "https://download.geofabrik.de/africa/algeria-latest.osm.pbf" \
+            "https://download.openstreetmap.fr/extracts/africa/algeria-latest.osm.pbf"; do
+            echo "Trying OSM extract source: $url"
+            if curl --fail --location --retry 2 --retry-all-errors --connect-timeout 15 --max-time 900 \
+              "$url" --output build/maps/algeria.osm.pbf; then
+              echo "OSM_SOURCE_URL=$url" | tee build/maps/osm-source-url.txt
+              downloaded=true
+              break
+            fi
+            rm -f build/maps/algeria.osm.pbf
+          done
+          if [ "$downloaded" != "true" ]; then
+            echo "All Algeria OSM PBF mirrors failed."
+            exit 1
+          fi
+          test -s build/maps/algeria.osm.pbf
+          sha256sum build/maps/algeria.osm.pbf | tee build/maps/osm-source.sha256
+
+      - name: Clip OSM data to combined El Bayadh map region
+        run: |
+          set -euo pipefail
+          osmium extract \
+            --polygon=build/maps/el-bayadh.poly \
+            --strategy=smart \
+            --output=build/maps/el-bayadh.osm.pbf \
+            build/maps/algeria.osm.pbf
+          test -s build/maps/el-bayadh.osm.pbf
+          sha256sum build/maps/el-bayadh.osm.pbf | tee build/maps/clipped-source.sha256
+
+      - name: Generate vector tiles as PMTiles
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$PWD/build/maps:/data" \
+            ghcr.io/onthegomap/planetiler:0.10.2 \
+            --osm-path=/data/el-bayadh.osm.pbf \
+            --output=/data/el-bayadh.pmtiles \
+            --force --download --maxzoom=16
+          test -s build/maps/el-bayadh.pmtiles
+
+      - name: Export clipped OSM features for offline place search
+        run: |
+          set -euo pipefail
+          osmium export --overwrite --output=build/maps/el-bayadh.geojson build/maps/el-bayadh.osm.pbf
+          python3 scripts/build_el_bayadh_poi_index.py build/maps/el-bayadh.geojson build/maps/places.json
+          rm build/maps/el-bayadh.geojson
+
+      - name: Download offline Arabic and Latin glyph ranges
+        run: python3 scripts/fetch_map_glyphs.py build/maps/glyphs
+
+      - name: Validate PMTiles archive and geographic metadata
+        run: |
+          python3 - <<'PY'
+          import json, struct
+          from pathlib import Path
+          root = Path("build/maps")
+          archive = root / "el-bayadh.pmtiles"
+          header = archive.read_bytes()[:127]
+          if len(header) != 127 or header[:7] != b"PMTiles":
+              raise SystemExit("Invalid PMTiles archive header")
+          version = header[7]
+          if version != 3:
+              raise SystemExit(f"Expected PMTiles v3, got {version}")
+          min_zoom, max_zoom = header[100], header[101]
+          if min_zoom > 8 or max_zoom < 16:
+              raise SystemExit(f"Unexpected zoom range: {min_zoom}..{max_zoom}")
+          boundary = json.loads((root / "boundary.json").read_text())
+          west, south, east, north = boundary["bbox_wsen"]
+          if not (west < east and south < north and west < 2.0 and east > 0.0 and south < 34.5 and north > 32.5):
+              raise SystemExit(f"Unexpected Wilaya 32 bounds: {boundary['bbox_wsen']}")
+          manifest = {
+              "schema": 1,
+              "format": "PMTiles v3 vector archive",
+              "renderer": "MapLibre Native Android",
+              "wilaya_code": 32,
+              "archive": "el-bayadh.pmtiles",
+              "archive_bytes": archive.stat().st_size,
+              "sha256": __import__("hashlib").sha256(archive.read_bytes()).hexdigest(),
+              "min_zoom": min_zoom,
+              "max_zoom": max_zoom,
+              "boundary": boundary,
+              "osm_extract_sha256": (root / "osm-source.sha256").read_text().split()[0],
+              "clipped_extract_sha256": (root / "clipped-source.sha256").read_text().split()[0]
+          }
+          (root / "map-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+          print(json.dumps(manifest, ensure_ascii=False, indent=2))
+          PY
+
+      - name: Upload validated El Bayadh map package
+        uses: actions/upload-artifact@v4
+        with:
+          name: vista-el-bayadh-pmtiles
+          path: |
+            build/maps/el-bayadh.pmtiles
+            build/maps/boundary.json
+            build/maps/map-manifest.json
+            build/maps/places.json
+            build/maps/glyphs/
+          if-no-files-found: error
+          retention-days: 30

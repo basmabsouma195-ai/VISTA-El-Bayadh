@@ -2,13 +2,14 @@ name: Android build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/el-bayadh-offline-map ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: android-build-offline-${{ github.ref }}
@@ -20,6 +21,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Install optional user-confirmed field photo bundle
         shell: bash
         run: |
@@ -46,15 +48,148 @@ jobs:
           else
             echo "No field-photo bundle uploaded; building without user field-photo assets."
           fi
+
+      - name: Download the validated El Bayadh PMTiles archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          RUN_ID=""
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            # Prefer a map package built from this exact PR head; wait for it if still running.
+            RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$GITHUB_HEAD_REF&per_page=100" --jq --arg sha "$PR_HEAD_SHA" '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml" and .head_sha == $sha) | .id' | head -n 1 || true)"
+            if [ -z "$RUN_ID" ]; then
+              # App-only PR commits may reuse the latest successful map package on this branch.
+              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$GITHUB_HEAD_REF&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
+            fi
+            if [ -z "$RUN_ID" ]; then
+              echo "No validated El Bayadh map artifact exists for this feature branch."
+              exit 1
+            fi
+            for attempt in $(seq 1 360); do
+              STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
+              CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
+              if [ "$STATUS" = "completed" ]; then
+                if [ "$CONCLUSION" != "success" ]; then
+                  echo "PMTiles build failed (run $RUN_ID)."
+                  exit 1
+                fi
+                break
+              fi
+              echo "Waiting for the PR's El Bayadh PMTiles package ($attempt/90)..."
+              sleep 10
+            done
+            if [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')" != "success" ]; then
+              echo "No successful PMTiles build was found."
+              exit 1
+            fi
+          else
+            # Prefer a map package built from this exact commit.
+            RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=50" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
+            if [ -z "$RUN_ID" ]; then
+              # App-only commits reuse the latest verified package from this branch.
+              BRANCH="$GITHUB_REF_NAME"
+              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$BRANCH&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
+            fi
+            if [ -z "$RUN_ID" ]; then
+              echo "No verified El Bayadh PMTiles package is available for this branch."
+              exit 1
+            fi
+            for attempt in $(seq 1 360); do
+              STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
+              CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
+              if [ "$STATUS" = "completed" ]; then
+                if [ "$CONCLUSION" != "success" ]; then
+                  echo "PMTiles build failed (run $RUN_ID)."
+                  exit 1
+                fi
+                break
+              fi
+              echo "Waiting for the El Bayadh PMTiles package ($attempt/90)..."
+              sleep 10
+            done
+            if [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')" != "success" ]; then
+              echo "No successful PMTiles build was found."
+              exit 1
+            fi
+          fi
+          mkdir -p app/src/main/assets/maps
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name vista-el-bayadh-pmtiles --dir "$RUNNER_TEMP/vista-map"
+          install -m 0644 "$RUNNER_TEMP/vista-map/el-bayadh.pmtiles" app/src/main/assets/maps/el-bayadh.pmtiles
+          install -m 0644 "$RUNNER_TEMP/vista-map/map-manifest.json" app/src/main/assets/maps/map-manifest.json
+          install -m 0644 "$RUNNER_TEMP/vista-map/boundary.json" app/src/main/assets/maps/boundary.json
+          install -m 0644 "$RUNNER_TEMP/vista-map/places.json" app/src/main/assets/maps/places.json
+          mkdir -p app/src/main/assets/maps/glyphs
+          cp -R "$RUNNER_TEMP/vista-map/glyphs/." app/src/main/assets/maps/glyphs/
+          test -s "app/src/main/assets/maps/glyphs/Noto Sans Regular/0-255.pbf"
+          test -s "app/src/main/assets/maps/glyphs/Noto Sans Regular/1536-1791.pbf"
+          python3 - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          root = Path("app/src/main/assets/maps")
+          archive = root / "el-bayadh.pmtiles"
+          manifest = json.loads((root / "map-manifest.json").read_text())
+          digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+          assert manifest["wilaya_code"] == 32, manifest
+          boundary = manifest.get("boundary", {})
+          assert boundary.get("wilaya_codes") == [32, 69], boundary
+          assert manifest["format"] == "PMTiles v3 vector archive", manifest
+          assert digest == manifest["sha256"], (digest, manifest["sha256"])
+          assert archive.read_bytes()[:7] == b"PMTiles"
+          manifest["wilaya_codes"] = [32, 69]
+          manifest["region_name"] = "El Bayadh + El Abiodh Sidi Cheikh"
+          (root / "map-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+          places_path = root / "places.json"
+          places = json.loads(places_path.read_text(encoding="utf-8"))
+          places["region"] = "El Bayadh + El Abiodh Sidi Cheikh"
+          places["regions"] = [
+              {"code": 32, "name": "El Bayadh", "name_ar": "البيض"},
+              {"code": 69, "name": "El Abiodh Sidi Cheikh", "name_ar": "الأبيض سيدي الشيخ"}
+          ]
+          places["wilaya_codes"] = [32, 69]
+          places_path.write_text(json.dumps(places, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+          assert any(item.get("osm_id") == 490536990 for item in places.get("items", [])), "El Abiodh Sidi Cheikh is missing from the offline search index"
+          geo_features = []
+          for item in places.get("items", []):
+              name = (item.get("name_ar") or item.get("name") or "").strip()
+              try:
+                  latitude = float(item["latitude"])
+                  longitude = float(item["longitude"])
+              except (KeyError, TypeError, ValueError):
+                  continue
+              if not name or not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
+                  continue
+              geo_features.append({
+                  "type": "Feature",
+                  "geometry": {"type": "Point", "coordinates": [longitude, latitude]},
+                  "properties": {
+                      "place_name": name,
+                      "category": str(item.get("category") or "place")
+                  }
+              })
+          assert len(geo_features) >= 900, f"GeoJSON place layer unexpectedly small: {len(geo_features)}"
+          (root / "places.geojson").write_text(
+              json.dumps({"type": "FeatureCollection", "features": geo_features}, ensure_ascii=False, separators=(",", ":")) + "\n",
+              encoding="utf-8"
+          )
+          assert (root / "places.geojson").stat().st_size > 10_000
+          print(f"Generated offline GeoJSON display layer: {len(geo_features)} features")
+          print(f"Verified bundled regional PMTiles: {archive.stat().st_size} bytes, sha256={digest}; {places.get('count')} named places")
+          PY
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: '8.9'
+          gradle-version: '8.11.1'
+
       - name: Restore offline recognition image cache
         uses: actions/cache@v4
         with:
@@ -64,23 +199,30 @@ jobs:
           key: vista-recognition-seed-v3-${{ hashFiles('dataset/recognition/source-manifest.json', 'scripts/fetch_recognition_model.py') }}
           restore-keys: |
             vista-recognition-seed-v3-
+
       - name: Bundle offline recognition image assets
         env:
           VISTA_FETCH_REMOTE_SEED_IMAGES: 'false'
         run: python3 scripts/fetch_recognition_seed_images.py
+
       - name: Fetch and verify pinned MobileNetV3 model
         run: python3 scripts/fetch_recognition_model.py
+
       - name: Validate offline catalogue and local image index
         run: python3 scripts/validate_offline_catalogue.py
+
       - name: Validate field recognition dataset readiness
         run: |
           python3 -m py_compile scripts/register_field_photo.py scripts/verify_field_photo.py scripts/validate_recognition_dataset.py
           python3 scripts/validate_recognition_dataset.py
           python3 -m unittest scripts/test_recognition_dataset_validator.py
+
       - name: Run recognition policy unit tests
         run: gradle --no-daemon :app:testDebugUnitTest
+
       - name: Clean and assemble fresh APK
         run: gradle --no-daemon clean :app:assembleDebug
+
       - name: Prepare stable release signing key
         id: release-signing
         shell: bash
@@ -100,6 +242,7 @@ jobs:
             echo "ready=false" >> "$GITHUB_OUTPUT"
             echo "Stable signing secrets are not configured yet; debug APK only."
           fi
+
       - name: Build stable signed release APK
         if: steps.release-signing.outputs.ready == 'true'
         env:
@@ -107,6 +250,7 @@ jobs:
           VISTA_KEY_ALIAS: ${{ secrets.VISTA_KEY_ALIAS }}
           VISTA_KEY_PASSWORD: ${{ secrets.VISTA_KEY_PASSWORD }}
         run: gradle --no-daemon :app:assembleRelease
+
       - name: Verify stable release APK
         if: steps.release-signing.outputs.ready == 'true'
         shell: bash
@@ -116,6 +260,7 @@ jobs:
           "$BUILD_TOOLS/zipalign" -c -v 4 "$APK"
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
           sha256sum "$APK"
+
       - name: Upload stable signed release APK
         if: steps.release-signing.outputs.ready == 'true'
         uses: actions/upload-artifact@v4
@@ -124,6 +269,7 @@ jobs:
           path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
+
       - name: Verify APK alignment and signatures
         shell: bash
         run: |
@@ -133,10 +279,64 @@ jobs:
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
           "$BUILD_TOOLS/aapt" dump badging "$APK" | head -n 5
           sha256sum "$APK"
+
       - name: Upload verified debug APK
         uses: actions/upload-artifact@v4
         with:
           name: vista-el-bayadh-android16-compatible
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 14
+
+  offline-map-emulator:
+    name: Offline map emulator smoke test
+    needs: assemble-debug
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      ANDROID_I_WANT_MY_TCG: "yes"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download verified debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: vista-el-bayadh-android16-compatible
+          path: artifacts
+
+      - name: Install screenshot inspection dependency
+        run: python3 -m pip install --quiet pillow
+
+      - name: Enable KVM access when available
+        shell: bash
+        run: |
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            echo "KVM device permissions enabled."
+          else
+            echo "KVM is unavailable; Android emulator will use explicit TCG software emulation."
+          fi
+
+      - name: Launch VISTA with network disabled and inspect the map
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          emulator-boot-timeout: 900
+          disable-linux-hw-accel: auto
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            python3 scripts/test_vista_offline_map_emulator.py artifacts/app-debug.apk artifacts/vista-map-emulator.png
+
+      - name: Upload offline map emulator screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vista-el-bayadh-offline-map-emulator-test
+          path: artifacts/vista-map-emulator.png
+          if-no-files-found: warn
           retention-days: 14

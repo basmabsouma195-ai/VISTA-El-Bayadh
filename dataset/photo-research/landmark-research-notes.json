@@ -35,7 +35,16 @@
         "تضم الزاوية التجانية مرافق للتعليم وإيواء الطلبة والطهي والتخزين ومصلى وفناء وخلوة."
       ],
       "caution": "أي معلومة عن تاريخ تأسيس المسجد أو القصر تحتاج صياغة منسوبة للمصدر؛ البطاقة نفسها تعرض بعض التواريخ على سبيل الاعتقاد أو الاستنتاج.",
-      "publicationStatus": "research-enriched-not-runtime"
+      "publicationStatus": "runtime-record-added-coordinate-published-by-UNESCO-field-check-pending",
+      "coordinateReference": {
+        "latitude": 32.8647972,
+        "longitude": 0.0199444,
+        "source": "UNESCO World Heritage Centre, Tentative List 6831",
+        "sourceUrl": "https://whc.unesco.org/fr/listesindicatives/6831/",
+        "original": "32° 51' 53,27\" N / 0° 1' 11,8\" E",
+        "precision": "published site coordinate; field confirmation still required",
+        "note": "Coordinate is for the ksar entry in the UNESCO serial nomination, not a separately surveyed point for the mosque or zaouia."
+      }
     },
     {
       "id": "ksar-molk-slimane",
@@ -78,7 +87,10 @@
         "تقع بجانب قارة الطالب من جهتها الجنوبية الغربية، ويكون الوصول الموصوف عبر طريق ترابي انطلاقا من الطريق الوطني رقم 47."
       ],
       "visitorCaution": "البطاقة تصف المسالك بالصعبة؛ لا تعرض كزيارة سهلة ولا توجه الزائر دون تحقق من حالة الطريق ومرافقة محلية.",
-      "publicationStatus": "research-enriched-not-runtime"
+      "publicationStatus": "research-enriched-not-runtime",
+      "locationText": "بجانب قارة الطالب من الجهة الجنوبية الغربية؛ الوصول عبر طريق ترابي انطلاقاً من الطريق الوطني رقم 47 عند النقطة الكيلومترية 130 باتجاه عين الصفراء، لمسافة تقارب 20 كلم وفق بطاقة التراث.",
+      "accessEvidence": "المصدر يصف الطريق بأنه ترابي ويذكر مسافة تقارب 20 كلم؛ هذه مسافة وصفية وليست إحداثيات ولا توجيهاً ملاحيّاً مضموناً.",
+      "coordinateStatus": "not-published-by-source; keep latitude and longitude null"
     },
     {
       "id": "rock-art-qaret-samouta",
@@ -131,14 +143,17 @@
       "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1513",
       "sourceAuthority": "خريطة التراث الثقافي الجزائري - مديرية الثقافة لولاية البيض",
       "municipality": "أربوات",
-      "locationText": "قرب العلامة الكيلومترية 72 على الطريق الوطني 47، نحو كيلومترين عن الطريق",
+      "locationText": "عند العلامة الكيلومترية 72 على يسار الطريق الوطني رقم 47، وعلى بعد نحو كيلومترين من الطريق؛ يمكن رؤية الموقع بسهولة وفق البطاقة.",
       "verifiedFacts": [
         "مرتفَع من الصخور الحمراء يحمل نقوشاً صخرية، اكتشفه Frobenius سنة 1925 بحسب البطاقة.",
         "تذكر البطاقة واجهتين ورسومات لحيوانات منها الثيران والكباش ذات القرص ووحيد القرن والخيول والأسود والفيلة والنعام، إضافة إلى أشكال آدمية.",
         "حالة الحفظ متوسطة مع تقشر وتفتت وثقوب وعوامل تلف بشري."
       ],
       "visitorCaution": "وجود تدهور في النقوش؛ يجب منع لمس الأسطح أو استعمال الطباشير أو أي وسيلة لإبراز الرسوم.",
-      "publicationStatus": "research-enriched-not-runtime"
+      "publicationStatus": "research-enriched-not-runtime",
+      "district": "الأبيض سيدي الشيخ",
+      "accessEvidence": "الوصف يحدد علامة كيلومترية ومسافة جانبية تقريبية ولا يقدم إحداثيات رقمية؛ يلزم تثبيت نقطة الموقع ميدانياً.",
+      "coordinateStatus": "not-published-by-source; keep latitude and longitude null"
     },
     {
       "id": "rock-art-dhalaa-mayta",
@@ -175,13 +190,34 @@
       "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
       "sourceAuthority": "خريطة التراث الثقافي الجزائري - مديرية الثقافة لولاية البيض",
       "municipality": "بريزينة",
-      "locationText": "نحو 20 كلم شمال غرب بريزينة، قرية الفرع",
+      "locationText": "قرية الفرع، بلدية بريزينة؛ تبعد المحطة نحو 20 كلم شمال غرب بريزينة وفق بطاقة التراث.",
       "verifiedFacts": [
         "تضم نقوشاً لحيوانات متعددة منها الغزلان والأبقار الوحشية والنعام وأشكال حيوانية أخرى.",
         "تصف البطاقة نقش كبش عملاق يحمل قرصاً على رأسه متجهاً شرقاً، ونقشاً لوحيد القرن.",
         "تربط البطاقة الموقع بقرية الفرع التابعة لبلدية بريزينة."
       ],
       "visitorCaution": "يلزم التحقق من المسار والإحداثيات ميدانياً؛ لا تخلط صور القرية بصور النقوش نفسها.",
+      "publicationStatus": "research-enriched-not-runtime",
+      "district": "بريزينة",
+      "accessEvidence": "المصدر يثبت القرية والبلدية والدائرة والمسافة العامة فقط؛ لا ينشر نقطة GPS دقيقة.",
+      "coordinateStatus": "not-published-by-source; keep latitude and longitude null"
+    },
+    {
+      "id": "rock-art-qouirat-ben-thaloul",
+      "nameAr": "محطة النقش الصخري قويرات بن ثالول",
+      "sourceUrl": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1263",
+      "sourceAuthority": "خريطة التراث الثقافي الجزائري - مديرية الثقافة لولاية البيض",
+      "municipality": "أربوات",
+      "district": "الأبيض سيدي الشيخ",
+      "locationText": "شمال أربوات بمحاذاة الطريق الوطني رقم 47. للوصول إلى المحطة الثانية يُسلك طريق ترابي عند النقطة الكيلومترية 110 من جهة الجنوب لمسافة تقارب كيلومتراً واحداً؛ المحطة الأولى تبعد نحو 10 كلم شمالاً.",
+      "verifiedFacts": [
+        "الموقع مجموعة من ستة مرتفعات صخرية ممتدة على نحو 5 كلم.",
+        "توجد الرسومات في المرتفعين الأول والثاني، وتوثق البطاقة ست واجهات و19 رسماً.",
+        "تذكر البطاقة اكتشاف الموقع سنة 1929 من طرف الباحث Ribaut.",
+        "تتضمن الرسومات موضوعات حيوانية وآدمية، منها الثيران والفيلة والأسود والظباء والنعام والخيول."
+      ],
+      "visitorCaution": "الوصول يتضمن طريقاً ترابياً؛ لا تُحوّل العلامة الكيلومترية والمسافة إلى دبوس GPS. يجب تثبيت موضع كل محطة ميدانياً، لأن الموقع يتكون من عدة مرتفعات متباعدة.",
+      "coordinateStatus": "not-published-by-source; keep latitude and longitude null",
       "publicationStatus": "research-enriched-not-runtime"
     }
   ]

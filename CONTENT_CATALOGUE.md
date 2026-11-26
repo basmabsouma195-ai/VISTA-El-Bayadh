@@ -48,25 +48,46 @@ Each landmark record uses this structure:
 
 ## Current catalogue snapshot
 
-Content version **12** contains **23 landmark records** focused on El Bayadh Province. The editorial status breakdown is **8 verified** and **15 under review**. Every record currently has Arabic, French and English names and descriptions, and at least one source record. This completeness check does not mean every record has been field-validated or that every coordinate, access route, opening time or visitor-safety detail is known.
+Content version **19** contains **31 landmark records** for El Bayadh Province:
+**8 verified** and **23 under review**. All 31 records have Arabic, French and
+English names and descriptions, plus at least one cited source.
 
-The catalogue covers ksour and historic buildings, natural formations and caves, rock-art heritage, dinosaur traces and religious heritage. Examples include Ksar Mechria Sughra, Ksar Ghassoul, Ksar Stitten, Ksar Chellala Dhahrania, Ksar Arbaouat, Aïn Hachifa Ksar, the Sidi Cheikh mausoleum, Gour Bent El Khass, Brézina Gours, Kef El Melh and Boussemghoun heritage sites.
+The most important remaining gap is geographic coverage: only **1 of 31**
+runtime records currently has latitude and longitude. The other 30 must not be
+placed on the map using guessed coordinates. The offline base map is now bundled
+and has passed an Android emulator test with Wi-Fi and mobile data disabled;
+landmark pins will appear as their records receive confirmed coordinates.
 
-The 15 `under_review` entries remain provisional. Do not silently promote them to verified, infer precise locations from approximate research coordinates, or present oral accounts as established dates. Before publication, review the cited source against the exact landmark and add confirmed field observations where needed.
+Research is tracked separately in:
+- `dataset/photo-research/landmark-research-notes.json`: 12 enriched research notes.
+- `dataset/photo-research/additional-landmarks-discovery.json`: 13 discovery entries.
+- Eight IDs occur in both the research queue and the runtime catalogue; enrich
+  those existing records rather than creating duplicates.
 
+The catalogue covers ksour and historic buildings, natural formations and caves,
+rock-art heritage, dinosaur traces, religious heritage, memorials and defensive
+structures. The current record count is not a claim that the province-wide
+inventory is complete or that every place is ready for visitors.
 
-## Recognition image pack (current build)
+Do not silently promote `under_review` entries to verified, infer precise
+locations from approximate distances, or present oral accounts as established
+dates. Review every source against the exact place and retain visitor-access
+cautions where the source describes difficult or unsafe access.
 
-The runtime index contains the three field photographs that are already committed
-and one reusable Commons reference image for the Cheikh Bouamama statue. The
-build workflow attempts to fetch the remaining licensed seed images and packages
-successful downloads into the APK. External hosts can rate-limit CI, so a build
-may succeed with a partial image pack; check the workflow log and the generated
-APK before describing a photo as bundled. The runtime index is generated during
-the build and is not itself a guarantee that a trained visual recognizer exists.
+## Recognition and field-photo status
 
-The current image references are seed material only. A single photograph per
-place is not enough for reliable landmark recognition. Each target landmark
-still needs several distinct real-world viewpoints, plus a separate unknown-scene
-evaluation set. The current Android scanner supports camera preview and optional
-QR reading; visual landmark matching is not yet implemented.
+The field-photo gallery currently contains **19 records**: 18 are enabled for
+the visitor gallery and one remains unconfirmed and disabled. These gallery
+photos are not automatically approved for recognition.
+
+The offline recognition index currently contains **3 approved reference images**:
+Ksar Bent Khass, Gour Bent El Khass and the Boussemghoun Zaouia. Three references
+are not enough for reliable visual recognition; each target still needs several
+distinct real-world viewpoints and a separate unknown-scene evaluation set.
+Keep gallery, documentary/signage and recognition-training roles separate.
+
+The Android scanner currently supports camera preview and optional QR reading;
+visual landmark matching is not yet implemented.
+
+See `dataset/landmarks/collection-status.md` for the live collection priorities
+and the rules for coordinates, source review, photographs and publication.

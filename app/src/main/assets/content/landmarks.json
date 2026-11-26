@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 19,
+  "contentVersion": 25,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -70,8 +70,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/228",
           "publisher": "وزارة الثقافة والفنون / خريطة التراث الثقافي الجزائري",
           "note": "المصدر الأساسي لتاريخ التأسيس والوصف المعماري والاجتماعي؛ تُنسب إليه الروايات والتفاصيل."
+        },
+        {
+          "title": "قصر المشرية الصغرى – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/228",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.576784,
+      "longitude": 1.014623
     },
     {
       "id": "gour-brizina",
@@ -89,8 +103,22 @@
           "url": "https://eldjoumhouria.dz/article/31851/",
           "publisher": "جريدة الجمهورية، 4 ديسمبر 2024",
           "note": "تقرير محلي يصف جبال القور وموقعها العام والزيارة السياحية."
+        },
+        {
+          "title": "جبال الڤور – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/9510119117",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "إحداثيات نقطة مرسومة في OpenStreetMap؛ أُدرجت كدبوس خريطة مع إبقاء السجل قيد المراجعة التحريرية، وينبغي تأكيد مطابقة النقطة للمعلم ميدانياً."
+        },
+        {
+          "title": "بيانات المواقع السياحية – GeoAlgeria (@geoalgeria/tourisme)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/tourisme/data/attractions.json",
+          "publisher": "GeoAlgeria؛ بيانات OSM بترخيص ODbL",
+          "note": "مرجع استخراج نقطة OSM (geo_method=osm, geo_precision=exact)."
         }
-      ]
+      ],
+      "latitude": 33.012276,
+      "longitude": 1.2378255
     },
     {
       "id": "kef-el-melh",
@@ -129,8 +157,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:El-Bayadh_Centre.jpg",
           "publisher": "Wikimedia Commons (وصف الصورة)",
           "note": "وصف توثيقي للموقع واللوحات الرخامية؛ ليس مرجعاً رسمياً لتاريخ إنشاء الساحة."
+        },
+        {
+          "title": "ساحة الشهداء / حديقة الحرية – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/244157784",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "مضلع OSM لحديقة الحرية، ويُذكر أن «ساحة الشهداء» اسم بديل للموقع. نقطة العرض تمثل مركز المساحة ولا تعني مدخل الساحة."
         }
-      ]
+      ],
+      "latitude": 33.68042,
+      "longitude": 1.0203
     },
     {
       "id": "cheikh-bouamama-statue-el-bayadh",
@@ -148,8 +184,22 @@
           "url": "https://commons.wikimedia.org/wiki/File:El_Bayadh_-_Cheikh_Bouamama_%D8%A7%D9%84%D8%A8%D9%8A%D8%B6_-_%D8%A7%D9%84%D8%B4%D9%8A%D8%AE_%D8%A8%D9%88%D8%B9%D9%85%D8%A7%D9%85%D8%A9.jpg",
           "publisher": "Wikimedia Commons – Habib Kaki, 23 octobre 2015",
           "note": "توثيق بصري لموضع التمثال؛ لا يثبت وحده تفاصيل تاريخ المعلم."
+        },
+        {
+          "title": "تمثال الشيخ بوعمامة – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/7683176185",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "إحداثيات نقطة مرسومة في OpenStreetMap؛ أُدرجت كدبوس خريطة مع إبقاء السجل قيد المراجعة التحريرية، وينبغي تأكيد مطابقة النقطة للمعلم ميدانياً."
+        },
+        {
+          "title": "بيانات المواقع السياحية – GeoAlgeria (@geoalgeria/tourisme)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/tourisme/data/attractions.json",
+          "publisher": "GeoAlgeria؛ بيانات OSM بترخيص ODbL",
+          "note": "مرجع استخراج نقطة OSM (geo_method=osm, geo_precision=exact)."
         }
-      ]
+      ],
+      "latitude": 33.6674575,
+      "longitude": 1.0436462
     },
     {
       "id": "rock-art-ksar-el-hamar",
@@ -198,8 +248,16 @@
           "url": "https://elmaouid.dz/%D9%88%D9%84%D8%A7%D9%8A%D8%A9-%D8%A7%D9%84%D8%A8%D9%8A%D8%B6-%D9%85%D8%AF%D9%8A%D9%86%D8%A9-%D8%A7%D9%84%D9%85%D9%88%D8%A7%D9%82%D8%B9-%D8%A7%D9%84%D8%A3%D8%AB%D8%B1%D9%8A%D8%A9-%D9%88%D9%85%D8%AD/",
           "publisher": "الموعد اليومي",
           "note": "تقرير صحفي سياحي يصف واحة عين النخيلة وموقعها على الطريق بين بوسمغون والأبيض سيدي الشيخ؛ ليست هي نفسها واحة القصر."
+        },
+        {
+          "title": "واحة بوسمغون – مضلع OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/388694245",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة تمثيلية لمضلع الواحة (way)، وليست مدخلاً أو نقطة زيارة محددة؛ تستخدم لعرض نطاق الواحة على الخريطة فقط."
         }
-      ]
+      ],
+      "latitude": 32.8634,
+      "longitude": 0.0155
     },
     {
       "id": "boussemghoun-old-mosque",
@@ -217,8 +275,16 @@
           "url": "https://www.aps.dz/culture/patrimoine/mmqc7fkd-%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF-%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82-%D8%A8%D8%A8%D9%88%D8%B3%D9%85%D8%BA%D9%88%D9%86-%D9%85%D9%86%D8%A7%D8%B1%D8%A9-%D8%AF%D9%8A%D9%86%D9%8A%D8%A9-%D9%88%D8%AA%D8%AD%D9%81%D8%A9-%D9%85%D8%B9%D9%85%D8%A7%D8%B1%D9%8A%D8%A9-%D8%B4%D8%A7%D9%85%D8%AE%D8%A9-%D9%85%D9%86%D8%B0-%D9%82%D8%B1%D9%88%D9%86",
           "publisher": "وكالة الأنباء الجزائرية، 14 مارس 2026",
           "note": "يدعم الموقع والأهمية الدينية والثقافية؛ لا يثبت وحده تاريخ التأسيس."
+        },
+        {
+          "title": "المسجد العتيق بالقصر القديم – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/4124154648",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة OSM مسماة L’ancienne mosquée داخل قصر بوسمغون القديم؛ تتوافق مع تقرير وكالة الأنباء الجزائرية الذي يحدد المسجد في وسط القصر. إحداثيات النقطة 32.86334, 0.01950."
         }
-      ]
+      ],
+      "latitude": 32.86334,
+      "longitude": 0.0195
     },
     {
       "id": "ksar-bent-khass",
@@ -243,8 +309,22 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "تسجل حصن بنت الخس ضمن الجرد الإضافي بقرار 5 أفريل 2016."
+        },
+        {
+          "title": "حصن بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/565",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.059583,
+      "longitude": 1.183167
     },
     {
       "id": "gour-bent-el-khass",
@@ -262,8 +342,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1404",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق الاسم والموقع والوصف الطبيعي العام، ويميزه عن الحصن القريب."
+        },
+        {
+          "title": "قور بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1404",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.006991,
+      "longitude": 1.241495
     },
     {
       "id": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
@@ -281,8 +375,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/561",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق المسجد والزاوية التجانية وموقعها داخل القصر ووصف مرافقها."
+        },
+        {
+          "title": "الزاوية التيجانية ببوسمغون – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/4124159511",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة OSM مسماة La Zaouia Tidjaniya؛ وتؤكد الدراسة الأكاديمية أن الزاوية تقع في الركن الشمالي الغربي من قصر بوسمغون القديم. إحداثياتها 32.86322, 0.01917."
         }
-      ]
+      ],
+      "latitude": 32.86322,
+      "longitude": 0.01917
     },
     {
       "id": "rock-art-merdoufa",
@@ -300,8 +402,22 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل الموقع وتاريخ إدراجه في الجرد العام."
+        },
+        {
+          "title": "محطة النقش الصخري المردوفة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/905",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.437531,
+      "longitude": 1.19882
     },
     {
       "id": "rock-art-belier-bou-alem",
@@ -319,8 +435,22 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل تصنيف المحطة وتاريخ القرار والنشر."
+        },
+        {
+          "title": "محطة النقش الصخري كبش بوعلام – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/904",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.715244,
+      "longitude": 1.504443
     },
     {
       "id": "bastion-bent-el-khas",
@@ -338,8 +468,22 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل إدراج حصن بنت الخس ضمن الجرد الإضافي والقرار الولائي."
+        },
+        {
+          "title": "حصن بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/565",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.059583,
+      "longitude": 1.183167
     },
     {
       "id": "ksar-ghassoul",
@@ -357,8 +501,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/232",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر يثبت الموقع وقرار الجرد، ويعرض الوصف والروايات المحلية."
+        },
+        {
+          "title": "قصر الغاسول – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/232",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.386833,
+      "longitude": 1.195194
     },
     {
       "id": "ksar-stitten",
@@ -376,8 +534,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/563",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "مصدر وصفي محلي؛ البطاقة نفسها تنبه إلى نقص الوثائق والحاجة إلى بحث أكاديمي."
+        },
+        {
+          "title": "قصر استيتن – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/563",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.758972,
+      "longitude": 1.224222
     },
     {
       "id": "dinosaur-footprints-el-bayadh",
@@ -395,8 +567,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/777",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر يذكر اكتشاف 2004 والتأريخ المنسوب إلى دراسة أولية."
+        },
+        {
+          "title": "آثار بصمات الديناصور – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/777",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.711639,
+      "longitude": 1.034278
     },
     {
       "id": "grotte-brezina",
@@ -414,8 +600,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/928",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر الأساسي للموقع والوصف العام والرواية التاريخية؛ تفاصيل السلامة تتطلب تأكيداً محلياً."
+        },
+        {
+          "title": "مغارة بريزينة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/928",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.18209,
+      "longitude": 1.319793
     },
     {
       "id": "rock-art-khashim",
@@ -433,8 +633,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق الموقع والوصف المنشور للنقوش والموضوعات المصورة."
+        },
+        {
+          "title": "محطة النقش الصخري الخشيم – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1522",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.278759,
+      "longitude": 1.264906
     },
     {
       "id": "ksar-chalala",
@@ -452,8 +666,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/557",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "الوصف العمراني والينابيع والأحياء؛ تاريخ التأسيس وارد كرواية شفوية."
+        },
+        {
+          "title": "الشلالة الظهرانية – نطاق سكني في OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/444276263",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة تمثيلية لمضلع النطاق السكني المعروف بالشلالة الظهرانية؛ تقريبية لمنطقة القصر وليست إحداثيات مدخل أثري ممسوح."
         }
-      ]
+      ],
+      "latitude": 33.03101,
+      "longitude": 0.05494
     },
     {
       "id": "ksar-arbaouat",
@@ -471,6 +693,12 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/354",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "بطاقة تعريف القصر وعناصره المعمارية والاجتماعية وتاريخ التأسيس المنقول."
+        },
+        {
+          "title": "قصر أربوات الفوقاني – دراسة أثرية منشورة",
+          "url": "https://asjp.cerist.dz/en/downArticle/132/9/1/143940",
+          "publisher": "مجلة رفوف، جامعة أحمد دراية، 2021 – عبد الحليم يحياوي",
+          "note": "الدراسة تحدد إحداثيات قصر أربوات الفوقاني تحديداً، بينما بطاقة هذا السجل لا تميز بين القصر الفوقاني والتحتاني. لذلك لم تُسند إحداثيات الدراسة إلى هذا السجل العام لتجنب وضع دبوس في موقع غير مؤكد؛ يلزم فصل القصرين في الكتالوج أو تأكيد أيهما المقصود."
         }
       ]
     },
@@ -490,8 +718,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/435",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "بطاقة مديرية الثقافة لموقع الضريح ووصفه المعماري وتسجيله في الجرد الإضافي."
+        },
+        {
+          "title": "ضريح سيدي الشيخ – نقطة OpenStreetMap",
+          "url": "https://www.openstreetmap.org/node/4689288194",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة OSM مسماة «ضريح سيدي الشيخ» بإحداثيات 32.89164, 0.54499؛ تطابق اسم المعلم وموقعه في بلدية الأبيض سيدي الشيخ. ينبغي التحقق الميداني من مدخل الضريح قبل استخدامها للملاحة الدقيقة."
         }
-      ]
+      ],
+      "latitude": 32.89164,
+      "longitude": 0.54499
     },
     {
       "id": "ksar-ain-hachifa",
@@ -499,16 +735,16 @@
       "nameAr": "قصر عين حشيفة – الشلالة القبلية",
       "nameFr": "Ksar Aïn Hachifa – Chellala Qibliya",
       "nameEn": "Aïn Hachifa Ksar – Chellala Qibliya",
-      "descriptionAr": "يقع قصر عين حشيفة على بعد نحو خمسة كيلومترات شرق الشلالة القبلية، ببلدية الشلالة في ولاية البيض. شُيّد فوق مرتفع بجوار عين ماء كانت تُستغل لسقي السكان والماشية والبساتين. وتوثق بطاقة التراث ارتباطه بأحداث الثورة التحريرية سنة 1956، حين تعرض للقصف بسبب استعماله قاعدة خلفية للثوار وفق الشهادات المحلية التي تنقلها البطاقة. لا تحدد البطاقة تاريخ البناء بدقة، وتعرض تقديره للقرن التاسع عشر باعتباره استنتاجاً لا تاريخاً موثقاً.",
-      "descriptionFr": "Le ksar d’Aïn Hachifa se trouve à environ cinq kilomètres à l’est de Chellala Qibliya, dans la commune de Chellala, wilaya d’El Bayadh. Il est construit sur une hauteur près d’une source autrefois utilisée pour l’approvisionnement des habitants, du bétail et des jardins. La fiche patrimoniale relie le site aux événements de la guerre de libération en 1956 et rapporte qu’il fut bombardé parce qu’il servait de base arrière aux combattants, selon des témoignages locaux. La date de construction n’est pas précisément établie ; l’hypothèse du XIXe siècle est présentée comme une déduction.",
-      "descriptionEn": "Aïn Hachifa Ksar lies about five kilometres east of Chellala Qibliya, in Chellala municipality, El Bayadh Province. It was built on elevated ground beside a spring once used by residents, livestock, and gardens. Its heritage record connects the site with the 1956 liberation-war events and reports that it was shelled because it served as a rear base for resistance fighters, based on local testimony cited in the record. The construction date is not firmly known; the suggested nineteenth-century date is an inference rather than a documented fact.",
+      "descriptionAr": "يقع قصر عين حشيفة على بعد نحو خمسة كيلومترات شرق الشلالة القبلية، ببلدية الشلالة في ولاية البيض. وتذكر بطاقة التراث أن مساحته تقارب 2087 م²، وأنه شُيّد فوق مرتفع بجوار عين ماء كانت تُستغل لسقي السكان والماشية والبساتين، قبل أن تجف وفق المصدر. وتوثق البطاقة ارتباطه بأحداث الثورة التحريرية سنة 1956، حين تعرض للقصف بسبب استعماله قاعدة خلفية ومركز إمداد للثوار وفق الشهادات المحلية التي تنقلها. كما تشير إلى انهيارات وهجر الملاك للقصر نحو القرية المجاورة. لا تحدد البطاقة تاريخ البناء بدقة، وتعرض تقديره لبداية القرن التاسع عشر باعتباره استنتاجاً ميدانياً لا تاريخاً موثقاً. حالة الوصول والسلامة الحالية تحتاج تحققاً محلياً.",
+      "descriptionFr": "Le ksar d’Aïn Hachifa se trouve à environ cinq kilomètres à l’est de Chellala Qibliya, dans la commune de Chellala, wilaya d’El Bayadh. La fiche patrimoniale indique une superficie d’environ 2 087 m² et décrit une construction sur une hauteur, près d’une source autrefois utilisée pour l’approvisionnement des habitants, du bétail et des jardins, mais qui serait aujourd’hui tarie selon la même source. La fiche relie le site aux événements de la guerre de libération en 1956 et rapporte qu’il fut bombardé parce qu’il servait de base arrière et de centre de ravitaillement aux combattants, selon des témoignages locaux. Elle signale également des effondrements et le départ des propriétaires vers le village voisin. La date de construction n’est pas précisément établie ; l’hypothèse du début du XIXe siècle est présentée comme une déduction de terrain, non comme une date documentée. L’état actuel de l’accès et de la sécurité doit être vérifié localement.",
+      "descriptionEn": "Aïn Hachifa Ksar lies about five kilometres east of Chellala Qibliya, in Chellala municipality, El Bayadh Province. Its heritage record gives an approximate area of 2,087 m² and describes it as built on elevated ground beside a spring once used by residents, livestock, and gardens; the same source says the spring has since dried up. The record connects the site with the 1956 liberation-war events and reports that it was shelled because it served as a rear base and supply centre for resistance fighters, based on local testimony cited in the record. It also notes structural collapses and that the owners moved to the nearby village. The construction date is not firmly known; the suggested early nineteenth-century date is a field inference, not a documented date. Current access and safety conditions require local verification.",
       "verification": "under_review",
       "sources": [
         {
           "title": "قصر عين حشيفة بالشلالة القبلية",
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/234",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
-          "note": "الموقع والوصف والأحداث المنقولة عن الشهادات المحلية؛ تاريخ البناء تقديري."
+          "note": "بطاقة مديرية الثقافة للموقع والمساحة والوصف وأحداث 1956 المنقولة عن شهادات محلية؛ تذكر جفاف العين والانهيارات وهجر القصر. تاريخ البناء في بداية القرن 19 استنتاج ميداني لا تاريخ مثبت."
         }
       ]
     },
@@ -534,8 +770,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:Barrage_de_Berezina_d%27El-bayadh.jpg",
           "publisher": "Wikimedia Commons · BoukhalfaAlaa",
           "note": "صورة أخرى للسد بترخيص CC BY-SA 4.0؛ لم تُنسخ إلى أصول التطبيق بعد."
+        },
+        {
+          "title": "سد بريزينة – خريطة OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/239715535",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة تمثيلية لمضلع الخزان المائي (reservoir)، وليست بوابة السد أو نقطة وصول آمنة."
         }
-      ]
+      ],
+      "latitude": 33.1631,
+      "longitude": 1.2597
     },
     {
       "id": "rock-art-kharima",
@@ -648,8 +892,22 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1357",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع والوصف المعماري والتاريخ الوارد في البطاقة."
+        },
+        {
+          "title": "برج سيدي حمزة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1357",
+          "publisher": "وزارة الثقافة والفنون الجزائرية / مديرية الثقافة لولاية البيض",
+          "note": "مصدر المعلم. الإحداثيات أُخذت من نقطة المصدر المنشورة في سجل الوزارة كما نُقلت في حزمة GeoAlgeria الثقافية (geo_precision=exact, geo_method=source_point)، وليست مسحاً ميدانياً جديداً."
+        },
+        {
+          "title": "بيانات الإحداثيات الثقافية – GeoAlgeria (@geoalgeria/culture)",
+          "url": "https://github.com/yasserstudio/geoalgeria/blob/main/packages/culture/data/culture.json",
+          "publisher": "GeoAlgeria؛ بياناتها مستمدة من خريطة التراث الثقافي التابعة لوزارة الثقافة",
+          "note": "مرجع تقني لقيم latitude/longitude المنشورة كنقطة مصدر exact؛ تبقى المعاينة الميدانية مفيدة قبل اعتماد الملاحة."
         }
-      ]
+      ],
+      "latitude": 33.098911,
+      "longitude": 1.262237
     },
     {
       "id": "hammam-ain-ouarka",
@@ -667,6 +925,33 @@
           "url": "https://github.com/basmabsouma195-ai/VISTA-El-Bayadh/blob/main/dataset/field-photos/collection_manifest.json",
           "publisher": "تأكيد صاحب الصور الميدانية",
           "note": "هذا المصدر يوثق نسبة الصور إلى الموقع بتأكيد صاحبها فقط؛ ولا يمثل مصدراً مستقلاً لتاريخه أو إحداثياته أو مرافقه."
+        }
+      ]
+    },
+    {
+      "id": "ksar-boussemghoun",
+      "categoryId": "ksour",
+      "nameAr": "قصر بوسمغون",
+      "nameFr": "Ksar de Boussemghoun",
+      "nameEn": "Boussemghoun Ksar",
+      "descriptionAr": "قصر بوسمغون معلم عمراني تاريخي ببلدية بوسمغون في ولاية البيض. توثق بطاقة خريطة التراث الثقافي الجزائري تنظيمه في سبعة أحياء تاريخية، وارتباطه بالواحة والمسجد والزاوية التجانية. وتذكر البطاقة واحة تضم نحو أربعة آلاف نخلة، كما تصف المسجد ومرافق الزاوية داخل نسيج القصر. أدرجت اليونسكو إحداثيات القصر ضمن ملف «قصور الأطلس الصحراوي الجزائري» في القائمة الإرشادية للتراث العالمي. تبقى تفاصيل التأسيس والروايات الشفوية منسوبة إلى مصادرها، ولا تُعرض كتاريخ أثري محسوم.",
+      "descriptionFr": "Le ksar de Boussemghoun est un ensemble historique situé dans la commune de Boussemghoun, wilaya d’El Bayadh. La Carte du patrimoine culturel algérien décrit son organisation en sept quartiers historiques et ses liens avec l’oasis, la mosquée et la zaouïa tijanie. La fiche mentionne une oasis d’environ quatre mille palmiers et décrit la mosquée ainsi que les espaces de la zaouïa intégrés au tissu du ksar. L’UNESCO publie les coordonnées du ksar dans le dossier « Ksour de l’Atlas saharien algérien » inscrit sur sa liste indicative du patrimoine mondial. Les récits oraux et les datations doivent rester attribués à leurs sources et ne pas être présentés comme des faits archéologiques définitivement établis.",
+      "descriptionEn": "Boussemghoun Ksar is a historic built settlement in the municipality of Boussemghoun, El Bayadh Province. The Algerian Cultural Heritage Map describes seven historic quarters and the settlement’s relationship with its oasis, mosque and Tijani zawiya. The heritage record mentions an oasis of around four thousand palm trees and describes the mosque and zawiya facilities within the ksar fabric. UNESCO publishes coordinates for the ksar in the “Ksour de l’Atlas saharien algérien” entry on its Tentative List. Oral accounts and historical dates remain attributed to their sources and should not be presented as conclusively established archaeological facts.",
+      "verification": "under_review",
+      "latitude": 32.8647972,
+      "longitude": 0.0199444,
+      "sources": [
+        {
+          "title": "قصر بوسمغون – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/561",
+          "publisher": "وزارة الثقافة والفنون / مديرية الثقافة لولاية البيض",
+          "note": "المصدر لوصف الأحياء السبعة والواحة والمسجد والزاوية التجانية؛ لا يقدم النص المنشور إحداثيات رقمية."
+        },
+        {
+          "title": "Ksour de l’Atlas Saharien Algérien – UNESCO Tentative List",
+          "url": "https://whc.unesco.org/fr/listesindicatives/6831/",
+          "publisher": "UNESCO World Heritage Centre",
+          "note": "ينشر إحداثيات قصر بوسمغون: 32°51′53.27″N, 0°01′11.8″E؛ حُولت إلى درجات عشرية للدبوس. يلزم التحقق الميداني من نقطة المعلم."
         }
       ]
     }

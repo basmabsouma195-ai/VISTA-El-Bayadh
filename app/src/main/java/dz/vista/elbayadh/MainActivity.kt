@@ -93,6 +93,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import org.maplibre.android.MapLibre
 import dz.vista.elbayadh.data.TripPlansStore
 import dz.vista.elbayadh.data.OfflineCatalogue
 import dz.vista.elbayadh.data.FavoritesStore
@@ -155,6 +156,7 @@ private fun copyFor(language: AppLanguage) = when (language) {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapLibre.getInstance(this)
         setContent { VistaApp() }
     }
 }
@@ -264,7 +266,7 @@ private fun VistaApp() {
                                 onFavoriteToggle = ::toggleFavorite,
                                 onOpenLandmark = { selectedLandmark = it }
                             )
-                            1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
+                            1 -> OfflineMapScreen(language.name, catalogue?.landmarks.orEmpty(), onOpenLandmark = { selectedLandmark = it })
                             2 -> ScannerScreen(language, catalogue?.landmarks.orEmpty(), onOpenLandmark = { selectedLandmark = it })
                             3 -> FavoritesScreen(
                                 title = c.favorites,
@@ -1164,6 +1166,9 @@ private fun MoreScreen(
                 Spacer(Modifier.height(12.dp))
                 Text(if (isArabic) "دليل الاستخدام" else if (isFrench) "Guide d’utilisation" else "Usage guide", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(if (isArabic) "تصفّح المعالم من الرئيسية، ثم استخدم الماسح لقراءة QR أو الباركود أو التقط صورة للمعلم. افتح بطاقة المعلم لعرض معلوماته وصوره، وأضفه إلى المفضلة عند الحاجة." else if (isFrench) "Parcourez les sites depuis l’accueil. Scannez un QR/code-barres ou prenez une photo du site, puis consultez sa fiche et ses photos." else "Browse landmarks from Home. Scan a QR/barcode or photograph a landmark, then open its profile to view details and photos.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
+                Spacer(Modifier.height(12.dp))
+                Text(if (isArabic) "مصدر بيانات الخريطة" else if (isFrench) "Source des données cartographiques" else "Map data source", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(if (isArabic) "بيانات الخريطة: © مساهمو OpenStreetMap، بموجب ترخيص ODbL 1.0. حدود الولاية من GeoAlgeria، مشتقة من حدود البلديات في OpenStreetMap. المصدر: openstreetmap.org — الترخيص: opendatacommons.org/licenses/odbl/1-0/." else if (isFrench) "Données cartographiques : © contributeurs OpenStreetMap, sous licence ODbL 1.0. Limite de la wilaya : GeoAlgeria, dérivée des limites communales OpenStreetMap. Source : openstreetmap.org — Licence : opendatacommons.org/licenses/odbl/1-0/." else "Map data: © OpenStreetMap contributors, under ODbL 1.0. Wilaya boundary: GeoAlgeria, derived from OpenStreetMap commune boundaries. Source: openstreetmap.org — Licence: opendatacommons.org/licenses/odbl/1-0/.")
                 Spacer(Modifier.height(12.dp))
                 Text(if (isArabic) "عن المشروع" else if (isFrench) "Le projet" else "Project", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(if (isArabic) "يهدف VISTA إلى إبراز المقومات السياحية والتراثية والطبيعية لولاية البيض في دليل موحد." else if (isFrench) "VISTA valorise les ressources touristiques, patrimoniales et naturelles de la wilaya d’El Bayadh." else "VISTA showcases the tourism, heritage and natural assets of El Bayadh in one guide.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
