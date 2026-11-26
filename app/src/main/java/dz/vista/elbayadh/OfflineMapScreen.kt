@@ -143,10 +143,18 @@ private fun loadLocalMapPlaces(context: Context): List<LocalMapPlace> {
 
 private data class RoadRouteResult(val feature: Feature, val distanceMeters: Double, val durationSeconds: Double)
 private data class WilayaPolygon(val rings: List<List<Pair<Double, Double>>>)
+private data class WilayaMapBoundary(
+    val polygons: List<WilayaPolygon>,
+    val west: Double,
+    val south: Double,
+    val east: Double,
+    val north: Double
+)
 
-private fun loadWilayaPolygons(context: Context): List<WilayaPolygon> {
+private fun loadWilayaMapBoundary(context: Context): WilayaMapBoundary {
     val root = JSONObject(context.assets.open("maps/boundary.json").bufferedReader().use { it.readText() })
     val geometry = root.getJSONObject("geometry")
+    val bounds = root.getJSONArray("bbox_wsen")
     fun parsePolygon(ringsJson: JSONArray): WilayaPolygon {
         val rings = (0 until ringsJson.length()).map { ringIndex ->
             val points = ringsJson.getJSONArray(ringIndex)
@@ -158,11 +166,18 @@ private fun loadWilayaPolygons(context: Context): List<WilayaPolygon> {
         return WilayaPolygon(rings)
     }
     val coordinates = geometry.getJSONArray("coordinates")
-    return when (geometry.getString("type")) {
+    val polygons = when (geometry.getString("type")) {
         "Polygon" -> listOf(parsePolygon(coordinates))
         "MultiPolygon" -> (0 until coordinates.length()).map { parsePolygon(coordinates.getJSONArray(it)) }
         else -> emptyList()
     }
+    return WilayaMapBoundary(
+        polygons,
+        bounds.getDouble(0),
+        bounds.getDouble(1),
+        bounds.getDouble(2),
+        bounds.getDouble(3)
+    )
 }
 
 private fun pointInRing(longitude: Double, latitude: Double, ring: List<Pair<Double, Double>>): Boolean {
@@ -201,7 +216,10 @@ internal fun OfflineMapScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val latestLandmarks by rememberUpdatedState(landmarks)
-    val wilayaPolygons = remember(context) { runCatching { loadWilayaPolygons(context) }.getOrDefault(emptyList()) }
+    val wilayaMapBoundary = remember(context) { runCatching { loadWilayaMapBoundary(context) }.getOrNull() }
+    val wilayaPolygons = wilayaMapBoundary?.polygons.orEmpty()
+    val searchViewbox = wilayaMapBoundary?.let { "${it.west},${it.north},${it.east},${it.south}" } ?: "-0.4159,34.4482,2.3603,30.7017"
+    val initialMapCenter = wilayaMapBoundary?.let { LatLng((it.south + it.north) / 2.0, (it.west + it.east) / 2.0) } ?: LatLng(32.57, 0.97)
     val localMapPlaces = remember(context) { runCatching { loadLocalMapPlaces(context) }.getOrDefault(emptyList()) }
     val latestOnOpenLandmark by rememberUpdatedState(onOpenLandmark)
     val mapView = remember(context) { MapView(context) }
@@ -277,7 +295,7 @@ internal fun OfflineMapScreen(
         .filter { it.matches(searchText.trim()) }
         .filter { place ->
             if (wilayaPolygons.isNotEmpty()) isInsideWilaya(place.latitude, place.longitude, wilayaPolygons)
-            else place.latitude in 31.6572..34.4482 && place.longitude in -0.0715..2.3603
+            else place.latitude in 30.7017..34.4482 && place.longitude in -0.4159..2.3603
         }
         .take(8)
         .toList()
@@ -301,8 +319,8 @@ internal fun OfflineMapScreen(
             mapRef = map
             map.setStyle(EL_BAYADH_STYLE) { style ->
                 map.cameraPosition = CameraPosition.Builder()
-                    .target(LatLng(33.05, 1.14))
-                    .zoom(8.5)
+                    .target(initialMapCenter)
+                    .zoom(8.0)
                     .build()
 
                 // Keep the map uncluttered on first opening: only the selected search result is pinned.
@@ -431,7 +449,7 @@ internal fun OfflineMapScreen(
             runCatching {
                 val encoded = URLEncoder.encode(query, "UTF-8")
                 // Approximate search window covers El Bayadh Province, including El Abiodh Sidi Cheikh.
-                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=8&countrycodes=dz&viewbox=-0.0715,34.4482,2.3603,31.6572&bounded=1&accept-language=ar").openConnection() as HttpURLConnection
+                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=8&countrycodes=dz&viewbox=$searchViewbox&bounded=1&accept-language=ar").openConnection() as HttpURLConnection
                 connection.connectTimeout = 8000
                 connection.readTimeout = 8000
                 connection.setRequestProperty("User-Agent", "VISTA-El-Bayadh/0.1.3 (tourism map)")
@@ -442,7 +460,7 @@ internal fun OfflineMapScreen(
                         val lat = item.optString("lat").toDoubleOrNull() ?: return@mapNotNull null
                         val lon = item.optString("lon").toDoubleOrNull() ?: return@mapNotNull null
                         val inside = if (wilayaPolygons.isNotEmpty()) isInsideWilaya(lat, lon, wilayaPolygons)
-                            else lat in 31.6572..34.4482 && lon in -0.0715..2.3603
+                            else lat in 30.7017..34.4482 && lon in -0.4159..2.3603
                         if (!inside) return@mapNotNull null
                         PlaceSearchResult(item.optString("display_name"), lat, lon)
                     }

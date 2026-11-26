@@ -9,7 +9,7 @@ Replace the retired Mapsforge implementation with **MapLibre Native Android + a 
 - Country: Algeria
 - Wilaya: El Bayadh
 - Wilaya code: 32
-- Coverage: the verified wilaya boundary and all 22 communes
+- Coverage: the verified wilaya boundary and all 22 communes across the two current wilayas
 - The map must not silently expand to all Algeria or confuse El Bayadh with another wilaya.
 
 The boundary source and its ODbL attribution are tracked in dataset/maps/el-bayadh-map-source.json.
@@ -27,7 +27,7 @@ The boundary source and its ODbL attribution are tracked in dataset/maps/el-baya
 ## Data build pipeline
 
 - Fetch a pinned Geofabrik Algeria OSM PBF snapshot.
-- Obtain and validate the source-tracked Wilaya 32 boundary.
+- Obtain and validate the source-tracked Wilayas 32 and 69 boundary.
 - Extract the boundary polygon and clip the PBF to it, preserving required relation context.
 - Generate vector tiles with a pinned Planetiler/OpenMapTiles profile and write a PMTiles archive.
 - Generate and package the matching local style, glyph/font assets, boundary metadata and POI index.
@@ -50,7 +50,7 @@ A build is not considered a working map merely because the APK contains a PMTile
 
 - **Phase A — clean baseline:** remove the old Mapsforge renderer and pipeline. Completed on the feature branch.
 - **Phase B — renderer proof:** add MapLibre Native and a tiny deterministic PMTiles fixture; render it on an emulator and prove offline rendering before using province data.
-- **Phase C — Wilaya 32 data:** generate the real province PMTiles archive and verify coverage across all communes.
+- **Phase C — Wilayas 32 and 69 data:** generate the real province PMTiles archive and verify coverage across all communes.
 - **Phase D — VISTA integration:** landmark pins, search, saved places, location control, attribution and final visual styling.
 - **Phase E — release validation:** clean build, emulator screenshot, offline test, APK signature/alignment and release artifact.
 
