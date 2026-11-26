@@ -117,6 +117,8 @@ internal fun MapScreen(
     var progress by remember { mutableStateOf<Float?>(null) }
     var progressText by remember { mutableStateOf("") }
     var downloadedBytes by remember { mutableStateOf(0L) }
+    var isOfflineSaved by remember { mutableStateOf(false) }
+    var unmappedLandmarkName by remember { mutableStateOf<String?>(null) }
     val mappedLandmarkCount = landmarks.count { it.latitude != null && it.longitude != null }
 
     val municipalities = remember {
@@ -251,7 +253,7 @@ internal fun MapScreen(
                                     map?.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                         LatLng(names.latitude, names.longitude), 12.8
                                     ))
-                                    query = name
+                                    query = ""
                                 }.padding(horizontal = 15.dp, vertical = 10.dp)
                             ) {
                                 Text(name, color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
@@ -265,9 +267,10 @@ internal fun MapScreen(
                                     val lon = place.longitude
                                     if (lat != null && lon != null) {
                                         map?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), 15.5))
+                                    } else {
+                                        unmappedLandmarkName = place.name(language)
                                     }
-                                    query = place.name(language)
-                                    onOpenLandmark(place)
+                                    query = ""
                                 }.padding(horizontal = 15.dp, vertical = 10.dp)
                             ) {
                                 Text(place.name(language), color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
@@ -312,12 +315,16 @@ internal fun MapScreen(
                         )
                     }
                     val currentProgress = progress
-                    Button(
+                    if (!isOfflineSaved) Button(
                         onClick = {
+                            isOfflineSaved = false
                             progress = 0.01f
                             progressText = ""
                             beginOfflineDownload(context, map) { p, bytes, message ->
-                                progress = p; downloadedBytes = bytes; progressText = message
+                                progress = if (p >= 1f) null else p
+                                downloadedBytes = bytes
+                                progressText = message
+                                if (p >= 1f) isOfflineSaved = true
                             }
                         },
                         enabled = map != null && (currentProgress == null || currentProgress == 0f || currentProgress >= 1f)
@@ -326,6 +333,9 @@ internal fun MapScreen(
                         Spacer(Modifier.width(5.dp))
                         Text(if (currentProgress != null && currentProgress >= 1f) tr("تم الحفظ", "Enregistrée", "Saved") else tr("حفظ المنطقة", "Télécharger", "Download"))
                     }
+                }
+                if (isOfflineSaved) {
+                    Text(tr("تم حفظ المنطقة على الجهاز دون اتصال", "Zone enregistrée sur l’appareil", "Area saved on this device"), color = Color(0xFF39845A), fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                 }
                 progress?.let { p ->
                     LinearProgressIndicator(progress = { p }, modifier = Modifier.fillMaxWidth())
@@ -338,6 +348,19 @@ internal fun MapScreen(
                 if (progressText.isNotBlank()) Text(progressText, color = Color(0xFF687582), fontSize = 11.sp)
             }
         }
+    }
+
+    unmappedLandmarkName?.let { name ->
+        AlertDialog(
+            onDismissRequest = { unmappedLandmarkName = null },
+            title = { Text(tr("موقع المعلم غير محدد", "Position du site non définie", "Landmark location unavailable")) },
+            text = { Text(tr(
+                "المعلم «$name» لا يحتوي حاليًا على إحداثيات جغرافية، لذلك لا يمكن نقل الخريطة إلى موقعه بدقة. لم نفتح بطاقة المعلم.",
+                "Le site «$name» ne possède pas encore de coordonnées géographiques ; le déplacement précis sur la carte est impossible.",
+                "“$name” does not yet have geographic coordinates, so the map cannot navigate to its exact location."
+            )) },
+            confirmButton = { TextButton(onClick = { unmappedLandmarkName = null }) { Text(tr("حسنًا", "OK", "OK")) } }
+        )
     }
 
     if (showLayers) {
