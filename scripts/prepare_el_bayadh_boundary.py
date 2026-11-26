@@ -61,3 +61,5 @@ metadata = {
 }
 (OUT / "boundary.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(json.dumps(metadata, ensure_ascii=False))
+
+# Keep this boundary-preparation source in the map build trigger set.
