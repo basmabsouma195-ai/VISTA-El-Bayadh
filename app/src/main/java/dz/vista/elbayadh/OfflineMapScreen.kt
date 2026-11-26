@@ -101,6 +101,51 @@ private const val ROUTE_LAYER_ID = "vista-road-route-line"
 
 private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double, val landmarkId: String? = null)
 private data class RoadRouteResult(val feature: Feature, val distanceMeters: Double, val durationSeconds: Double)
+private data class WilayaPolygon(val rings: List<List<Pair<Double, Double>>>)
+
+private fun loadWilayaPolygons(context: Context): List<WilayaPolygon> {
+    val root = JSONObject(context.assets.open("maps/boundary.json").bufferedReader().use { it.readText() })
+    val geometry = root.getJSONObject("geometry")
+    fun parsePolygon(ringsJson: JSONArray): WilayaPolygon {
+        val rings = (0 until ringsJson.length()).map { ringIndex ->
+            val points = ringsJson.getJSONArray(ringIndex)
+            (0 until points.length()).map { pointIndex ->
+                val point = points.getJSONArray(pointIndex)
+                point.getDouble(0) to point.getDouble(1)
+            }
+        }
+        return WilayaPolygon(rings)
+    }
+    val coordinates = geometry.getJSONArray("coordinates")
+    return when (geometry.getString("type")) {
+        "Polygon" -> listOf(parsePolygon(coordinates))
+        "MultiPolygon" -> (0 until coordinates.length()).map { parsePolygon(coordinates.getJSONArray(it)) }
+        else -> emptyList()
+    }
+}
+
+private fun pointInRing(longitude: Double, latitude: Double, ring: List<Pair<Double, Double>>): Boolean {
+    var inside = false
+    var previous = ring.lastIndex
+    for (index in ring.indices) {
+        val (xi, yi) = ring[index]
+        val (xj, yj) = ring[previous]
+        if ((yi > latitude) != (yj > latitude)) {
+            val crossingLongitude = (xj - xi) * (latitude - yi) / (yj - yi) + xi
+            if (longitude < crossingLongitude) inside = !inside
+        }
+        previous = index
+    }
+    return inside
+}
+
+private fun isInsideWilaya(latitude: Double, longitude: Double, polygons: List<WilayaPolygon>): Boolean {
+    return polygons.any { polygon ->
+        val outer = polygon.rings.firstOrNull() ?: return@any false
+        pointInRing(longitude, latitude, outer) &&
+            polygon.rings.drop(1).none { hole -> pointInRing(longitude, latitude, hole) }
+    }
+}
 
 private val MapNavy = Color(0xFF10263D)
 private val MapGold = Color(0xFFC39A58)
@@ -115,6 +160,7 @@ internal fun OfflineMapScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val latestLandmarks by rememberUpdatedState(landmarks)
+    val wilayaPolygons = remember(context) { runCatching { loadWilayaPolygons(context) }.getOrDefault(emptyList()) }
     val latestOnOpenLandmark by rememberUpdatedState(onOpenLandmark)
     val mapView = remember(context) { MapView(context) }
     var mapRef by remember { mutableStateOf<MapLibreMap?>(null) }
@@ -333,7 +379,7 @@ internal fun OfflineMapScreen(
             runCatching {
                 val encoded = URLEncoder.encode(query, "UTF-8")
                 // Approximate search window covers El Bayadh Province, including El Abiodh Sidi Cheikh.
-                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=8&countrycodes=dz&viewbox=-1.8,35.0,3.0,29.5&bounded=1&accept-language=ar").openConnection() as HttpURLConnection
+                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=8&countrycodes=dz&viewbox=-0.0715,34.4482,2.3603,31.6572&bounded=1&accept-language=ar").openConnection() as HttpURLConnection
                 connection.connectTimeout = 8000
                 connection.readTimeout = 8000
                 connection.setRequestProperty("User-Agent", "VISTA-El-Bayadh/0.1.3 (tourism map)")
@@ -343,7 +389,9 @@ internal fun OfflineMapScreen(
                         val item = array.getJSONObject(index)
                         val lat = item.optString("lat").toDoubleOrNull() ?: return@mapNotNull null
                         val lon = item.optString("lon").toDoubleOrNull() ?: return@mapNotNull null
-                        if (lat !in 29.5..35.0 || lon !in -1.8..3.0) return@mapNotNull null
+                        val inside = if (wilayaPolygons.isNotEmpty()) isInsideWilaya(lat, lon, wilayaPolygons)
+                            else lat in 31.6572..34.4482 && lon in -0.0715..2.3603
+                        if (!inside) return@mapNotNull null
                         PlaceSearchResult(item.optString("display_name"), lat, lon)
                     }
                 } finally { connection.disconnect() }

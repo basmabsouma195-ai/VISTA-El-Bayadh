@@ -214,7 +214,7 @@
           ["get", "name"]
         ],
         "text-font": [
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": [
           "interpolate",
@@ -262,7 +262,7 @@
           ["get", "name"]
         ],
         "text-font": [
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": 10,
         "text-max-angle": 30
@@ -274,5 +274,5 @@
       }
     }
   ],
-  "glyphs": "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf"
+  "glyphs": "asset://maps/glyphs/{fontstack}/{range}.pbf"
 }

@@ -97,6 +97,11 @@ jobs:
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name vista-el-bayadh-pmtiles --dir "$RUNNER_TEMP/vista-map"
           install -m 0644 "$RUNNER_TEMP/vista-map/el-bayadh.pmtiles" app/src/main/assets/maps/el-bayadh.pmtiles
           install -m 0644 "$RUNNER_TEMP/vista-map/map-manifest.json" app/src/main/assets/maps/map-manifest.json
+          install -m 0644 "$RUNNER_TEMP/vista-map/boundary.json" app/src/main/assets/maps/boundary.json
+          mkdir -p app/src/main/assets/maps/glyphs
+          cp -R "$RUNNER_TEMP/vista-map/glyphs/." app/src/main/assets/maps/glyphs/
+          test -s "app/src/main/assets/maps/glyphs/Noto Sans Regular/0-255.pbf"
+          test -s "app/src/main/assets/maps/glyphs/Noto Sans Regular/1536-1791.pbf"
           python3 - <<'PY'
           import hashlib, json
           from pathlib import Path

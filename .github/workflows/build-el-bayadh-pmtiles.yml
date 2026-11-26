@@ -7,6 +7,8 @@ on:
     paths:
       - "scripts/prepare_el_bayadh_boundary.py"
       - "dataset/maps/el-bayadh-map-source.json"
+      - "scripts/fetch_map_glyphs.py"
+      - "app/src/main/assets/maps/el-bayadh-style.json"
 
 permissions:
   contents: read
@@ -67,6 +69,9 @@ jobs:
             --force --download --maxzoom=14
           test -s build/maps/el-bayadh.pmtiles
 
+      - name: Download offline Arabic and Latin glyph ranges
+        run: python3 scripts/fetch_map_glyphs.py build/maps/glyphs
+
       - name: Validate PMTiles archive and geographic metadata
         run: |
           python3 - <<'PY'
@@ -113,5 +118,6 @@ jobs:
             build/maps/el-bayadh.pmtiles
             build/maps/boundary.json
             build/maps/map-manifest.json
+            build/maps/glyphs/
           if-no-files-found: error
           retention-days: 30

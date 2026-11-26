@@ -49,6 +49,7 @@ metadata = {
     "name_ar": "البيض",
     "country": "Algeria",
     "source": BOUNDARY_URL,
+    "geometry": geometry,
     "source_commit": "7adb2844c4243cf1ca5ece0cdf02b38e8232da61",
     "osm_relation_id": feature.get("properties", {}).get("osm_id", 1258649),
     "license": "ODbL-1.0",
