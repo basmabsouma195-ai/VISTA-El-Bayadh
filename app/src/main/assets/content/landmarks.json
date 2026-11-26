@@ -195,8 +195,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "بطاقة تعريفية رسمية للمحطة وموقعها قرب بريزينة."
+        },
+        {
+          "title": "Kef Mektouba – GeoNames / Mapcarta",
+          "url": "https://www.geonames.org/2488432/kef-mektouba.html",
+          "publisher": "GeoNames / OpenStreetMap ecosystem",
+          "note": "نقطة التل المعروف باسم Kef Mektouba: 33.39641, 0.99643. استُخدمت كنقطة مرجعية للموقع الصخري المعروف باسم Kef Mektouba de Ksar el Hamar، وليست ادعاءً بأن جميع النقوش في نقطة واحدة."
         }
-      ]
+      ],
+      "latitude": 33.39641,
+      "longitude": 0.99643
     },
     {
       "id": "boussemghoun-oasis",
@@ -247,8 +255,16 @@
           "url": "https://www.aps.dz/culture/patrimoine/mmqc7fkd-%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF-%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82-%D8%A8%D8%A8%D9%88%D8%B3%D9%85%D8%BA%D9%88%D9%86-%D9%85%D9%86%D8%A7%D8%B1%D8%A9-%D8%AF%D9%8A%D9%86%D9%8A%D8%A9-%D9%88%D8%AA%D8%AD%D9%81%D8%A9-%D9%85%D8%B9%D9%85%D8%A7%D8%B1%D9%8A%D8%A9-%D8%B4%D8%A7%D9%85%D8%AE%D8%A9-%D9%85%D9%86%D8%B0-%D9%82%D8%B1%D9%88%D9%86",
           "publisher": "وكالة الأنباء الجزائرية، 14 مارس 2026",
           "note": "يدعم الموقع والأهمية الدينية والثقافية؛ لا يثبت وحده تاريخ التأسيس."
+        },
+        {
+          "title": "المسجد العتيق ببوسمغون – وكالة الأنباء الجزائرية",
+          "url": "https://www.aps.dz/culture/patrimoine/mmqc7fkd-%D8%A7%D9%84%D9%85%D8%B3%D8%AC%D8%AF-%D8%A7%D9%84%D8%B9%D8%AA%D9%8A%D9%82-%D8%A8%D8%A8%D9%88%D8%B3%D9%85%D8%BA%D9%88%D9%86-%D9%85%D9%86%D8%A7%D8%B1%D8%A9-%D8%AF%D9%8A%D9%86%D9%8A%D8%A9-%D9%88%D8%AA%D8%AD%D9%81%D8%A9-%D9%85%D8%B9%D9%85%D8%A7%D8%B1%D9%8A%D8%A9-%D8%B4%D8%A7%D9%85%D8%AE%D8%A9-%D9%85%D9%86%D8%B0-%D9%82%D8%B1%D9%88%D9%86",
+          "publisher": "APS / Ministry of Culture",
+          "note": "الوكالة الجزائرية للأنباء تحدد المسجد بأنه في وسط قصر بوسمغون التاريخي. استُخدمت إحداثيات نقطة القصر المنشورة في أطلس التراث كموضع تقريبي داخل القصر، لا كنقطة باب المسجد الدقيقة."
         }
-      ]
+      ],
+      "latitude": 32.863389,
+      "longitude": 0.019833
     },
     {
       "id": "ksar-bent-khass",
@@ -897,8 +913,16 @@
           "url": "https://github.com/basmabsouma195-ai/VISTA-El-Bayadh/blob/main/dataset/field-photos/collection_manifest.json",
           "publisher": "تأكيد صاحب الصور الميدانية",
           "note": "هذا المصدر يوثق نسبة الصور إلى الموقع بتأكيد صاحبها فقط؛ ولا يمثل مصدراً مستقلاً لتاريخه أو إحداثياته أو مرافقه."
+        },
+        {
+          "title": "AIN OUARKA – GeoAlgeria Tourism Atlas",
+          "url": "https://geoalgeria.com/tourisme/el-abiodh-sidi-cheikh",
+          "publisher": "GeoAlgeria / OpenStreetMap",
+          "note": "إحداثيات موقع عين ورقة السياحي في بلدية عسلة: 32.728423, -0.152305؛ السجل يحدد النقطة على أنها exact من مصدر asal."
         }
-      ]
+      ],
+      "latitude": 32.728423,
+      "longitude": -0.152305
     }
   ]
 }
