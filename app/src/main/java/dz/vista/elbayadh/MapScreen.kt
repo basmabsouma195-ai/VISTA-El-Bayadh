@@ -268,8 +268,9 @@ internal fun MapScreen(
                                     if (lat != null && lon != null) {
                                         map?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), 15.5))
                                     }
+                                    // Search selection navigates to the map only.
+                                    // The landmark card opens when the user taps its map marker.
                                     query = ""
-                                    onOpenLandmark(place)
                                 }.padding(horizontal = 15.dp, vertical = 10.dp)
                             ) {
                                 Text(place.name(language), color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
