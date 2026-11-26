@@ -49,32 +49,42 @@ jobs:
             echo "No field-photo bundle uploaded; building without user field-photo assets."
           fi
 
-      - name: Download the PMTiles archive built for this exact commit
+      - name: Download the validated El Bayadh PMTiles archive
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
           RUN_ID=""
-          for attempt in $(seq 1 90); do
-            RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=50" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
-            if [ -n "$RUN_ID" ]; then
-              STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
-              CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
-              if [ "$STATUS" = "completed" ]; then
-                if [ "$CONCLUSION" != "success" ]; then
-                  echo "PMTiles build failed for commit $GITHUB_SHA (run $RUN_ID)."
-                  exit 1
-                fi
-                break
-              fi
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            # PR builds use the latest successful map package from the same feature branch.
+            RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$GITHUB_HEAD_REF&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml" and .conclusion == "success") | .id' | head -n 1 || true)"
+            if [ -z "$RUN_ID" ]; then
+              echo "No previously validated El Bayadh map artifact exists for this feature branch."
+              exit 1
             fi
-            echo "Waiting for the matching El Bayadh PMTiles workflow ($attempt/90)..."
-            sleep 10
-          done
-          if [ -z "$RUN_ID" ] || [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')" != "success" ]; then
-            echo "No successful PMTiles build was found for this exact commit."
-            exit 1
+          else
+            # Push builds wait for the map generated from the exact same commit.
+            for attempt in $(seq 1 90); do
+              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=50" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
+              if [ -n "$RUN_ID" ]; then
+                STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
+                CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
+                if [ "$STATUS" = "completed" ]; then
+                  if [ "$CONCLUSION" != "success" ]; then
+                    echo "PMTiles build failed for commit $GITHUB_SHA (run $RUN_ID)."
+                    exit 1
+                  fi
+                  break
+                fi
+              fi
+              echo "Waiting for the matching El Bayadh PMTiles workflow ($attempt/90)..."
+              sleep 10
+            done
+            if [ -z "$RUN_ID" ] || [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')" != "success" ]; then
+              echo "No successful PMTiles build was found for this exact commit."
+              exit 1
+            fi
           fi
           mkdir -p app/src/main/assets/maps
           gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name vista-el-bayadh-pmtiles --dir "$RUNNER_TEMP/vista-map"
