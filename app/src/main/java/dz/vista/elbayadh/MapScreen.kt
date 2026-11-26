@@ -110,10 +110,48 @@ internal fun MapScreen(
     var progressText by remember { mutableStateOf("") }
     var downloadedBytes by remember { mutableStateOf(0L) }
 
-    val results = remember(landmarks, query, language) {
+    val municipalities = remember(language) {
+        listOf(
+            Triple("البيض", "El Bayadh", "El Bayadh"),
+            Triple("الرقاصة", "Rogassa", "Rogassa"),
+            Triple("ستيتن", "Stitten", "Stitten"),
+            Triple("بريزينة", "Brézina", "Brezina"),
+            Triple("الغاسول", "Ghassoul", "Ghassoul"),
+            Triple("بوعلام", "Boualem", "Boualem"),
+            Triple("بوقطب", "Bougtob", "Bougtob"),
+            Triple("الخيثر", "El Kheïther", "El Kheither"),
+            Triple("الكاف الأحمر", "Kef El Ahmar", "Kef El Ahmar"),
+            Triple("الكراكدة", "Krakda", "Krakda"),
+            Triple("الشقيق", "Cheguig", "Cheguig"),
+            Triple("سيدي عامر", "Sidi Amar", "Sidi Amar"),
+            Triple("توسمولين", "Tousmouline", "Tousmouline"),
+            Triple("سيدي سليمان", "Sidi Slimane", "Sidi Slimane"),
+            Triple("سيدي طيفور", "Sidi Tifour", "Sidi Tifour"),
+            Triple("الأبيض سيدي الشيخ", "El Abiodh Sidi Cheikh", "El Abiodh Sidi Cheikh"),
+            Triple("عين العراك", "Aïn El Orak", "Ain El Orak"),
+            Triple("أربوات", "Arbaouat", "Arbaouat"),
+            Triple("بوسمغون", "Boussemghoun", "Boussemghoun"),
+            Triple("الشلالة", "Chellala", "Chellala"),
+            Triple("البنود", "El Bnoud", "El Bnoud"),
+            Triple("المحرة", "El Mehara", "El Mehara")
+        )
+    }
+    val matchingLandmarks = remember(landmarks, query, language) {
         if (query.isBlank()) emptyList() else landmarks.filter {
-            it.name(language).contains(query.trim(), true) &&
-                it.latitude != null && it.longitude != null
+            it.name(language).contains(query.trim(), true)
+        }.take(7)
+    }
+    val matchingMunicipalities = remember(municipalities, query, language) {
+        if (query.isBlank()) emptyList() else municipalities.filter { names ->
+            val name = when (language) {
+                CatalogueLanguage.AR -> names.first
+                CatalogueLanguage.FR -> names.second
+                else -> names.third
+            }
+            name.contains(query.trim(), true) ||
+                names.first.contains(query.trim(), true) ||
+                names.second.contains(query.trim(), true) ||
+                names.third.contains(query.trim(), true)
         }.take(7)
     }
 
@@ -190,28 +228,46 @@ internal fun MapScreen(
                     shape = RoundedCornerShape(16.dp)
                 )
             }
-            if (results.isNotEmpty()) {
+            if (matchingLandmarks.isNotEmpty() || matchingMunicipalities.isNotEmpty()) {
                 Card(colors = CardDefaults.cardColors(containerColor = Color.White), shape = RoundedCornerShape(14.dp)) {
                     Column {
-                        results.forEach { place ->
-                            Text(
-                                place.name(language),
+                        matchingMunicipalities.forEach { names ->
+                            val name = when (language) {
+                                CatalogueLanguage.AR -> names.first
+                                CatalogueLanguage.FR -> names.second
+                                else -> names.third
+                            }
+                            Column(
+                                Modifier.fillMaxWidth().clickable { query = name }
+                                    .padding(horizontal = 15.dp, vertical = 10.dp)
+                            ) {
+                                Text(name, color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                                Text(tr("بلدية · لا تتوفر إحداثيات دقيقة حاليًا", "Commune · coordonnées précises indisponibles", "Municipality · precise coordinates not available yet"), color = Color(0xFF687582), fontSize = 10.sp)
+                            }
+                        }
+                        matchingLandmarks.forEach { place ->
+                            Column(
                                 Modifier.fillMaxWidth().clickable {
-                                    map?.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                        LatLng(place.latitude!!, place.longitude!!), 15.5))
+                                    val lat = place.latitude
+                                    val lon = place.longitude
+                                    if (lat != null && lon != null) {
+                                        map?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), 15.5))
+                                    }
                                     query = place.name(language)
                                     onOpenLandmark(place)
-                                }.padding(horizontal = 15.dp, vertical = 11.dp),
-                                color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium
-                            )
+                                }.padding(horizontal = 15.dp, vertical = 10.dp)
+                            ) {
+                                Text(place.name(language), color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                                Text(
+                                    if (place.latitude != null && place.longitude != null)
+                                        tr("معلم · موقع محدد على الخريطة", "Site · position sur la carte", "Landmark · mapped location")
+                                    else tr("معلم · الموقع غير محدد على الخريطة", "Site · position non géolocalisée", "Landmark · location not mapped"),
+                                    color = Color(0xFF687582), fontSize = 10.sp
+                                )
+                            }
                         }
                     }
                 }
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                MapModeChip(tr("الخريطة", "Plan", "Map"), true, true) {}
-                MapModeChip(tr("القمر الصناعي", "Satellite", "Satellite"), false, false) { showLayers = true }
-                MapModeChip(tr("التضاريس", "Relief", "Terrain"), false, false) { showLayers = true }
             }
         }
 
@@ -237,14 +293,18 @@ internal fun MapScreen(
                         Text(tr("خريطة تفاعلية قابلة للحفظ دون إنترنت", "Carte interactive avec téléchargement hors ligne", "Interactive map with offline downloads"), color = Color(0xFF687582), fontSize = 11.sp)
                     }
                     Button(
-                        onClick = { beginOfflineDownload(context, map) { p, bytes, message ->
-                            progress = p; downloadedBytes = bytes; progressText = message
-                        } },
-                        enabled = map != null && progress == null
+                        onClick = {
+                            progress = 0.01f
+                            progressText = ""
+                            beginOfflineDownload(context, map) { p, bytes, message ->
+                                progress = p; downloadedBytes = bytes; progressText = message
+                            }
+                        },
+                        enabled = map != null && (progress == null || progress == 0f || progress >= 1f)
                     ) {
                         Icon(Icons.Default.CloudDownload, contentDescription = null, modifier = Modifier.size(17.dp))
                         Spacer(Modifier.width(5.dp))
-                        Text(tr("حفظ المنطقة", "Télécharger", "Download"))
+                        Text(if (progress != null && progress!! >= 1f) tr("تم الحفظ", "Enregistrée", "Saved") else tr("حفظ المنطقة", "Télécharger", "Download"))
                     }
                 }
                 progress?.let { p ->
