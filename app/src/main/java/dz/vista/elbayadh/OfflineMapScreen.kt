@@ -81,7 +81,7 @@ internal fun OfflineMapScreen(
                     }
                 }
                 if (features.isNotEmpty()) {
-                    style.addSource(GeoJsonSource(LANDMARK_SOURCE_ID, FeatureCollection.fromFeatures(features)))
+                    style.addSource(GeoJsonSource(LANDMARK_SOURCE_ID, FeatureCollection.fromFeatures(features.toTypedArray())))
                     style.addLayer(
                         CircleLayer(LANDMARK_LAYER_ID, LANDMARK_SOURCE_ID).withProperties(
                             PropertyFactory.circleColor("#C39A58"),
@@ -94,7 +94,7 @@ internal fun OfflineMapScreen(
 
                 map.addOnMapClickListener { coordinate ->
                     val screenPoint: PointF = map.projection.toScreenLocation(coordinate)
-                    val selectedId = map.queryRenderedFeatures(screenPoint, LANDMARK_LAYER_ID)
+                    val selectedId = map.queryRenderedFeatures(screenPoint, arrayOf(LANDMARK_LAYER_ID))
                         .firstOrNull()
                         ?.getStringProperty("landmark_id")
                     val selected = latestLandmarks.firstOrNull { it.id == selectedId }
