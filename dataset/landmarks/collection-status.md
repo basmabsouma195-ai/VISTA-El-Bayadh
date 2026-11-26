@@ -1,6 +1,6 @@
 # VISTA El Bayadh — landmark data collection register
 
-**Snapshot:** 26 November 2026  
+**Snapshot:** 26 November 2026 — research pass 2
 **Runtime catalogue:** `app/src/main/assets/content/landmarks.json`  
 **Research queues:** `dataset/photo-research/`
 
@@ -14,7 +14,7 @@
 | Records with coordinates | 2 |
 | Records still missing coordinates | 30 |
 | Cited source records | 37 |
-| Research notes | 12 |
+| Research notes | 13 |
 | Discovery queue entries | 13 |
 | Research/discovery IDs already in runtime | 9 |
 | Field-photo gallery records | 19 |
@@ -96,3 +96,15 @@ The offline PMTiles base map is a separate layer from the tourism catalogue.
 The map provides the geographic background; each runtime landmark pin is
 created from that landmark's own confirmed coordinates. OSM settlement dots
 must not be mistaken for verified heritage-site locations.
+
+## Research pass 2 — official rock-art location enrichment
+
+Added **قويرات بن ثالول** to both research queues (not runtime) using its official heritage-map record. The record describes six rocky elevations over about 5 km, six engraved faces and 19 figures, with the drawings concentrated on the first two elevations. It gives access references to RN47 / kilometre point 110 and a dirt track, but no numeric coordinates; GPS remains null.
+
+Also refined the source-derived location and access notes for **قارة التبن**, **الخشيم**, and **الكريمة**. Their municipality/daïra and route descriptions are recorded as source text, not converted into invented coordinates. Difficult or degraded sites remain subject to field access and conservation checks.
+
+Primary references:
+- https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1263
+- https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1265
+- https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522
+- https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1513
