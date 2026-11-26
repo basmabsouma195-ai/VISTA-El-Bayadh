@@ -85,7 +85,7 @@ def main() -> None:
     adb("pull", device_path, str(screenshot_path), timeout=30)
 
     print("VISTA_MAP_LOGCAT_START")
-    print(adb("logcat", "-d", "-s", "VISTA_MAP:I", "VISTA_MAP:E", timeout=20)[-12000:])
+    logcat = adb("logcat", "-d", "-v", "brief", timeout=20)\n    print("\\n".join(line for line in logcat.splitlines() if "VISTA_MAP" in line or "MapLibre" in line or "mbgl" in line)[-12000:])
     print("VISTA_MAP_LOGCAT_END")
 
     image = Image.open(screenshot_path).convert("RGB")
@@ -104,7 +104,7 @@ def main() -> None:
     major_road_pixels = near_color((210, 166, 111), 28)  # #d2a66f
     minor_road_pixels = near_color((255, 253, 248), 14)  # #fffdf8
     place_label_pixels = near_color((38, 55, 70), 26)    # #263746
-    place_marker_pixels = near_color((154, 116, 64), 22) # #9A7440
+    place_marker_pixels = near_color((185, 130, 54), 24) # #B98236
 
     if unique_colors < 30 or major_road_pixels + minor_road_pixels < 30:
         raise AssertionError(
