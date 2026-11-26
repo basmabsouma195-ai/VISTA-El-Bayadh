@@ -44,6 +44,8 @@ internal fun OfflineMapScreen(
         }
         lifecycleOwner.lifecycle.addObserver(observer)
         mapView.onCreate(Bundle())
+        if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) mapView.onStart()
+        if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) mapView.onResume()
         mapView.getMapAsync { map: MapLibreMap ->
             map.setStyle(EL_BAYADH_STYLE) {
                 map.cameraPosition = CameraPosition.Builder()
@@ -54,6 +56,8 @@ internal fun OfflineMapScreen(
         }
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) mapView.onPause()
+            if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) mapView.onStop()
             mapView.onDestroy()
         }
     }
