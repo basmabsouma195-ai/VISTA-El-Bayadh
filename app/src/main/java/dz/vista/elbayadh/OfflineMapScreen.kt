@@ -274,7 +274,7 @@ internal fun OfflineMapScreen(
         }
         style.getLayer(SATELLITE_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "satellite") Property.VISIBLE else Property.NONE))
         style.getLayer(TERRAIN_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "terrain") Property.VISIBLE else Property.NONE))
-        listOf("place-points", "vista-place-labels", "vista-road-labels", SEARCH_LAYER_ID, USER_LAYER_ID, ROUTE_LAYER_ID).forEach { id ->
+        listOf("place-points", "vista-place-labels", "vista-road-labels", LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_LABEL_LAYER_ID, SEARCH_LAYER_ID, USER_LAYER_ID, ROUTE_LAYER_ID).forEach { id ->
             style.getLayer(id)?.setProperties(PropertyFactory.visibility(Property.VISIBLE))
         }
     }
@@ -367,20 +367,24 @@ internal fun OfflineMapScreen(
                     Log.i("VISTA_MAP", "Added offline place GeoJSON source")
                     style.addLayer(CircleLayer(LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
                         PropertyFactory.circleColor("#B98236"),
-                        PropertyFactory.circleRadius(5.0f),
+                        PropertyFactory.circleRadius(7.0f),
+                        PropertyFactory.circleOpacity(1.0f),
                         PropertyFactory.circleStrokeColor("#FFFDF8"),
-                        PropertyFactory.circleStrokeWidth(1.2f)
+                        PropertyFactory.circleStrokeWidth(1.5f),
+                        PropertyFactory.visibility(Property.VISIBLE)
                     ))
                     Log.i("VISTA_MAP", "Added offline place marker layer")
                     style.addLayer(SymbolLayer(LOCAL_PLACES_LABEL_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
                         PropertyFactory.textField("{place_name}"),
                         PropertyFactory.textFont(arrayOf("Noto Sans Regular")),
-                        PropertyFactory.textSize(11.5f),
-                        PropertyFactory.textColor("#34485A"),
+                        PropertyFactory.textSize(12.5f),
+                        PropertyFactory.textColor("#263746"),
                         PropertyFactory.textHaloColor("#FFFDF8"),
-                        PropertyFactory.textHaloWidth(1.2f),
+                        PropertyFactory.textHaloWidth(1.4f),
                         PropertyFactory.textOffset(arrayOf(0f, 0.8f)),
-                        PropertyFactory.textAllowOverlap(false)
+                        PropertyFactory.textAllowOverlap(true),
+                        PropertyFactory.textIgnorePlacement(true),
+                        PropertyFactory.visibility(Property.VISIBLE)
                     ))
                     Log.i("VISTA_MAP", "Added offline place label layer")
                 }.onFailure { Log.e("VISTA_MAP", "Failed to add offline place layers", it) }
