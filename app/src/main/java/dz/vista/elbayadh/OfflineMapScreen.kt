@@ -224,7 +224,8 @@ internal fun OfflineMapScreen(
     val wilayaMapBoundary = remember(context) { runCatching { loadWilayaMapBoundary(context) }.getOrNull() }
     val wilayaPolygons = wilayaMapBoundary?.polygons.orEmpty()
     val searchViewbox = wilayaMapBoundary?.let { "${it.west},${it.north},${it.east},${it.south}" } ?: "-0.4159,34.4482,2.3603,30.7017"
-    // Center on a verified catalogue place in El Bayadh city.\n    val initialMapCenter = LatLng(33.682515, 1.0307273)
+    // Center on a verified catalogue place in El Bayadh city.
+    val initialMapCenter = LatLng(33.682515, 1.0307273)
     val localMapPlaces = remember(context) {
         val loaded = runCatching { loadLocalMapPlaces(context) }
             .onFailure { Log.e("VISTA_MAP", "Failed to load local offline places", it) }
