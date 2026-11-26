@@ -68,7 +68,7 @@ jobs:
               echo "No validated El Bayadh map artifact exists for this feature branch."
               exit 1
             fi
-            for attempt in $(seq 1 90); do
+            for attempt in $(seq 1 360); do
               STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
               CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
               if [ "$STATUS" = "completed" ]; then
@@ -97,7 +97,7 @@ jobs:
               echo "No verified El Bayadh PMTiles package is available for this branch."
               exit 1
             fi
-            for attempt in $(seq 1 90); do
+            for attempt in $(seq 1 360); do
               STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
               CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
               if [ "$STATUS" = "completed" ]; then
@@ -133,10 +133,25 @@ jobs:
           manifest = json.loads((root / "map-manifest.json").read_text())
           digest = hashlib.sha256(archive.read_bytes()).hexdigest()
           assert manifest["wilaya_code"] == 32, manifest
+          boundary = manifest.get("boundary", {})
+          assert boundary.get("wilaya_codes") == [32, 69], boundary
           assert manifest["format"] == "PMTiles v3 vector archive", manifest
           assert digest == manifest["sha256"], (digest, manifest["sha256"])
           assert archive.read_bytes()[:7] == b"PMTiles"
-          print(f"Verified bundled El Bayadh PMTiles: {archive.stat().st_size} bytes, sha256={digest}")
+          manifest["wilaya_codes"] = [32, 69]
+          manifest["region_name"] = "El Bayadh + El Abiodh Sidi Cheikh"
+          (root / "map-manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+          places_path = root / "places.json"
+          places = json.loads(places_path.read_text(encoding="utf-8"))
+          places["region"] = "El Bayadh + El Abiodh Sidi Cheikh"
+          places["regions"] = [
+              {"code": 32, "name": "El Bayadh", "name_ar": "البيض"},
+              {"code": 69, "name": "El Abiodh Sidi Cheikh", "name_ar": "الأبيض سيدي الشيخ"}
+          ]
+          places["wilaya_codes"] = [32, 69]
+          places_path.write_text(json.dumps(places, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+          assert any(item.get("osm_id") == 490536990 for item in places.get("items", [])), "El Abiodh Sidi Cheikh is missing from the offline search index"
+          print(f"Verified bundled regional PMTiles: {archive.stat().st_size} bytes, sha256={digest}; {places.get('count')} named places")
           PY
 
       - name: Set up JDK 17
