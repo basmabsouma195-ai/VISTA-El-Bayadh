@@ -13,7 +13,6 @@ import java.net.URL
 import java.net.URLEncoder
 import org.json.JSONArray
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,6 +37,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -115,6 +117,7 @@ internal fun OfflineMapScreen(
     var locationMessage by remember { mutableStateOf("") }
     var remotePlaces by remember { mutableStateOf<List<PlaceSearchResult>>(emptyList()) }
     var isSearchingPlaces by remember { mutableStateOf(false) }
+    var searchTrigger by remember { mutableStateOf(0) }
     var activeLocationListener by remember { mutableStateOf<LocationListener?>(null) }
 
     fun applyLayerVisibility() {
@@ -281,7 +284,7 @@ internal fun OfflineMapScreen(
     permissionRequestAction = { locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) }
     freshLocationAction = { requestFreshLocation() }
 
-    LaunchedEffect(searchText) {
+    LaunchedEffect(searchTrigger) {
         remotePlaces = emptyList()
         val query = searchText.trim()
         if (query.length < 2) { isSearchingPlaces = false; return@LaunchedEffect }
@@ -331,6 +334,8 @@ internal fun OfflineMapScreen(
                         modifier = Modifier.weight(1f),
                         placeholder = { Text(if (catalogueLanguage == CatalogueLanguage.AR) "ابحث عن معلم أو منطقة..." else "Search landmarks and places...", color = MapIvory.copy(alpha = 0.65f), fontSize = 14.sp) },
                         singleLine = true,
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                        keyboardActions = KeyboardActions(onSearch = { searchTrigger += 1 }),
                         colors = TextFieldDefaults.colors(
                             focusedTextColor = MapIvory,
                             unfocusedTextColor = MapIvory,
@@ -341,7 +346,10 @@ internal fun OfflineMapScreen(
                             cursorColor = MapGold
                         )
                     )
-                    IconButton(onClick = { searchText = "" }) {
+                    IconButton(onClick = { searchTrigger += 1 }) {
+                        Icon(Icons.Filled.Search, contentDescription = "Search places", tint = MapGold)
+                    }
+                    IconButton(onClick = { searchText = ""; remotePlaces = emptyList() }) {
                         Text("×", color = MapIvory, fontSize = 22.sp)
                     }
                 }
