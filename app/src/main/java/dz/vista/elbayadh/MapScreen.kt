@@ -149,6 +149,26 @@ internal fun MapScreen(
                         nativeMap.setStyle(VISTA_MAP_STYLE) { style ->
                             addLandmarkMarkers(style, landmarks)
                         }
+                        nativeMap.addOnMapClickListener { tappedPoint ->
+                            val screenPoint = nativeMap.projection.toScreenLocation(tappedPoint)
+                            val markerHits = nativeMap.queryRenderedFeatures(
+                                screenPoint,
+                                arrayOf(VISTA_LANDMARK_LAYER_ID)
+                            )
+                            if (markerHits.isNotEmpty()) {
+                                val nearest = landmarks
+                                    .filter { it.latitude != null && it.longitude != null }
+                                    .minByOrNull { landmark ->
+                                        val latDelta = landmark.latitude!! - tappedPoint.latitude
+                                        val lonDelta = landmark.longitude!! - tappedPoint.longitude
+                                        latDelta * latDelta + lonDelta * lonDelta
+                                    }
+                                if (nearest != null) {
+                                    onOpenLandmark(nearest)
+                                    true
+                                } else false
+                            } else false
+                        }
                         nativeMap.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
                             .target(LatLng(33.6825, 1.0307)).zoom(11.2).build()
                     }
