@@ -84,9 +84,9 @@
       "filter": [
         "in",
         "admin_level",
-        "4",
-        "6",
-        "8"
+        4,
+        6,
+        8
       ],
       "layout": {
         "symbol-placement": "line-center",
@@ -103,6 +103,10 @@
           [
             "get",
             "name:en"
+          ],
+          [
+            "get",
+            "name:nonlatin"
           ],
           [
             "get",
@@ -289,6 +293,10 @@
           ],
           [
             "get",
+            "name:nonlatin"
+          ],
+          [
+            "get",
             "name:latin"
           ],
           [
@@ -358,6 +366,10 @@
           ],
           [
             "get",
+            "name:nonlatin"
+          ],
+          [
+            "get",
             "name:latin"
           ],
           [
@@ -394,7 +406,7 @@
       "id": "vista-road-labels",
       "type": "symbol",
       "source": "el-bayadh",
-      "source-layer": "transportation",
+      "source-layer": "transportation_name",
       "minzoom": 10,
       "filter": [
         "any",
@@ -404,15 +416,15 @@
         ],
         [
           "has",
+          "name:latin"
+        ],
+        [
+          "has",
+          "name:nonlatin"
+        ],
+        [
+          "has",
           "name:ar"
-        ],
-        [
-          "has",
-          "name:fr"
-        ],
-        [
-          "has",
-          "name:en"
         ]
       ],
       "layout": {
@@ -430,6 +442,10 @@
           [
             "get",
             "name:en"
+          ],
+          [
+            "get",
+            "name:nonlatin"
           ],
           [
             "get",
