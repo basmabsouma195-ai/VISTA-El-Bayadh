@@ -149,16 +149,6 @@
       "type": "line",
       "source": "el-bayadh",
       "source-layer": "transportation",
-      "filter": [
-        "in",
-        "class",
-        "minor",
-        "service",
-        "track",
-        "path",
-        "residential",
-        "unclassified"
-      ],
       "paint": {
         "line-color": "#fffdf8",
         "line-width": [
@@ -170,11 +160,11 @@
             "zoom"
           ],
           6,
-          0.35,
+          0.3,
           12,
-          1.7,
+          1.1,
           14,
-          3
+          2.4
         ]
       }
     },
@@ -219,15 +209,6 @@
       "source": "el-bayadh",
       "source-layer": "place",
       "minzoom": 6,
-      "filter": [
-        "in",
-        "class",
-        "city",
-        "town",
-        "village",
-        "hamlet",
-        "locality"
-      ],
       "paint": {
         "circle-color": "#9A7440",
         "circle-radius": [
@@ -239,11 +220,13 @@
             "zoom"
           ],
           6,
-          1.5,
+          2,
           9,
-          2.8,
+          3.5,
           12,
-          4
+          5,
+          15,
+          6
         ],
         "circle-stroke-color": "#FFF8EA",
         "circle-stroke-width": 1.2
@@ -267,17 +250,6 @@
       "source": "el-bayadh",
       "source-layer": "place",
       "minzoom": 5,
-      "filter": [
-        "in",
-        "class",
-        "state",
-        "province",
-        "city",
-        "town",
-        "village",
-        "hamlet",
-        "locality"
-      ],
       "layout": {
         "text-field": [
           "coalesce",
