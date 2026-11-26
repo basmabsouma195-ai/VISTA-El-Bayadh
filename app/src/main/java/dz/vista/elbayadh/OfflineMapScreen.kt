@@ -88,6 +88,7 @@ private const val EL_BAYADH_STYLE = "asset://maps/el-bayadh-style.json"
 private const val SEARCH_SOURCE_ID = "vista-search-target"
 private const val SEARCH_LAYER_ID = "vista-search-target-point"
 private const val ROADS_LAYER_ID = "roads-major"
+private const val ROADS_MINOR_LAYER_ID = "roads-minor"
 private const val WATER_LAYER_ID = "water"
 private const val SATELLITE_SOURCE_ID = "vista-satellite-source"
 private const val SATELLITE_LAYER_ID = "vista-satellite-layer"
@@ -137,19 +138,25 @@ internal fun OfflineMapScreen(
 
     fun applyLayerVisibility() {
         val style = mapRef?.style ?: return
-        style.getLayer(ROADS_LAYER_ID)?.setProperties(
-            PropertyFactory.visibility(if (roadsVisible) Property.VISIBLE else Property.NONE)
-        )
-        style.getLayer(WATER_LAYER_ID)?.setProperties(
-            PropertyFactory.visibility(if (waterVisible) Property.VISIBLE else Property.NONE)
-        )
         val rasterVisible = baseMap != "standard"
+        listOf(ROADS_LAYER_ID, ROADS_MINOR_LAYER_ID).forEach { id ->
+            style.getLayer(id)?.setProperties(
+                PropertyFactory.visibility(if (roadsVisible) Property.VISIBLE else Property.NONE)
+            )
+        }
+        listOf(WATER_LAYER_ID, "waterway").forEach { id ->
+            style.getLayer(id)?.setProperties(
+                PropertyFactory.visibility(if (!rasterVisible && waterVisible) Property.VISIBLE else Property.NONE)
+            )
+        }
+        listOf("background", "landcover", "landuse", "buildings").forEach { id ->
+            style.getLayer(id)?.setProperties(
+                PropertyFactory.visibility(if (rasterVisible) Property.NONE else Property.VISIBLE)
+            )
+        }
         style.getLayer(SATELLITE_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "satellite") Property.VISIBLE else Property.NONE))
         style.getLayer(TERRAIN_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "terrain") Property.VISIBLE else Property.NONE))
-        listOf("background", "landcover", "landuse", "water", "waterway", "buildings").forEach { id ->
-            style.getLayer(id)?.setProperties(PropertyFactory.visibility(if (rasterVisible) Property.NONE else Property.VISIBLE))
-        }
-        listOf("place-points", "vista-place-labels", "vista-road-labels", ROADS_LAYER_ID, SEARCH_LAYER_ID, USER_LAYER_ID).forEach { id ->
+        listOf("place-points", "vista-place-labels", "vista-road-labels", SEARCH_LAYER_ID, USER_LAYER_ID, ROUTE_LAYER_ID).forEach { id ->
             style.getLayer(id)?.setProperties(PropertyFactory.visibility(Property.VISIBLE))
         }
     }
