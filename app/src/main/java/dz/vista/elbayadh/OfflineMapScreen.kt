@@ -333,7 +333,7 @@ internal fun OfflineMapScreen(
                     .target(initialMapCenter)
                     .zoom(12.0)
                     .build()
-                Log.i("VISTA_MAP", "Initial camera: ${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}, zoom=${map.cameraPosition.zoom}")
+                map.cameraPosition.target?.let { target -> Log.i("VISTA_MAP", "Initial camera: ${target.latitude}, ${target.longitude}, zoom=${map.cameraPosition.zoom}") }
 
                 // Keep the map uncluttered on first opening: only the selected search result is pinned.
                 style.addSource(GeoJsonSource(SEARCH_SOURCE_ID, FeatureCollection.fromFeatures(emptyArray<Feature>())))
