@@ -355,7 +355,11 @@ internal fun OfflineMapScreen(
                 // This avoids relying on native asset URL resolution for a GeoJSON source.
                 val localFeatures = localMapPlaces.map { place ->
                     Feature.fromGeometry(Point.fromLngLat(place.longitude, place.latitude)).apply {
-                        addStringProperty("place_name", place.displayName(catalogueLanguage))
+                        addStringProperty("place_name", place.displayName(when (language.lowercase()) {
+                            "french" -> CatalogueLanguage.FR
+                            "english" -> CatalogueLanguage.EN
+                            else -> CatalogueLanguage.AR
+                        }))
                         addStringProperty("category", place.category)
                     }
                 }
