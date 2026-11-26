@@ -100,6 +100,47 @@ private const val ROUTE_SOURCE_ID = "vista-road-route"
 private const val ROUTE_LAYER_ID = "vista-road-route-line"
 
 private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double, val landmarkId: String? = null)
+private data class LocalMapPlace(
+    val name: String,
+    val nameAr: String?,
+    val nameFr: String?,
+    val nameEn: String?,
+    val latitude: Double,
+    val longitude: Double,
+    val category: String
+) {
+    fun displayName(language: CatalogueLanguage): String = when (language) {
+        CatalogueLanguage.AR -> nameAr ?: name
+        CatalogueLanguage.FR -> nameFr ?: name
+        CatalogueLanguage.EN -> nameEn ?: name
+    }
+
+    fun matches(query: String): Boolean = listOfNotNull(name, nameAr, nameFr, nameEn)
+        .any { it.contains(query, ignoreCase = true) }
+}
+
+private fun loadLocalMapPlaces(context: Context): List<LocalMapPlace> {
+    val root = JSONObject(context.assets.open("maps/places.json").bufferedReader().use { it.readText() })
+    val items = root.getJSONArray("items")
+    return (0 until items.length()).mapNotNull { index ->
+        val item = items.getJSONObject(index)
+        val latitude = item.optDouble("latitude", Double.NaN)
+        val longitude = item.optDouble("longitude", Double.NaN)
+        val name = item.optString("name").takeIf { it.isNotBlank() } ?: return@mapNotNull null
+        if (!latitude.isFinite() || !longitude.isFinite()) return@mapNotNull null
+        LocalMapPlace(
+            name,
+            item.optString("name_ar").takeIf { it.isNotBlank() },
+            item.optString("name_fr").takeIf { it.isNotBlank() },
+            item.optString("name_en").takeIf { it.isNotBlank() },
+            latitude,
+            longitude,
+            item.optString("category", "place")
+        )
+    }
+}
+
+
 private data class RoadRouteResult(val feature: Feature, val distanceMeters: Double, val durationSeconds: Double)
 private data class WilayaPolygon(val rings: List<List<Pair<Double, Double>>>)
 
@@ -161,6 +202,7 @@ internal fun OfflineMapScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val latestLandmarks by rememberUpdatedState(landmarks)
     val wilayaPolygons = remember(context) { runCatching { loadWilayaPolygons(context) }.getOrDefault(emptyList()) }
+    val localMapPlaces = remember(context) { runCatching { loadLocalMapPlaces(context) }.getOrDefault(emptyList()) }
     val latestOnOpenLandmark by rememberUpdatedState(onOpenLandmark)
     val mapView = remember(context) { MapView(context) }
     var mapRef by remember { mutableStateOf<MapLibreMap?>(null) }
@@ -229,6 +271,16 @@ internal fun OfflineMapScreen(
     val matchingLandmarks = landmarks.filter {
         searchText.isNotBlank() && it.name(catalogueLanguage).contains(searchText.trim(), ignoreCase = true)
     }.take(6)
+
+    val matchingMapPlaces = if (searchText.isBlank()) emptyList() else localMapPlaces
+        .asSequence()
+        .filter { it.matches(searchText.trim()) }
+        .filter { place ->
+            if (wilayaPolygons.isNotEmpty()) isInsideWilaya(place.latitude, place.longitude, wilayaPolygons)
+            else place.latitude in 31.6572..34.4482 && place.longitude in -0.0715..2.3603
+        }
+        .take(8)
+        .toList()
 
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = LifecycleEventObserver { _, event ->
@@ -515,7 +567,7 @@ internal fun OfflineMapScreen(
             if (searchText.isNotBlank() && selectedTarget == null) {
                 Surface(shape = RoundedCornerShape(16.dp), color = MapNavy.copy(alpha = 0.97f)) {
                     Column(Modifier.fillMaxWidth().padding(8.dp)) {
-                        if (matchingLandmarks.isEmpty() && remotePlaces.isEmpty() && !isSearchingPlaces) {
+                        if (matchingLandmarks.isEmpty() && matchingMapPlaces.isEmpty() && remotePlaces.isEmpty() && !isSearchingPlaces) {
                             Text(if (catalogueLanguage == CatalogueLanguage.AR) "لا توجد نتائج بعد" else "No results yet", color = MapIvory, modifier = Modifier.padding(10.dp))
                         }
                         if (isSearchingPlaces) Text(if (catalogueLanguage == CatalogueLanguage.AR) "جارٍ البحث عن المدن والقرى…" else "Searching places…", color = MapGold, modifier = Modifier.padding(8.dp))
@@ -532,6 +584,14 @@ internal fun OfflineMapScreen(
                             ) {
                                 Text(landmark.name(catalogueLanguage), color = MapIvory, modifier = Modifier.weight(1f), fontSize = 14.sp)
                                 Text(if (landmark.latitude != null && landmark.longitude != null) "على الخريطة" else "الموقع قيد التحديد", color = MapGold, fontSize = 10.sp)
+                            }
+                        }
+                        matchingMapPlaces.forEach { place ->
+                            Row(Modifier.fillMaxWidth().clickable {
+                                showSearchTarget(place.displayName(catalogueLanguage), place.latitude, place.longitude)
+                            }.padding(horizontal = 10.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Text(place.displayName(catalogueLanguage), color = MapIvory, modifier = Modifier.weight(1f), fontSize = 13.sp)
+                                Text(place.category, color = MapGold, fontSize = 10.sp)
                             }
                         }
                         remotePlaces.forEach { place ->

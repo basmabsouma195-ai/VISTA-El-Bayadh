@@ -58,6 +58,6 @@ A build is not considered a working map merely because the APK contains a PMTile
 
 - No online tile provider or API key.
 - No network-dependent style, glyph or sprite resources.
-- No claiming turn-by-turn navigation until a separate offline routing engine and routable graph have been implemented and tested.
+- Online road-route preview uses a routing service when connectivity is available; no offline turn-by-turn guidance is claimed until a separate offline routing engine and routable graph have been implemented and tested.
 - No changes to the app's existing visual identity or other tabs.
 - Do not merge this feature branch into main without approval.

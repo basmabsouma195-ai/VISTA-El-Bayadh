@@ -8,6 +8,7 @@ on:
       - "scripts/prepare_el_bayadh_boundary.py"
       - "dataset/maps/el-bayadh-map-source.json"
       - "scripts/fetch_map_glyphs.py"
+      - "scripts/build_el_bayadh_poi_index.py"
       - "app/src/main/assets/maps/el-bayadh-style.json"
 
 permissions:
@@ -66,8 +67,15 @@ jobs:
             ghcr.io/onthegomap/planetiler:0.10.2 \
             --osm-path=/data/el-bayadh.osm.pbf \
             --output=/data/el-bayadh.pmtiles \
-            --force --download --maxzoom=14
+            --force --download --maxzoom=16
           test -s build/maps/el-bayadh.pmtiles
+
+      - name: Export clipped OSM features for offline place search
+        run: |
+          set -euo pipefail
+          osmium export --overwrite --output=build/maps/el-bayadh.geojson build/maps/el-bayadh.osm.pbf
+          python3 scripts/build_el_bayadh_poi_index.py build/maps/el-bayadh.geojson build/maps/places.json
+          rm build/maps/el-bayadh.geojson
 
       - name: Download offline Arabic and Latin glyph ranges
         run: python3 scripts/fetch_map_glyphs.py build/maps/glyphs
@@ -86,7 +94,7 @@ jobs:
           if version != 3:
               raise SystemExit(f"Expected PMTiles v3, got {version}")
           min_zoom, max_zoom = header[100], header[101]
-          if min_zoom > 8 or max_zoom < 12:
+          if min_zoom > 8 or max_zoom < 16:
               raise SystemExit(f"Unexpected zoom range: {min_zoom}..{max_zoom}")
           boundary = json.loads((root / "boundary.json").read_text())
           west, south, east, north = boundary["bbox_wsen"]
@@ -118,6 +126,7 @@ jobs:
             build/maps/el-bayadh.pmtiles
             build/maps/boundary.json
             build/maps/map-manifest.json
+            build/maps/places.json
             build/maps/glyphs/
           if-no-files-found: error
           retention-days: 30
