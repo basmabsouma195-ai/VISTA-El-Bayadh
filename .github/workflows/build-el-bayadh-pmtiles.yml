@@ -7,10 +7,6 @@ on:
     paths:
       - "scripts/prepare_el_bayadh_boundary.py"
       - "dataset/maps/el-bayadh-map-source.json"
-      - ".github/workflows/build-el-bayadh-pmtiles.yml"
-      - ".github/workflows/android-build.yml"
-      - "app/build.gradle.kts"
-      - "app/src/main/**"
 
 permissions:
   contents: read

@@ -225,6 +225,8 @@ jobs:
     needs: assemble-debug
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    env:
+      ANDROID_I_WANT_MY_TCG: "yes"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -238,11 +240,21 @@ jobs:
       - name: Install screenshot inspection dependency
         run: python3 -m pip install --quiet pillow
 
+      - name: Enable KVM access when available
+        shell: bash
+        run: |
+          if [ -e /dev/kvm ]; then
+            sudo chmod 666 /dev/kvm
+            echo "KVM device permissions enabled."
+          else
+            echo "KVM is unavailable; Android emulator will use explicit TCG software emulation."
+          fi
+
       - name: Launch VISTA with network disabled and inspect the map
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 35
-          emulator-boot-timeout: 600
+          api-level: 34
+          emulator-boot-timeout: 900
           disable-linux-hw-accel: auto
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
           target: google_apis
