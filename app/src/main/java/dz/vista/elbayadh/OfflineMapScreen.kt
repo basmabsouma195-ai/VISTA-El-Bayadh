@@ -255,8 +255,8 @@ internal fun OfflineMapScreen(
             ) {
                 Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(if (catalogueLanguage == CatalogueLanguage.AR) "طبقات الخريطة" else "Map layers", color = MapGold, fontSize = 13.sp)
-                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "الطرق الرئيسية  \${if (roadsVisible) "✓" else "○"}" else "Main roads  \${if (roadsVisible) "✓" else "○"}", color = MapIvory, modifier = Modifier.clickable { roadsVisible = !roadsVisible; applyLayerVisibility() })
-                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "المياه  \${if (waterVisible) "✓" else "○"}" else "Water  \${if (waterVisible) "✓" else "○"}", color = MapIvory, modifier = Modifier.clickable { waterVisible = !waterVisible; applyLayerVisibility() })
+                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "الطرق الرئيسية  ${if (roadsVisible) "✓" else "○"}" else "Main roads  ${if (roadsVisible) "✓" else "○"}", color = MapIvory, modifier = Modifier.clickable { roadsVisible = !roadsVisible; applyLayerVisibility() })
+                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "المياه  ${if (waterVisible) "✓" else "○"}" else "Water  ${if (waterVisible) "✓" else "○"}", color = MapIvory, modifier = Modifier.clickable { waterVisible = !waterVisible; applyLayerVisibility() })
                 }
             }
         }
