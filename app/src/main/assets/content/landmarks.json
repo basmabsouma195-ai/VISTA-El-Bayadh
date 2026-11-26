@@ -70,8 +70,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/228",
           "publisher": "وزارة الثقافة والفنون / خريطة التراث الثقافي الجزائري",
           "note": "المصدر الأساسي لتاريخ التأسيس والوصف المعماري والاجتماعي؛ تُنسب إليه الروايات والتفاصيل."
+        },
+        {
+          "title": "قصر المشرية الصغرى ولاية البيّض – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/228",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 228: 33.576784, 1.014623. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.576784,
+      "longitude": 1.014623
     },
     {
       "id": "gour-brizina",
@@ -89,8 +97,16 @@
           "url": "https://eldjoumhouria.dz/article/31851/",
           "publisher": "جريدة الجمهورية، 4 ديسمبر 2024",
           "note": "تقرير محلي يصف جبال القور وموقعها العام والزيارة السياحية."
+        },
+        {
+          "title": "دراسة منطقة جبال القور ببريزينة – إحداثيات UTM",
+          "url": "https://www.scribd.com/document/920416731/DOC-20250326-WA0071",
+          "publisher": "دراسة جامعية منشورة",
+          "note": "الإحداثيات الأصلية E 335704.05 / N 3653045.09؛ حُولت إلى WGS84 على أساس UTM Zone 31N، فنتجت 33.003468, 1.241285. تمثل نقطة الدراسة المنشورة في منطقة القور."
         }
-      ]
+      ],
+      "latitude": 33.00346756699156,
+      "longitude": 1.2412852726527672
     },
     {
       "id": "kef-el-melh",
@@ -257,8 +273,16 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "تسجل حصن بنت الخس ضمن الجرد الإضافي بقرار 5 أفريل 2016."
+        },
+        {
+          "title": "حصن بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/565",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 565: 33.059583, 1.183167. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.059583,
+      "longitude": 1.183167
     },
     {
       "id": "gour-bent-el-khass",
@@ -276,8 +300,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1404",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق الاسم والموقع والوصف الطبيعي العام، ويميزه عن الحصن القريب."
+        },
+        {
+          "title": "قور بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1404",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1404: 33.006991, 1.241495. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.006991,
+      "longitude": 1.241495
     },
     {
       "id": "ksar-boussemghoun-zaouia-sidi-ahmed-tidjani",
@@ -301,10 +333,16 @@
           "url": "https://whc.unesco.org/fr/listesindicatives/6831/",
           "publisher": "UNESCO World Heritage Centre",
           "note": "إحداثيات قصر بوسمغون الواردة في القائمة التمهيدية لليونسكو: 32°51′53.27″N, 0°01′11.8″E، محولة إلى درجات عشرية."
+        },
+        {
+          "title": "قصر بوسمغون – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/561",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 561: 32.863389, 0.019833. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
       ],
-      "latitude": 32.864797,
-      "longitude": 0.019944
+      "latitude": 32.863389,
+      "longitude": 0.019833
     },
     {
       "id": "rock-art-merdoufa",
@@ -322,8 +360,16 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل الموقع وتاريخ إدراجه في الجرد العام."
+        },
+        {
+          "title": "محطة النقش الصخري المردوفة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/905",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 905: 33.437531, 1.19882. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.437531,
+      "longitude": 1.19882
     },
     {
       "id": "rock-art-belier-bou-alem",
@@ -341,8 +387,16 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل تصنيف المحطة وتاريخ القرار والنشر."
+        },
+        {
+          "title": "محطة النقش الصخري كبش بوعلام – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/904",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 904: 33.715244, 1.504443. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.715244,
+      "longitude": 1.504443
     },
     {
       "id": "bastion-bent-el-khas",
@@ -360,8 +414,16 @@
           "url": "https://www.m-culture.gov.dz/index.php/fr/liste-des-biens-culturels",
           "publisher": "وزارة الثقافة والفنون الجزائرية",
           "note": "يسجل إدراج حصن بنت الخس ضمن الجرد الإضافي والقرار الولائي."
+        },
+        {
+          "title": "حصن بنت الخص – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/565",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 565: 33.059583, 1.183167. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.059583,
+      "longitude": 1.183167
     },
     {
       "id": "ksar-ghassoul",
@@ -385,10 +447,16 @@
           "url": "https://mapcarta.com/N5856731885",
           "publisher": "OpenStreetMap / Mapcarta",
           "note": "نقطة أثرية مسجلة باسم Ksar al Ghassoul: 33.38116, 1.19712."
+        },
+        {
+          "title": "قصر الغاسول – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/232",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 232: 33.386833, 1.195194. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
       ],
-      "latitude": 33.38116,
-      "longitude": 1.19712
+      "latitude": 33.386833,
+      "longitude": 1.195194
     },
     {
       "id": "ksar-stitten",
@@ -406,8 +474,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/563",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "مصدر وصفي محلي؛ البطاقة نفسها تنبه إلى نقص الوثائق والحاجة إلى بحث أكاديمي."
+        },
+        {
+          "title": "قصر استيتن – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/563",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 563: 33.758972, 1.224222. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.758972,
+      "longitude": 1.224222
     },
     {
       "id": "dinosaur-footprints-el-bayadh",
@@ -425,8 +501,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/777",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر يذكر اكتشاف 2004 والتأريخ المنسوب إلى دراسة أولية."
+        },
+        {
+          "title": "أثار بصمات الديناصور – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/777",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 777: 33.711639, 1.034278. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.711639,
+      "longitude": 1.034278
     },
     {
       "id": "grotte-brezina",
@@ -444,8 +528,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/928",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر الأساسي للموقع والوصف العام والرواية التاريخية؛ تفاصيل السلامة تتطلب تأكيداً محلياً."
+        },
+        {
+          "title": "مغارة بريزينة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/928",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 928: 33.18209, 1.319793. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.18209,
+      "longitude": 1.319793
     },
     {
       "id": "rock-art-khashim",
@@ -463,8 +555,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1522",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق الموقع والوصف المنشور للنقوش والموضوعات المصورة."
+        },
+        {
+          "title": "محطة النقش الصخري الخشيم – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1522",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1522: 33.278759, 1.264906. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.278759,
+      "longitude": 1.264906
     },
     {
       "id": "ksar-chalala",
@@ -482,8 +582,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/557",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "الوصف العمراني والينابيع والأحياء؛ تاريخ التأسيس وارد كرواية شفوية."
+        },
+        {
+          "title": "قصر الشلالة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/557",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 557: 33.035889, 0.059083. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.035889,
+      "longitude": 0.059083
     },
     {
       "id": "ksar-arbaouat",
@@ -501,8 +609,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/354",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "بطاقة تعريف القصر وعناصره المعمارية والاجتماعية وتاريخ التأسيس المنقول."
+        },
+        {
+          "title": "قصر اربوات – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/354",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 354: 33.089579, 0.580182. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.089579,
+      "longitude": 0.580182
     },
     {
       "id": "sidi-cheikh-mausoleum",
@@ -526,10 +642,16 @@
           "url": "https://mapcarta.com/N4689288194",
           "publisher": "OpenStreetMap / Mapcarta",
           "note": "إحداثيات معلم ضريح سيدي الشيخ: 32.89164, 0.54499؛ تتوافق مع موضع الضريح في الأبيض سيدي الشيخ."
+        },
+        {
+          "title": "ضريح سيدي عبد القادر بن محمد المكنى سيدي الشيخ – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/435",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 435: 32.891639, 0.54525. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
       ],
-      "latitude": 32.89164,
-      "longitude": 0.54499
+      "latitude": 32.891639,
+      "longitude": 0.54525
     },
     {
       "id": "ksar-ain-hachifa",
@@ -547,8 +669,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/234",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "الموقع والوصف والأحداث المنقولة عن الشهادات المحلية؛ تاريخ البناء تقديري."
+        },
+        {
+          "title": "قصر عين حشيفة بالشلالة الڨبلية – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/234",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 234: 33.030818, 0.168945. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.030818,
+      "longitude": 0.168945
     },
     {
       "id": "barrage-brezina",
@@ -599,8 +729,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1513",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع والوصف وعدد الواجهات وحالة الحفظ."
+        },
+        {
+          "title": "محطة النقش الصخري الكريمة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1513",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1513: 33.260235, 0.694076. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.260235,
+      "longitude": 0.694076
     },
     {
       "id": "rock-art-dhalaa-mayta",
@@ -618,8 +756,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1324",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع والوصف والامتداد وحالة التأثر بالرمال."
+        },
+        {
+          "title": "محطة النقش الصخري الضلعة الميتة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1324",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1324: 33.218416, 0.675113. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.218416,
+      "longitude": 0.675113
     },
     {
       "id": "rock-art-qaret-tabbane",
@@ -637,8 +783,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1265",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع والواجهات والرسومات وصعوبة الوصول."
+        },
+        {
+          "title": "محطة النقش الصخري قارة التبن – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1265",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1265: 33.0832, 0.347126. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.0832,
+      "longitude": 0.347126
     },
     {
       "id": "rock-art-qaret-samouta",
@@ -656,8 +810,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1260",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع وعدد المحطات والوصف الأثري."
+        },
+        {
+          "title": "محطة النقش الصخري قارة السموطة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1260",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1260: 33.1188, 0.39414. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.1188,
+      "longitude": 0.39414
     },
     {
       "id": "rock-art-khalwat-sidi-cheikh",
@@ -675,8 +837,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/959",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع الجغرافي وعدد الواجهات والرسومات."
+        },
+        {
+          "title": "محطة النقش الصخري خلوة سيدي الشيخ – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/959",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 959: 33.176147, 0.585677. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
-      ]
+      ],
+      "latitude": 33.176147,
+      "longitude": 0.585677
     },
     {
       "id": "sidi-hamza-tower",
@@ -700,10 +870,16 @@
           "url": "https://mapcarta.com/fr/N5856732184",
           "publisher": "OpenStreetMap / Mapcarta",
           "note": "إحداثيات الأطلال المسجلة باسم Borj Sidi Hamza: 33.09903, 1.26222؛ وتتوافق مع وصف مديرية الثقافة لموقع البرج في وسط بريزينة."
+        },
+        {
+          "title": "برج سيدي حمزة – خريطة التراث الثقافي الجزائري",
+          "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/1357",
+          "publisher": "GeoAlgeria / Ministry of Culture",
+          "note": "الإحداثيات المنشورة في سجل التراث رقم 1357: 33.098911, 1.262237. الدقة: exact; طريقة تحديد النقطة: source_point."
         }
       ],
-      "latitude": 33.09903,
-      "longitude": 1.26222
+      "latitude": 33.098911,
+      "longitude": 1.262237
     },
     {
       "id": "hammam-ain-ouarka",
