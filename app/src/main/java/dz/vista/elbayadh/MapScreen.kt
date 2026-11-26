@@ -67,6 +67,12 @@ import org.maplibre.android.offline.OfflineRegion
 import org.maplibre.android.offline.OfflineRegionError
 import org.maplibre.android.offline.OfflineRegionStatus
 import org.maplibre.android.offline.OfflineTilePyramidRegionDefinition
+import org.maplibre.android.style.layers.CircleLayer
+import org.maplibre.android.style.layers.PropertyFactory
+import org.maplibre.android.style.sources.GeoJsonSource
+import org.maplibre.geojson.Feature
+import org.maplibre.geojson.FeatureCollection
+import org.maplibre.geojson.Point
 
 private const val VISTA_MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 private val MapNavy = Color(0xFF10263B)
@@ -140,7 +146,9 @@ internal fun MapScreen(
                     onCreate(Bundle())
                     getMapAsync { nativeMap ->
                         map = nativeMap
-                        nativeMap.setStyle(VISTA_MAP_STYLE)
+                        nativeMap.setStyle(VISTA_MAP_STYLE) { style ->
+                            addLandmarkMarkers(style, landmarks)
+                        }
                         nativeMap.cameraPosition = org.maplibre.android.camera.CameraPosition.Builder()
                             .target(LatLng(33.6825, 1.0307)).zoom(11.2).build()
                     }
@@ -321,4 +329,38 @@ private fun beginOfflineDownload(
             onProgress(0f, 0L, "تعذّر إنشاء تنزيل دون اتصال: $error")
         }
     })
+}
+
+private const val VISTA_LANDMARK_SOURCE_ID = "vista-landmarks-source"
+private const val VISTA_LANDMARK_LAYER_ID = "vista-landmarks-layer"
+
+/** Render every geocoded catalogue landmark as a native map marker. */
+private fun addLandmarkMarkers(
+    style: org.maplibre.android.maps.Style,
+    landmarks: List<Landmark>
+) {
+    val features = landmarks.mapNotNull { landmark ->
+        val latitude = landmark.latitude ?: return@mapNotNull null
+        val longitude = landmark.longitude ?: return@mapNotNull null
+        if (!latitude.isFinite() || !longitude.isFinite()) return@mapNotNull null
+        if (latitude !in -90.0..90.0 || longitude !in -180.0..180.0) return@mapNotNull null
+        Feature.fromGeometry(Point.fromLngLat(longitude, latitude))
+    }
+    if (features.isEmpty()) return
+
+    style.addSource(
+        GeoJsonSource(
+            VISTA_LANDMARK_SOURCE_ID,
+            FeatureCollection.fromFeatures(features.toTypedArray())
+        )
+    )
+    style.addLayer(
+        CircleLayer(VISTA_LANDMARK_LAYER_ID, VISTA_LANDMARK_SOURCE_ID).withProperties(
+            PropertyFactory.circleColor("#D97706"),
+            PropertyFactory.circleRadius(6.5f),
+            PropertyFactory.circleStrokeColor("#FFFFFF"),
+            PropertyFactory.circleStrokeWidth(2.0f),
+            PropertyFactory.circleOpacity(0.96f)
+        )
+    )
 }
