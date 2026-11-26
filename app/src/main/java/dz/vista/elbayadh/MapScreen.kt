@@ -242,9 +242,9 @@ internal fun MapScreen(
                     Column {
                         matchingMunicipalities.forEach { names ->
                             val name = when (language) {
-                                CatalogueLanguage.AR -> names.first
-                                CatalogueLanguage.FR -> names.second
-                                else -> names.third
+                                CatalogueLanguage.AR -> names.ar
+                                CatalogueLanguage.FR -> names.fr
+                                else -> names.en
                             }
                             Column(
                                 Modifier.fillMaxWidth().clickable {
@@ -311,6 +311,7 @@ internal fun MapScreen(
                             color = Color(0xFF687582), fontSize = 10.sp
                         )
                     }
+                    val currentProgress = progress
                     Button(
                         onClick = {
                             progress = 0.01f
@@ -319,11 +320,11 @@ internal fun MapScreen(
                                 progress = p; downloadedBytes = bytes; progressText = message
                             }
                         },
-                        enabled = map != null && (progress == null || progress == 0f || progress >= 1f)
+                        enabled = map != null && (currentProgress == null || currentProgress == 0f || currentProgress >= 1f)
                     ) {
                         Icon(Icons.Default.CloudDownload, contentDescription = null, modifier = Modifier.size(17.dp))
                         Spacer(Modifier.width(5.dp))
-                        Text(if (progress != null && progress!! >= 1f) tr("تم الحفظ", "Enregistrée", "Saved") else tr("حفظ المنطقة", "Télécharger", "Download"))
+                        Text(if (currentProgress != null && currentProgress >= 1f) tr("تم الحفظ", "Enregistrée", "Saved") else tr("حفظ المنطقة", "Télécharger", "Download"))
                     }
                 }
                 progress?.let { p ->
