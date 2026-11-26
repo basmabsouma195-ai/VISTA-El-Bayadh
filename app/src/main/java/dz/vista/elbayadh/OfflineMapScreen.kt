@@ -148,11 +148,11 @@ internal fun OfflineMapScreen(
         val style = mapRef?.style ?: return
         if (style.getSource(SATELLITE_SOURCE_ID) == null) {
             style.addSource(RasterSource(SATELLITE_SOURCE_ID, TileSet("satellite", "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"), 256))
-            style.addLayerBelow(RasterLayer(SATELLITE_LAYER_ID, SATELLITE_SOURCE_ID), ROADS_LAYER_ID)
+            style.addLayerBelow(RasterLayer(SATELLITE_LAYER_ID, SATELLITE_SOURCE_ID), "roads-minor")
         }
         if (style.getSource(TERRAIN_SOURCE_ID) == null) {
             style.addSource(RasterSource(TERRAIN_SOURCE_ID, TileSet("terrain", "https://a.tile.opentopomap.org/{z}/{x}/{y}.png"), 256))
-            style.addLayerBelow(RasterLayer(TERRAIN_LAYER_ID, TERRAIN_SOURCE_ID), ROADS_LAYER_ID)
+            style.addLayerBelow(RasterLayer(TERRAIN_LAYER_ID, TERRAIN_SOURCE_ID), "roads-minor")
         }
         applyLayerVisibility()
     }
@@ -343,7 +343,11 @@ internal fun OfflineMapScreen(
                     Icon(Icons.Filled.Search, contentDescription = null, tint = MapGold)
                     TextField(
                         value = searchText,
-                        onValueChange = { searchText = it },
+                        onValueChange = {
+                            searchText = it
+                            selectedTarget = null
+                            mapRef?.style?.getSourceAs<GeoJsonSource>(SEARCH_SOURCE_ID)?.setGeoJson(FeatureCollection.fromFeatures(emptyArray<Feature>()))
+                        },
                         modifier = Modifier.weight(1f),
                         placeholder = { Text(if (catalogueLanguage == CatalogueLanguage.AR) "ابحث عن معلم أو منطقة..." else "Search landmarks and places...", color = MapIvory.copy(alpha = 0.65f), fontSize = 14.sp) },
                         singleLine = true,
@@ -373,7 +377,7 @@ internal fun OfflineMapScreen(
                 }
             }
 
-            if (searchText.isNotBlank()) {
+            if (searchText.isNotBlank() && selectedTarget == null) {
                 Surface(shape = RoundedCornerShape(16.dp), color = MapNavy.copy(alpha = 0.97f)) {
                     Column(Modifier.fillMaxWidth().padding(8.dp)) {
                         if (matchingLandmarks.isEmpty() && remotePlaces.isEmpty() && !isSearchingPlaces) {
