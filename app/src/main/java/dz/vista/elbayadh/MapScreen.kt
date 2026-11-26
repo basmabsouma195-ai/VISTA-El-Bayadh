@@ -305,9 +305,9 @@ internal fun MapScreen(
                         Text(tr("ولاية البيض", "Wilaya d’El Bayadh", "El Bayadh Province"), color = MapNavy, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                         Text(tr("خريطة تفاعلية قابلة للحفظ دون إنترنت", "Carte interactive avec téléchargement hors ligne", "Interactive map with offline downloads"), color = Color(0xFF687582), fontSize = 11.sp)
                         Text(
-                            tr("$" + "{landmarks.size} معلم مسجل · $" + "{mappedLandmarkCount} محدد على الخريطة",
-                                "$" + "{landmarks.size} sites répertoriés · $" + "{mappedLandmarkCount} géolocalisés",
-                                "$" + "{landmarks.size} landmarks listed · $" + "{mappedLandmarkCount} mapped"),
+                            tr("${landmarks.size} معلم مسجل · ${mappedLandmarkCount} محدد على الخريطة",
+                                "${landmarks.size} sites répertoriés · ${mappedLandmarkCount} géolocalisés",
+                                "${landmarks.size} landmarks listed · ${mappedLandmarkCount} mapped"),
                             color = Color(0xFF687582), fontSize = 10.sp
                         )
                     }
