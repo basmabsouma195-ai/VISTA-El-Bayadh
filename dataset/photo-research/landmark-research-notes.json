@@ -35,7 +35,16 @@
         "تضم الزاوية التجانية مرافق للتعليم وإيواء الطلبة والطهي والتخزين ومصلى وفناء وخلوة."
       ],
       "caution": "أي معلومة عن تاريخ تأسيس المسجد أو القصر تحتاج صياغة منسوبة للمصدر؛ البطاقة نفسها تعرض بعض التواريخ على سبيل الاعتقاد أو الاستنتاج.",
-      "publicationStatus": "research-enriched-not-runtime"
+      "publicationStatus": "runtime-record-added-coordinate-published-by-UNESCO-field-check-pending",
+      "coordinateReference": {
+        "latitude": 32.8647972,
+        "longitude": 0.0199444,
+        "source": "UNESCO World Heritage Centre, Tentative List 6831",
+        "sourceUrl": "https://whc.unesco.org/fr/listesindicatives/6831/",
+        "original": "32° 51' 53,27\" N / 0° 1' 11,8\" E",
+        "precision": "published site coordinate; field confirmation still required",
+        "note": "Coordinate is for the ksar entry in the UNESCO serial nomination, not a separately surveyed point for the mosque or zaouia."
+      }
     },
     {
       "id": "ksar-molk-slimane",
