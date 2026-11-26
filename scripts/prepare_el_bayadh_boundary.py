@@ -49,7 +49,7 @@ for code in WILAYA_CODES:
             all_points.extend((float(lon), float(lat)) for lon, lat in ring)
 
 combined_geometry = {"type": "MultiPolygon", "coordinates": all_polygons}
-poly_path = OUT / "el-bayadh-el-abiodh.poly"
+poly_path = OUT / "el-bayadh.poly"
 with poly_path.open("w", encoding="utf-8") as stream:
     stream.write("El_Bayadh_32_El_Abiodh_Sidi_Cheikh_69\n")
     for polygon_index, polygon in enumerate(all_polygons):

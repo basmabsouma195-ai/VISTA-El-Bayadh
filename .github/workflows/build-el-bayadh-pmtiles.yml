@@ -1,4 +1,4 @@
-name: Build El Bayadh PMTiles map
+name: Build El Bayadh + El Abiodh PMTiles map
 
 on:
   workflow_dispatch:
@@ -32,7 +32,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes osmium-tool
 
-      - name: Prepare verified Wilaya 32 boundary
+      - name: Prepare combined Wilaya 32 and 69 boundaries
         run: |
           set -euo pipefail
           python3 scripts/prepare_el_bayadh_boundary.py build/maps
@@ -48,7 +48,7 @@ jobs:
           test -s build/maps/algeria.osm.pbf
           sha256sum build/maps/algeria.osm.pbf | tee build/maps/osm-source.sha256
 
-      - name: Clip OSM data to Wilaya 32
+      - name: Clip OSM data to combined El Bayadh map region
         run: |
           set -euo pipefail
           osmium extract \
