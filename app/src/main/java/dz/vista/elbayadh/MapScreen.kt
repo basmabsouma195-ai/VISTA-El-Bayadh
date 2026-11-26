@@ -267,10 +267,9 @@ internal fun MapScreen(
                                     val lon = place.longitude
                                     if (lat != null && lon != null) {
                                         map?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), 15.5))
-                                    } else {
-                                        unmappedLandmarkName = place.name(language)
                                     }
                                     query = ""
+                                    onOpenLandmark(place)
                                 }.padding(horizontal = 15.dp, vertical = 10.dp)
                             ) {
                                 Text(place.name(language), color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
