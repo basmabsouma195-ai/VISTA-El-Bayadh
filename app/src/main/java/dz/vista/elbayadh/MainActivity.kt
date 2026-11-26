@@ -264,7 +264,7 @@ private fun VistaApp() {
                                 onFavoriteToggle = ::toggleFavorite,
                                 onOpenLandmark = { selectedLandmark = it }
                             )
-                            1 -> MapScreen(language, catalogue?.landmarks.orEmpty(), favoriteIds, onFavoriteToggle = ::toggleFavorite, onOpenLandmark = { selectedLandmark = it })
+                            1 -> MapScreen(when (language) { AppLanguage.Arabic -> CatalogueLanguage.AR; AppLanguage.French -> CatalogueLanguage.FR; AppLanguage.English -> CatalogueLanguage.EN }, catalogue?.landmarks.orEmpty(), favoriteIds, onFavoriteToggle = ::toggleFavorite, onOpenLandmark = { selectedLandmark = it })
                             2 -> ScannerScreen(language, catalogue?.landmarks.orEmpty(), onOpenLandmark = { selectedLandmark = it })
                             3 -> FavoritesScreen(
                                 title = c.favorites,
