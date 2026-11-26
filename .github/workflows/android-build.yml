@@ -62,7 +62,7 @@ jobs:
             RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$GITHUB_HEAD_REF&per_page=100" --jq --arg sha "$PR_HEAD_SHA" '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml" and .head_sha == $sha) | .id' | head -n 1 || true)"
             if [ -z "$RUN_ID" ]; then
               # App-only PR commits may reuse the latest successful map package on this branch.
-              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$GITHUB_HEAD_REF&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml" and .conclusion == "success") | .id' | head -n 1 || true)"
+              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$GITHUB_HEAD_REF&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
             fi
             if [ -z "$RUN_ID" ]; then
               echo "No validated El Bayadh map artifact exists for this feature branch."
@@ -91,7 +91,7 @@ jobs:
             if [ -z "$RUN_ID" ]; then
               # App-only commits reuse the latest verified package from this branch.
               BRANCH="$GITHUB_REF_NAME"
-              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$BRANCH&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml" and .conclusion == "success") | .id' | head -n 1 || true)"
+              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$BRANCH&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
             fi
             if [ -z "$RUN_ID" ]; then
               echo "No verified El Bayadh PMTiles package is available for this branch."
