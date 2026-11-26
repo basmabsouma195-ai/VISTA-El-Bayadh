@@ -212,3 +212,41 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
+
+  offline-map-emulator:
+    name: Offline map emulator smoke test
+    needs: assemble-debug
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download verified debug APK
+        uses: actions/download-artifact@v4
+        with:
+          name: vista-el-bayadh-android16-compatible
+          path: artifacts
+
+      - name: Install screenshot inspection dependency
+        run: python3 -m pip install --quiet pillow
+
+      - name: Launch VISTA with network disabled and inspect the map
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_2
+          disable-animations: true
+          script: |
+            python3 scripts/test_vista_offline_map_emulator.py artifacts/app-debug.apk artifacts/vista-map-emulator.png
+
+      - name: Upload offline map emulator screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vista-el-bayadh-offline-map-emulator-test
+          path: artifacts/vista-map-emulator.png
+          if-no-files-found: warn
+          retention-days: 14
