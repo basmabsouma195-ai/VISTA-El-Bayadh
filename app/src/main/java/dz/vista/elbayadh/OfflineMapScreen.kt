@@ -207,6 +207,25 @@ internal fun OfflineMapScreen(
         }
     }
 
+    val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
+        val allowed = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true || grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (allowed) {
+            val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val location = runCatching {
+                manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    ?: manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            }.getOrNull()
+            if (location != null) {
+                mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 14.0))
+                locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "تم تحديد موقعك" else "Your location found"
+            } else {
+                locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "فعّل GPS وانتظر تحديد الموقع ثم حاول مجدداً" else "Enable GPS, wait for a fix and retry"
+            }
+        } else {
+            locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "اسمح للتطبيق بالوصول إلى موقعك" else "Allow location access to use this feature"
+        }
+    }
+
     Box(Modifier.fillMaxSize().background(Color(0xFF071B2D))) {
         AndroidView(factory = { mapView }, modifier = Modifier.fillMaxSize(), update = { })
 
@@ -274,10 +293,18 @@ internal fun OfflineMapScreen(
         ) {
             MapControlButton(Icons.Filled.ZoomIn, "Zoom in") { mapRef?.animateCamera(CameraUpdateFactory.zoomIn()) }
             MapControlButton(Icons.Filled.ZoomOut, "Zoom out") { mapRef?.animateCamera(CameraUpdateFactory.zoomOut()) }
-            MapControlButton(Icons.Filled.MyLocation, "Center map") {
-                mapRef?.animateCamera(CameraUpdateFactory.newCameraPosition(
-                    CameraPosition.Builder().target(LatLng(33.05, 1.14)).zoom(8.5).build()
-                ))
+            MapControlButton(Icons.Filled.MyLocation, "My location") {
+                val fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                val coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                if (fine || coarse) {
+                    val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    val location = runCatching {
+                        manager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                            ?: manager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    }.getOrNull()
+                    if (location != null) mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 14.0))
+                    else locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "لم يصل GPS إلى موقعك بعد" else "Waiting for a GPS fix"
+                } else locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
             }
             MapControlButton(Icons.Filled.Layers, "Map layers") { showLayers = !showLayers }
         }
@@ -293,7 +320,16 @@ internal fun OfflineMapScreen(
                     Text(if (catalogueLanguage == CatalogueLanguage.AR) "طبقات الخريطة" else "Map layers", color = MapGold, fontSize = 13.sp)
                     Text(if (catalogueLanguage == CatalogueLanguage.AR) "الطرق الرئيسية  ${if (roadsVisible) "✓" else "○"}" else "Main roads  ${if (roadsVisible) "✓" else "○"}", color = MapIvory, modifier = Modifier.clickable { roadsVisible = !roadsVisible; applyLayerVisibility() })
                     Text(if (catalogueLanguage == CatalogueLanguage.AR) "المياه  ${if (waterVisible) "✓" else "○"}" else "Water  ${if (waterVisible) "✓" else "○"}", color = MapIvory, modifier = Modifier.clickable { waterVisible = !waterVisible; applyLayerVisibility() })
+                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "الخريطة العادية" else "Standard", color = if (baseMap == "standard") MapGold else MapIvory, modifier = Modifier.clickable { setBaseMap("standard") })
+                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "الأقمار الصناعية" else "Satellite", color = if (baseMap == "satellite") MapGold else MapIvory, modifier = Modifier.clickable { setBaseMap("satellite") })
+                    Text(if (catalogueLanguage == CatalogueLanguage.AR) "التضاريس" else "Terrain", color = if (baseMap == "terrain") MapGold else MapIvory, modifier = Modifier.clickable { setBaseMap("terrain") })
                 }
+            }
+        }
+
+        if (locationMessage.isNotBlank()) {
+            Surface(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 58.dp), shape = RoundedCornerShape(10.dp), color = MapNavy.copy(alpha = 0.95f)) {
+                Text(locationMessage, color = MapIvory, fontSize = 11.sp, modifier = Modifier.padding(10.dp))
             }
         }
 
