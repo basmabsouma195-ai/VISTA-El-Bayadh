@@ -1,6 +1,10 @@
 package dz.vista.elbayadh
 
 import android.os.Bundle
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +28,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -51,6 +58,9 @@ import org.maplibre.android.maps.MapView
 import org.maplibre.android.style.layers.CircleLayer
 import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
+import org.maplibre.android.style.layers.RasterLayer
+import org.maplibre.android.style.sources.RasterSource
+import org.maplibre.android.style.sources.TileSet
 import org.maplibre.android.style.sources.GeoJsonSource
 import org.maplibre.geojson.Feature
 import org.maplibre.geojson.FeatureCollection
@@ -61,6 +71,10 @@ private const val LANDMARK_SOURCE_ID = "vista-landmarks"
 private const val LANDMARK_LAYER_ID = "vista-landmark-points"
 private const val ROADS_LAYER_ID = "roads-major"
 private const val WATER_LAYER_ID = "water"
+private const val SATELLITE_SOURCE_ID = "vista-satellite-source"
+private const val SATELLITE_LAYER_ID = "vista-satellite-layer"
+private const val TERRAIN_SOURCE_ID = "vista-terrain-source"
+private const val TERRAIN_LAYER_ID = "vista-terrain-layer"
 
 private val MapNavy = Color(0xFF10263D)
 private val MapGold = Color(0xFFC39A58)
@@ -82,6 +96,8 @@ internal fun OfflineMapScreen(
     var showLayers by remember { mutableStateOf(false) }
     var roadsVisible by remember { mutableStateOf(true) }
     var waterVisible by remember { mutableStateOf(true) }
+    var baseMap by remember { mutableStateOf("standard") }
+    var locationMessage by remember { mutableStateOf("") }
 
     fun applyLayerVisibility() {
         val style = mapRef?.style ?: return
@@ -91,6 +107,26 @@ internal fun OfflineMapScreen(
         style.getLayer(WATER_LAYER_ID)?.setProperties(
             PropertyFactory.visibility(if (waterVisible) Property.VISIBLE else Property.NONE)
         )
+        val rasterVisible = baseMap != "standard"
+        style.getLayer(SATELLITE_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "satellite") Property.VISIBLE else Property.NONE))
+        style.getLayer(TERRAIN_LAYER_ID)?.setProperties(PropertyFactory.visibility(if (baseMap == "terrain") Property.VISIBLE else Property.NONE))
+        listOf("background", "landcover", "landuse", "water", "waterway", "place-points", "buildings").forEach { id ->
+            style.getLayer(id)?.setProperties(PropertyFactory.visibility(if (rasterVisible) Property.NONE else Property.VISIBLE))
+        }
+    }
+
+    fun setBaseMap(mode: String) {
+        baseMap = mode
+        val style = mapRef?.style ?: return
+        if (style.getSource(SATELLITE_SOURCE_ID) == null) {
+            style.addSource(RasterSource(SATELLITE_SOURCE_ID, TileSet("satellite", "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"), 256))
+            style.addLayerBelow(RasterLayer(SATELLITE_LAYER_ID, SATELLITE_SOURCE_ID), ROADS_LAYER_ID)
+        }
+        if (style.getSource(TERRAIN_SOURCE_ID) == null) {
+            style.addSource(RasterSource(TERRAIN_SOURCE_ID, TileSet("terrain", "https://a.tile.opentopomap.org/{z}/{x}/{y}.png"), 256))
+            style.addLayerBelow(RasterLayer(TERRAIN_LAYER_ID, TERRAIN_SOURCE_ID), ROADS_LAYER_ID)
+        }
+        applyLayerVisibility()
     }
 
     val catalogueLanguage = when (language.lowercase()) {
