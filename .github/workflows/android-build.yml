@@ -64,25 +64,32 @@ jobs:
               exit 1
             fi
           else
-            # Push builds wait for the map generated from the exact same commit.
+            # Prefer a map package built from this exact commit.
+            RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=50" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
+            if [ -z "$RUN_ID" ]; then
+              # App-only commits reuse the latest verified package from this branch.
+              BRANCH="$GITHUB_REF_NAME"
+              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?branch=$BRANCH&per_page=100" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml" and .conclusion == "success") | .id' | head -n 1 || true)"
+            fi
+            if [ -z "$RUN_ID" ]; then
+              echo "No verified El Bayadh PMTiles package is available for this branch."
+              exit 1
+            fi
             for attempt in $(seq 1 90); do
-              RUN_ID="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=50" --jq '.workflow_runs[] | select(.path == ".github/workflows/build-el-bayadh-pmtiles.yml") | .id' | head -n 1 || true)"
-              if [ -n "$RUN_ID" ]; then
-                STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
-                CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
-                if [ "$STATUS" = "completed" ]; then
-                  if [ "$CONCLUSION" != "success" ]; then
-                    echo "PMTiles build failed for commit $GITHUB_SHA (run $RUN_ID)."
-                    exit 1
-                  fi
-                  break
+              STATUS="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.status')"
+              CONCLUSION="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')"
+              if [ "$STATUS" = "completed" ]; then
+                if [ "$CONCLUSION" != "success" ]; then
+                  echo "PMTiles build failed (run $RUN_ID)."
+                  exit 1
                 fi
+                break
               fi
-              echo "Waiting for the matching El Bayadh PMTiles workflow ($attempt/90)..."
+              echo "Waiting for the El Bayadh PMTiles package ($attempt/90)..."
               sleep 10
             done
-            if [ -z "$RUN_ID" ] || [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')" != "success" ]; then
-              echo "No successful PMTiles build was found for this exact commit."
+            if [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID" --jq '.conclusion')" != "success" ]; then
+              echo "No successful PMTiles build was found."
               exit 1
             fi
           fi
