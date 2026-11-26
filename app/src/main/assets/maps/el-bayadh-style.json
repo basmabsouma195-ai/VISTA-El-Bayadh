@@ -189,6 +189,99 @@
         "fill-outline-color": "#b8a88f",
         "fill-opacity": 0.7
       }
+    },
+    {
+      "id": "vista-place-labels",
+      "type": "symbol",
+      "source": "el-bayadh",
+      "source-layer": "place",
+      "minzoom": 5,
+      "filter": [
+        "in",
+        "class",
+        "city",
+        "town",
+        "village",
+        "hamlet"
+      ],
+      "layout": {
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:ar"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Regular"
+        ],
+        "text-size": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          5,
+          10,
+          10,
+          13,
+          14,
+          16
+        ],
+        "text-anchor": "top",
+        "text-offset": [
+          0,
+          0.5
+        ],
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-color": "#263746",
+        "text-halo-color": "#FFFDF8",
+        "text-halo-width": 1.4
+      }
+    },
+    {
+      "id": "vista-road-labels",
+      "type": "symbol",
+      "source": "el-bayadh",
+      "source-layer": "transportation",
+      "minzoom": 11,
+      "filter": [
+        "has",
+        "name"
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "coalesce",
+          [
+            "get",
+            "name:ar"
+          ],
+          [
+            "get",
+            "name"
+          ]
+        ],
+        "text-font": [
+          "Open Sans Regular"
+        ],
+        "text-size": 10,
+        "text-max-angle": 30
+      },
+      "paint": {
+        "text-color": "#59636A",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 1.2
+      }
     }
-  ]
+  ],
+  "glyphs": "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf"
 }
