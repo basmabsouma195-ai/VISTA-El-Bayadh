@@ -117,6 +117,7 @@ internal fun MapScreen(
     var progress by remember { mutableStateOf<Float?>(null) }
     var progressText by remember { mutableStateOf("") }
     var downloadedBytes by remember { mutableStateOf(0L) }
+    val mappedLandmarkCount = landmarks.count { it.latitude != null && it.longitude != null }
 
     val municipalities = remember {
         listOf(
@@ -303,6 +304,12 @@ internal fun MapScreen(
                     Column(Modifier.weight(1f)) {
                         Text(tr("ولاية البيض", "Wilaya d’El Bayadh", "El Bayadh Province"), color = MapNavy, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                         Text(tr("خريطة تفاعلية قابلة للحفظ دون إنترنت", "Carte interactive avec téléchargement hors ligne", "Interactive map with offline downloads"), color = Color(0xFF687582), fontSize = 11.sp)
+                        Text(
+                            tr("$" + "{landmarks.size} معلم مسجل · $" + "{mappedLandmarkCount} محدد على الخريطة",
+                                "$" + "{landmarks.size} sites répertoriés · $" + "{mappedLandmarkCount} géolocalisés",
+                                "$" + "{landmarks.size} landmarks listed · $" + "{mappedLandmarkCount} mapped"),
+                            color = Color(0xFF687582), fontSize = 10.sp
+                        )
                     }
                     Button(
                         onClick = {
@@ -395,7 +402,7 @@ private fun beginOfflineDownload(
                     val bytes = status.completedResourceSize
                     if (bytes > 50L * 1024L * 1024L) {
                         offlineRegion.setDownloadState(OfflineRegion.STATE_INACTIVE)
-                        onProgress(percent, bytes, "تم إيقاف التنزيل عند تجاوز 50 MB.")
+                        onProgress(0f, bytes, "تم إيقاف التنزيل عند تجاوز 50 MB؛ يمكنك اختيار نطاق أصغر وإعادة المحاولة.")
                     } else if (status.isComplete) {
                         offlineRegion.setDownloadState(OfflineRegion.STATE_INACTIVE)
                         onProgress(1f, bytes, "تم حفظ المنطقة على الجهاز.")
