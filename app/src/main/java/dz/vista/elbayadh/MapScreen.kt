@@ -77,6 +77,14 @@ import org.maplibre.geojson.Point
 private const val VISTA_MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty"
 private val MapNavy = Color(0xFF10263B)
 
+private data class MapMunicipality(
+    val ar: String,
+    val fr: String,
+    val en: String,
+    val latitude: Double,
+    val longitude: Double
+)
+
 /** Native vector map with a bounded, user-initiated offline-area download. */
 @Composable
 internal fun MapScreen(
@@ -110,30 +118,30 @@ internal fun MapScreen(
     var progressText by remember { mutableStateOf("") }
     var downloadedBytes by remember { mutableStateOf(0L) }
 
-    val municipalities = remember(language) {
+    val municipalities = remember {
         listOf(
-            Triple("البيض", "El Bayadh", "El Bayadh"),
-            Triple("الرقاصة", "Rogassa", "Rogassa"),
-            Triple("ستيتن", "Stitten", "Stitten"),
-            Triple("بريزينة", "Brézina", "Brezina"),
-            Triple("الغاسول", "Ghassoul", "Ghassoul"),
-            Triple("بوعلام", "Boualem", "Boualem"),
-            Triple("بوقطب", "Bougtob", "Bougtob"),
-            Triple("الخيثر", "El Kheïther", "El Kheither"),
-            Triple("الكاف الأحمر", "Kef El Ahmar", "Kef El Ahmar"),
-            Triple("الكراكدة", "Krakda", "Krakda"),
-            Triple("الشقيق", "Cheguig", "Cheguig"),
-            Triple("سيدي عامر", "Sidi Amar", "Sidi Amar"),
-            Triple("توسمولين", "Tousmouline", "Tousmouline"),
-            Triple("سيدي سليمان", "Sidi Slimane", "Sidi Slimane"),
-            Triple("سيدي طيفور", "Sidi Tifour", "Sidi Tifour"),
-            Triple("الأبيض سيدي الشيخ", "El Abiodh Sidi Cheikh", "El Abiodh Sidi Cheikh"),
-            Triple("عين العراك", "Aïn El Orak", "Ain El Orak"),
-            Triple("أربوات", "Arbaouat", "Arbaouat"),
-            Triple("بوسمغون", "Boussemghoun", "Boussemghoun"),
-            Triple("الشلالة", "Chellala", "Chellala"),
-            Triple("البنود", "El Bnoud", "El Bnoud"),
-            Triple("المحرة", "El Mehara", "El Mehara")
+            MapMunicipality("البيض", "El Bayadh", "El Bayadh", 33.6825, 1.0307),
+            MapMunicipality("الرقاصة", "Rogassa", "Rogassa", 34.0182474, 0.9262211),
+            MapMunicipality("ستيتن", "Stitten", "Stitten", 33.7563995, 1.2241683),
+            MapMunicipality("بريزينة", "Brézina", "Brezina", 33.0984038, 1.2571394),
+            MapMunicipality("غسول", "Ghassoul", "Ghassoul", 33.3765868, 1.2038386),
+            MapMunicipality("بوعلام", "Boualem", "Boualem", 33.7281417, 1.5345064),
+            MapMunicipality("بوقطب", "Bougtob", "Bougtob", 34.0405202, 0.0870670),
+            MapMunicipality("الخيثر", "El Kheïther", "El Kheither", 34.1489752, 0.0675861),
+            MapMunicipality("الكاف الأحمر", "Kef El Ahmar", "Kef El Ahmar", 33.8504062, 0.6332841),
+            MapMunicipality("كراكدة", "Krakda", "Krakda", 33.3211117, 0.9596477),
+            MapMunicipality("الشقيق", "Cheguig", "Cheguig", 34.0856989, 1.1484752),
+            MapMunicipality("سيدي عامر", "Sidi Ameur", "Sidi Ameur", 33.76833, 1.43306),
+            MapMunicipality("توسمولين", "Tousmouline", "Tousmouline", 33.65167, 0.30861),
+            MapMunicipality("سيدي سليمان", "Sidi Slimane", "Sidi Slimane", 33.832116, 1.731609),
+            MapMunicipality("سيدي طيفور", "Sidi Tifour", "Sidi Tifour", 33.7205714, 1.6871133),
+            MapMunicipality("الأبيض سيدي الشيخ", "El Abiodh Sidi Cheikh", "El Abiodh Sidi Cheikh", 32.896484, 0.5463928),
+            MapMunicipality("عين العراك", "Aïn El Orak", "Ain El Orak", 33.4101, 0.73853),
+            MapMunicipality("عرباوة", "Arbaouat", "Arbaouat", 33.0882649, 0.5812401),
+            MapMunicipality("بوسمغون", "Boussemghoun", "Boussemghoun", 32.8678479, 0.0232401),
+            MapMunicipality("شلالة", "Chellala", "Chellala", 33.0170236, 0.0896971),
+            MapMunicipality("البنود", "El Bnoud", "El Bnoud", 32.3096365, 0.2450916),
+            MapMunicipality("المحرة", "El Mehara", "El Mehara", 33.3131942, 0.3645784)
         )
     }
     val matchingLandmarks = remember(landmarks, query, language) {
@@ -144,14 +152,14 @@ internal fun MapScreen(
     val matchingMunicipalities = remember(municipalities, query, language) {
         if (query.isBlank()) emptyList() else municipalities.filter { names ->
             val name = when (language) {
-                CatalogueLanguage.AR -> names.first
-                CatalogueLanguage.FR -> names.second
-                else -> names.third
+                CatalogueLanguage.AR -> names.ar
+                CatalogueLanguage.FR -> names.fr
+                else -> names.en
             }
             name.contains(query.trim(), true) ||
-                names.first.contains(query.trim(), true) ||
-                names.second.contains(query.trim(), true) ||
-                names.third.contains(query.trim(), true)
+                names.ar.contains(query.trim(), true) ||
+                names.fr.contains(query.trim(), true) ||
+                names.en.contains(query.trim(), true)
         }.take(7)
     }
 
@@ -238,11 +246,15 @@ internal fun MapScreen(
                                 else -> names.third
                             }
                             Column(
-                                Modifier.fillMaxWidth().clickable { query = name }
-                                    .padding(horizontal = 15.dp, vertical = 10.dp)
+                                Modifier.fillMaxWidth().clickable {
+                                    map?.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                        LatLng(names.latitude, names.longitude), 12.8
+                                    ))
+                                    query = name
+                                }.padding(horizontal = 15.dp, vertical = 10.dp)
                             ) {
                                 Text(name, color = MapNavy, fontSize = 14.sp, fontWeight = FontWeight.Medium)
-                                Text(tr("بلدية · لا تتوفر إحداثيات دقيقة حاليًا", "Commune · coordonnées précises indisponibles", "Municipality · precise coordinates not available yet"), color = Color(0xFF687582), fontSize = 10.sp)
+                                Text(tr("بلدية · عرض مركزها على الخريطة", "Commune · afficher son centre sur la carte", "Municipality · show its centre on the map"), color = Color(0xFF687582), fontSize = 10.sp)
                             }
                         }
                         matchingLandmarks.forEach { place ->
