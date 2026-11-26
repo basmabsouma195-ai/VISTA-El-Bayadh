@@ -13,6 +13,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 import org.json.JSONArray
+import org.json.JSONObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -71,6 +72,7 @@ import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
 import org.maplibre.android.style.layers.CircleLayer
+import org.maplibre.android.style.layers.LineLayer
 import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.layers.RasterLayer
@@ -80,6 +82,7 @@ import org.maplibre.android.style.sources.GeoJsonSource
 import org.maplibre.geojson.Feature
 import org.maplibre.geojson.FeatureCollection
 import org.maplibre.geojson.Point
+import org.maplibre.geojson.LineString
 
 private const val EL_BAYADH_STYLE = "asset://maps/el-bayadh-style.json"
 private const val SEARCH_SOURCE_ID = "vista-search-target"
@@ -92,8 +95,11 @@ private const val TERRAIN_SOURCE_ID = "vista-terrain-source"
 private const val TERRAIN_LAYER_ID = "vista-terrain-layer"
 private const val USER_SOURCE_ID = "vista-user-location"
 private const val USER_LAYER_ID = "vista-user-location-point"
+private const val ROUTE_SOURCE_ID = "vista-road-route"
+private const val ROUTE_LAYER_ID = "vista-road-route-line"
 
 private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double, val landmarkId: String? = null)
+private data class RoadRouteResult(val feature: Feature, val distanceMeters: Double, val durationSeconds: Double)
 
 private val MapNavy = Color(0xFF10263D)
 private val MapGold = Color(0xFFC39A58)
@@ -123,6 +129,11 @@ internal fun OfflineMapScreen(
     var isSearchingPlaces by remember { mutableStateOf(false) }
     var searchTrigger by remember { mutableStateOf(0) }
     var activeLocationListener by remember { mutableStateOf<LocationListener?>(null) }
+    var routeTrigger by remember { mutableStateOf(0) }
+    var routeDistanceMeters by remember { mutableStateOf<Double?>(null) }
+    var routeDurationSeconds by remember { mutableStateOf<Double?>(null) }
+    var routeMessage by remember { mutableStateOf("") }
+    var isRouting by remember { mutableStateOf(false) }
 
     fun applyLayerVisibility() {
         val style = mapRef?.style ?: return
@@ -200,6 +211,12 @@ internal fun OfflineMapScreen(
                     PropertyFactory.circleColor("#1677FF"), PropertyFactory.circleRadius(9f),
                     PropertyFactory.circleStrokeColor("#FFFFFF"), PropertyFactory.circleStrokeWidth(3f)
                 ))
+                style.addSource(GeoJsonSource(ROUTE_SOURCE_ID, FeatureCollection.fromFeatures(emptyArray<Feature>())))
+                style.addLayer(LineLayer(ROUTE_LAYER_ID, ROUTE_SOURCE_ID).withProperties(
+                    PropertyFactory.lineColor("#2878FF"),
+                    PropertyFactory.lineWidth(5.5f),
+                    PropertyFactory.lineOpacity(0.94f)
+                ))
 
                 map.addOnMapClickListener { coordinate ->
                     val screenPoint = map.projection.toScreenLocation(coordinate)
@@ -233,6 +250,10 @@ internal fun OfflineMapScreen(
             if (landmarkId != null) addStringProperty("landmark_id", landmarkId)
         }
         selectedTarget = PlaceSearchResult(name, latitude, longitude, landmarkId)
+        routeDistanceMeters = null
+        routeDurationSeconds = null
+        routeMessage = ""
+        mapRef?.style?.getSourceAs<GeoJsonSource>(ROUTE_SOURCE_ID)?.setGeoJson(FeatureCollection.fromFeatures(emptyArray<Feature>()))
         mapRef?.style?.getSourceAs<GeoJsonSource>(SEARCH_SOURCE_ID)?.setGeoJson(feature)
         mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 13.0))
     }
@@ -322,6 +343,65 @@ internal fun OfflineMapScreen(
             }.getOrDefault(emptyList())
         }
         isSearchingPlaces = false
+    }
+
+    LaunchedEffect(routeTrigger) {
+        if (routeTrigger == 0) return@LaunchedEffect
+        val origin = currentLocation
+        val destination = selectedTarget
+        if (origin == null || destination == null) {
+            routeMessage = if (catalogueLanguage == CatalogueLanguage.AR) "حدد موقعك ووجهتك أولاً" else "Choose your location and destination first"
+            return@LaunchedEffect
+        }
+        isRouting = true
+        routeMessage = if (catalogueLanguage == CatalogueLanguage.AR) "جارٍ حساب المسار عبر الطرق…" else "Calculating road route…"
+        val result = withContext(Dispatchers.IO) {
+            runCatching {
+                val url = "https://router.project-osrm.org/route/v1/driving/" +
+                    "${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}" +
+                    "?overview=full&geometries=geojson&steps=true"
+                val connection = URL(url).openConnection() as HttpURLConnection
+                connection.connectTimeout = 12000
+                connection.readTimeout = 20000
+                connection.setRequestProperty("User-Agent", "VISTA-El-Bayadh/0.2 (regional tourism map)")
+                try {
+                    val payload = JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
+                    if (payload.optString("code") != "Ok") error(payload.optString("message", "No route found"))
+                    val route = payload.getJSONArray("routes").getJSONObject(0)
+                    val coordinates = route.getJSONObject("geometry").getJSONArray("coordinates")
+                    val points = (0 until coordinates.length()).mapNotNull { index ->
+                        val coordinate = coordinates.getJSONArray(index)
+                        if (coordinate.length() < 2) null
+                        else Point.fromLngLat(coordinate.getDouble(0), coordinate.getDouble(1))
+                    }
+                    if (points.size < 2) error("Route geometry is empty")
+                    RoadRouteResult(
+                        Feature.fromGeometry(LineString.fromLngLats(points)),
+                        route.getDouble("distance"),
+                        route.getDouble("duration")
+                    )
+                } finally {
+                    connection.disconnect()
+                }
+            }
+        }
+        isRouting = false
+        result.onSuccess { route ->
+            routeDistanceMeters = route.distanceMeters
+            routeDurationSeconds = route.durationSeconds
+            routeMessage = if (catalogueLanguage == CatalogueLanguage.AR) "تم حساب المسار عبر شبكة الطرق" else "Road route calculated"
+            mapRef?.style?.getSourceAs<GeoJsonSource>(ROUTE_SOURCE_ID)?.setGeoJson(route.feature)
+            mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                LatLng(destination.latitude, destination.longitude), 11.5
+            ))
+        }.onFailure {
+            routeDistanceMeters = null
+            routeDurationSeconds = null
+            routeMessage = if (catalogueLanguage == CatalogueLanguage.AR)
+                "تعذر حساب المسار الآن. تحقق من الإنترنت أو جرّب لاحقاً."
+            else "Unable to calculate a route. Check your connection and try again."
+            mapRef?.style?.getSourceAs<GeoJsonSource>(ROUTE_SOURCE_ID)?.setGeoJson(FeatureCollection.fromFeatures(emptyArray<Feature>()))
+        }
     }
 
     DisposableEffect(context) {
@@ -442,15 +522,29 @@ internal fun OfflineMapScreen(
 
         val target = selectedTarget
         val user = currentLocation
-        if (target != null && user != null) {
-            val result = FloatArray(1)
-            Location.distanceBetween(user.latitude, user.longitude, target.latitude, target.longitude, result)
-            val km = result[0] / 1000.0
-            Surface(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 104.dp), shape = RoundedCornerShape(10.dp), color = MapNavy.copy(alpha = 0.96f)) {
-                Text(
-                    if (catalogueLanguage == CatalogueLanguage.AR) "المسافة المباشرة إلى ${target.name.substringBefore(",")}: ${String.format(java.util.Locale.US, "%.2f", km)} كم" else "Straight-line distance: ${String.format(java.util.Locale.US, "%.2f", km)} km",
-                    color = MapIvory, fontSize = 12.sp, modifier = Modifier.padding(10.dp)
-                )
+        if (target != null) {
+            Surface(
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 104.dp)
+                    .clickable { if (user != null && !isRouting) routeTrigger += 1 else if (user == null) requestFreshLocation() },
+                shape = RoundedCornerShape(12.dp),
+                color = MapNavy.copy(alpha = 0.97f),
+                tonalElevation = 5.dp
+            ) {
+                Column(Modifier.padding(horizontal = 14.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        if (isRouting) "جارٍ حساب المسار…" else if (user == null)
+                            "اضغط لتحديد موقعك وحساب المسار إلى ${target.name.substringBefore(",")}"
+                        else if (routeDistanceMeters != null)
+                            "المسار عبر الطرق: ${String.format(java.util.Locale.US, "%.1f", routeDistanceMeters!! / 1000.0)} كم • ${(routeDurationSeconds!! / 60.0).toInt()} دقيقة"
+                        else "احسب المسار عبر الطرق إلى ${target.name.substringBefore(",")}",
+                        color = MapIvory, fontSize = 12.sp
+                    )
+                    if (routeMessage.isNotBlank()) Text(routeMessage, color = MapGold, fontSize = 10.sp)
+                    Text(
+                        if (routeDistanceMeters != null) "اضغط لإعادة حساب المسار" else "توجيه عبر الإنترنت • اضغط للبدء",
+                        color = MapGold, fontSize = 10.sp
+                    )
+                }
             }
         }
 
