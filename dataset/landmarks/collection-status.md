@@ -8,15 +8,15 @@
 
 | Measure | Current count |
 |---|---:|
-| Runtime landmark records | 31 |
+| Runtime landmark records | 32 |
 | Verified records | 8 |
-| Under review | 23 |
-| Records with coordinates | 1 |
+| Under review | 24 |
+| Records with coordinates | 2 |
 | Records still missing coordinates | 30 |
-| Cited source records | 35 |
+| Cited source records | 37 |
 | Research notes | 12 |
 | Discovery queue entries | 13 |
-| Research/discovery IDs already in runtime | 8 |
+| Research/discovery IDs already in runtime | 9 |
 | Field-photo gallery records | 19 |
 | Gallery-enabled field photos | 18 |
 | Unconfirmed field photos (disabled) | 1 |
@@ -66,6 +66,10 @@ manufacture coordinates from a village name, a distance, or a broad map region.
 - [ ] Visitor access and safety caveats retained where relevant
 - [ ] Image paths point to bundled files and have provenance
 - [ ] Gallery and recognition roles are not conflated
+
+## Newly enriched record
+
+**قصر بوسمغون** is now a separate runtime record (`ksar-boussemghoun`), distinct from the existing mosque and Tijani zawiya entries. Its map coordinate is transcribed from the UNESCO Tentative List entry (32°51′53.27″N, 0°01′11.8″E; converted to 32.8647972, 0.0199444). The coordinate is source-published but still requires field confirmation before being treated as a verified visitor-navigation point. The Algerian Cultural Heritage Map supplies the descriptive material on the seven quarters, oasis, mosque and zawiya.
 
 ## First source-backed records to enrich
 
