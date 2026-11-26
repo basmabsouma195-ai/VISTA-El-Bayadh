@@ -13,14 +13,16 @@
   "boundary": {
     "source": "GeoAlgeria",
     "repository": "https://github.com/yasserstudio/geoalgeria",
-    "file": "packages/dataset/data/geojson/wilaya-boundaries-detailed.geojson",
-    "source_commit": "b9fccb53f60d82cf98bc720163edbfcba2c63881",
+    "file": "dataset/maps/wilaya-boundaries-detailed.geojson",
+    "source_commit": "7adb2844c4243cf1ca5ece0cdf02b38e8232da61",
     "feature_property": "code",
     "feature_values": [
       32,
       69
     ],
-    "license": "ODbL-1.0"
+    "license": "ODbL-1.0",
+    "source_repository": "https://github.com/yasserstudio/geoalgeria",
+    "source_license": "ODbL-1.0"
   },
   "map_data": {
     "source": "Geofabrik Algeria OSM extract",

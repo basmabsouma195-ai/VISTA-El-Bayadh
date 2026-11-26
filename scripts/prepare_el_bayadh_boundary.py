@@ -2,14 +2,10 @@
 """Create the combined offline map boundary for Wilayas 32 and 69."""
 import json
 import sys
-import urllib.request
 from pathlib import Path
 
-SOURCE_COMMIT = "b9fccb53f60d82cf98bc720163edbfcba2c63881"
-BOUNDARY_URL = (
-    "https://raw.githubusercontent.com/yasserstudio/geoalgeria/"
-    f"{SOURCE_COMMIT}/packages/dataset/data/geojson/wilaya-boundaries-detailed.geojson"
-)
+SOURCE_COMMIT = "7adb2844c4243cf1ca5ece0cdf02b38e8232da61"
+SOURCE_GEOJSON = Path("dataset/maps/wilaya-boundaries-detailed.geojson")
 WILAYA_CODES = (32, 69)
 WILAYA_NAMES = {
     32: ("El Bayadh", "البيض"),
@@ -17,13 +13,9 @@ WILAYA_NAMES = {
 }
 OUT = Path(sys.argv[1] if len(sys.argv) > 1 else "build/maps")
 OUT.mkdir(parents=True, exist_ok=True)
-geojson_path = OUT / "wilaya-boundaries.geojson"
-if not geojson_path.exists():
-    request = urllib.request.Request(BOUNDARY_URL, headers={"User-Agent": "VISTA-El-Bayadh-map-builder"})
-    with urllib.request.urlopen(request, timeout=90) as response:
-        geojson_path.write_bytes(response.read())
-
-dataset = json.loads(geojson_path.read_text(encoding="utf-8"))
+if not SOURCE_GEOJSON.is_file():
+    raise SystemExit(f"Missing pinned GeoAlgeria boundary source: {SOURCE_GEOJSON}")
+dataset = json.loads(SOURCE_GEOJSON.read_text(encoding="utf-8"))
 matches = {
     int(feature.get("properties", {}).get("code", -1)): feature
     for feature in dataset.get("features", [])
@@ -70,7 +62,7 @@ metadata = {
     "name_ar": "البيض والأبيض سيدي الشيخ",
     "country": "Algeria",
     "communes_expected": 22,
-    "source": BOUNDARY_URL,
+    "source": "https://github.com/yasserstudio/geoalgeria/blob/7adb2844c4243cf1ca5ece0cdf02b38e8232da61/packages/dataset/data/geojson/wilaya-boundaries-detailed.geojson",
     "source_commit": SOURCE_COMMIT,
     "license": "ODbL-1.0",
     "geometry": combined_geometry,
