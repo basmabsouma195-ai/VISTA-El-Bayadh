@@ -80,7 +80,8 @@ def main() -> None:
     width, height = image.size
     # Exclude the status and bottom navigation bars; inspect only the map canvas.
     map_canvas = image.crop((0, int(height * 0.06), width, int(height * 0.87)))
-    sample = map_canvas.resize((320, 320))\n    colors = sample.getcolors(maxcolors=102_400) or []
+    sample = map_canvas.resize((320, 320))
+    colors = sample.getcolors(maxcolors=102_400) or []
     unique_colors = len(colors)
     background = (233, 227, 215)  # Local style's map background.
     non_background_pixels = sum(
