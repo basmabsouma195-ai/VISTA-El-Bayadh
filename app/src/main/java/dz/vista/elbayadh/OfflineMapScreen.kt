@@ -9,6 +9,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.os.Looper
 import android.os.Handler
+import android.util.Log
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
@@ -224,7 +225,13 @@ internal fun OfflineMapScreen(
     val wilayaPolygons = wilayaMapBoundary?.polygons.orEmpty()
     val searchViewbox = wilayaMapBoundary?.let { "${it.west},${it.north},${it.east},${it.south}" } ?: "-0.4159,34.4482,2.3603,30.7017"
     val initialMapCenter = LatLng(33.68, 1.02)
-    val localMapPlaces = remember(context) { runCatching { loadLocalMapPlaces(context) }.getOrDefault(emptyList()) }
+    val localMapPlaces = remember(context) {
+        val loaded = runCatching { loadLocalMapPlaces(context) }
+            .onFailure { Log.e("VISTA_MAP", "Failed to load local offline places", it) }
+            .getOrDefault(emptyList())
+        Log.i("VISTA_MAP", "Loaded offline place index: ${loaded.size} features")
+        loaded
+    }
     val latestOnOpenLandmark by rememberUpdatedState(onOpenLandmark)
     val mapView = remember(context) { MapView(context) }
     var mapRef by remember { mutableStateOf<MapLibreMap?>(null) }
@@ -326,6 +333,7 @@ internal fun OfflineMapScreen(
                     .target(initialMapCenter)
                     .zoom(12.0)
                     .build()
+                Log.i("VISTA_MAP", "Initial camera: ${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}, zoom=${map.cameraPosition.zoom}")
 
                 // Keep the map uncluttered on first opening: only the selected search result is pinned.
                 style.addSource(GeoJsonSource(SEARCH_SOURCE_ID, FeatureCollection.fromFeatures(emptyArray<Feature>())))
@@ -346,29 +354,35 @@ internal fun OfflineMapScreen(
                 ))
 
                 // Render the bundled offline place catalogue directly as GeoJSON.
-                val localPlaceFeatures = localMapPlaces.map { place ->
-                    Feature.fromGeometry(Point.fromLngLat(place.longitude, place.latitude)).apply {
-                        addStringProperty("place_name", place.displayName(catalogueLanguage))
-                        addStringProperty("category", place.category)
+                runCatching {
+                    val localPlaceFeatures = localMapPlaces.map { place ->
+                        Feature.fromGeometry(Point.fromLngLat(place.longitude, place.latitude)).apply {
+                            addStringProperty("place_name", place.displayName(catalogueLanguage))
+                            addStringProperty("category", place.category)
+                        }
                     }
-                }
-                style.addSource(GeoJsonSource(LOCAL_PLACES_SOURCE_ID, FeatureCollection.fromFeatures(localPlaceFeatures)))
-                style.addLayer(CircleLayer(LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
-                    PropertyFactory.circleColor("#B98236"),
-                    PropertyFactory.circleRadius(3.8f),
-                    PropertyFactory.circleStrokeColor("#FFFDF8"),
-                    PropertyFactory.circleStrokeWidth(1.2f)
-                ))
-                style.addLayer(SymbolLayer(LOCAL_PLACES_LABEL_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
-                    PropertyFactory.textField("{place_name}"),
-                    PropertyFactory.textFont(arrayOf("Noto Sans Regular")),
-                    PropertyFactory.textSize(10.5f),
-                    PropertyFactory.textColor("#34485A"),
-                    PropertyFactory.textHaloColor("#FFFDF8"),
-                    PropertyFactory.textHaloWidth(1.2f),
-                    PropertyFactory.textOffset(arrayOf(0f, 0.8f)),
-                    PropertyFactory.textAllowOverlap(false)
-                ))
+                    Log.i("VISTA_MAP", "Prepared ${localPlaceFeatures.size} offline GeoJSON place features")
+                    style.addSource(GeoJsonSource(LOCAL_PLACES_SOURCE_ID, FeatureCollection.fromFeatures(localPlaceFeatures)))
+                    Log.i("VISTA_MAP", "Added offline place GeoJSON source")
+                    style.addLayer(CircleLayer(LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
+                        PropertyFactory.circleColor("#B98236"),
+                        PropertyFactory.circleRadius(5.0f),
+                        PropertyFactory.circleStrokeColor("#FFFDF8"),
+                        PropertyFactory.circleStrokeWidth(1.2f)
+                    ))
+                    Log.i("VISTA_MAP", "Added offline place marker layer")
+                    style.addLayer(SymbolLayer(LOCAL_PLACES_LABEL_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
+                        PropertyFactory.textField("{place_name}"),
+                        PropertyFactory.textFont(arrayOf("Noto Sans Regular")),
+                        PropertyFactory.textSize(11.5f),
+                        PropertyFactory.textColor("#34485A"),
+                        PropertyFactory.textHaloColor("#FFFDF8"),
+                        PropertyFactory.textHaloWidth(1.2f),
+                        PropertyFactory.textOffset(arrayOf(0f, 0.8f)),
+                        PropertyFactory.textAllowOverlap(false)
+                    ))
+                    Log.i("VISTA_MAP", "Added offline place label layer")
+                }.onFailure { Log.e("VISTA_MAP", "Failed to add offline place layers", it) }
 
                 map.addOnMapClickListener { coordinate ->
                     val screenPoint = map.projection.toScreenLocation(coordinate)

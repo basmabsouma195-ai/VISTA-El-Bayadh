@@ -84,6 +84,10 @@ def main() -> None:
     adb("shell", "screencap", "-p", device_path)
     adb("pull", device_path, str(screenshot_path), timeout=30)
 
+    print("VISTA_MAP_LOGCAT_START")
+    print(adb("logcat", "-d", "-s", "VISTA_MAP:I", "VISTA_MAP:E", timeout=20)[-12000:])
+    print("VISTA_MAP_LOGCAT_END")
+
     image = Image.open(screenshot_path).convert("RGB")
     width, height = image.size
     # Inspect the central map viewport, away from the search bar, controls and footer.
