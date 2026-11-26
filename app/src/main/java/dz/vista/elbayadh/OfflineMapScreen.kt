@@ -200,7 +200,7 @@ internal fun OfflineMapScreen(
                         PropertyFactory.circleStrokeColor("#FFF8EA"), PropertyFactory.circleStrokeWidth(2.2f)
                     ))
                 }
-                style.addSource(GeoJsonSource(USER_SOURCE_ID, FeatureCollection.fromFeatures(arrayOf())))
+                style.addSource(GeoJsonSource(USER_SOURCE_ID, FeatureCollection.fromFeatures(emptyArray<Feature>())))
                 style.addLayer(CircleLayer(USER_LAYER_ID, USER_SOURCE_ID).withProperties(
                     PropertyFactory.circleColor("#1677FF"), PropertyFactory.circleRadius(9f),
                     PropertyFactory.circleStrokeColor("#FFFFFF"), PropertyFactory.circleStrokeWidth(3f)
@@ -229,6 +229,9 @@ internal fun OfflineMapScreen(
         }
     }
 
+    var permissionRequestAction: (() -> Unit)? = null
+    var freshLocationAction: (() -> Unit)? = null
+
     fun showUserLocation(location: Location) {
         val point = Point.fromLngLat(location.longitude, location.latitude)
         mapRef?.style?.getSourceAs<GeoJsonSource>(USER_SOURCE_ID)?.setGeoJson(Feature.fromGeometry(point))
@@ -240,7 +243,7 @@ internal fun OfflineMapScreen(
         val fine = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
         val coarse = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         if (!fine && !coarse) {
-            locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION))
+            permissionRequestAction?.invoke()
             return
         }
         val manager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -271,9 +274,12 @@ internal fun OfflineMapScreen(
 
     val locationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grants ->
         val allowed = grants[Manifest.permission.ACCESS_FINE_LOCATION] == true || grants[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-        if (allowed) requestFreshLocation()
+        if (allowed) freshLocationAction?.invoke()
         else locationMessage = if (catalogueLanguage == CatalogueLanguage.AR) "اسمح للتطبيق بالوصول إلى موقعك" else "Allow location access to use this feature"
     }
+
+    permissionRequestAction = { locationPermission.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)) }
+    freshLocationAction = { requestFreshLocation() }
 
     LaunchedEffect(searchText) {
         remotePlaces = emptyList()
