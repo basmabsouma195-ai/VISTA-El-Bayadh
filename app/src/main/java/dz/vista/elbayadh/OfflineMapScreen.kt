@@ -65,8 +65,8 @@ internal fun OfflineMapScreen(
         mapView.getMapAsync { map: MapLibreMap ->
             map.setStyle(EL_BAYADH_STYLE) { style ->
                 map.cameraPosition = CameraPosition.Builder()
-                    .target(LatLng(33.68, 1.02))
-                    .zoom(7.2)
+                    .target(LatLng(33.05, 1.14))
+                    .zoom(9.0)
                     .build()
 
                 val features = latestLandmarks.mapNotNull { landmark ->
