@@ -264,7 +264,7 @@ private fun VistaApp() {
                                 onFavoriteToggle = ::toggleFavorite,
                                 onOpenLandmark = { selectedLandmark = it }
                             )
-                            1 -> InfoScreen(c.map, c.mapNote, Icons.Filled.Map)
+                            1 -> MapScreen(language, catalogue?.landmarks.orEmpty(), favoriteIds, onFavoriteToggle = ::toggleFavorite, onOpenLandmark = { selectedLandmark = it })
                             2 -> ScannerScreen(language, catalogue?.landmarks.orEmpty(), onOpenLandmark = { selectedLandmark = it })
                             3 -> FavoritesScreen(
                                 title = c.favorites,
