@@ -9,6 +9,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -17,24 +18,19 @@ import org.maplibre.android.camera.CameraPosition
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
-import org.maplibre.android.maps.Style
 
 private const val EL_BAYADH_STYLE = "asset://maps/el-bayadh-style.json"
 
-/**
- * Native MapLibre map backed by the Wilaya 32 PMTiles archive bundled in APK assets.
- * No network tile/style/font endpoint is used by this first rendering milestone.
- */
+/** Native MapLibre renderer backed by the Wilaya 32 PMTiles archive bundled in APK assets. */
 @Composable
 internal fun OfflineMapScreen(
     language: String,
     landmarks: List<dz.vista.elbayadh.data.Landmark>,
     onOpenLandmark: (dz.vista.elbayadh.data.Landmark) -> Unit
 ) {
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val mapView = remember {
-        MapView(lifecycleOwner.lifecycle.let { lifecycleOwner.lifecycleOwnerContext() })
-    }
+    val mapView = remember(context) { MapView(context) }
 
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = LifecycleEventObserver { _, event ->
@@ -43,7 +39,6 @@ internal fun OfflineMapScreen(
                 Lifecycle.Event.ON_RESUME -> mapView.onResume()
                 Lifecycle.Event.ON_PAUSE -> mapView.onPause()
                 Lifecycle.Event.ON_STOP -> mapView.onStop()
-                Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
                 else -> Unit
             }
         }
