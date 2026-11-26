@@ -102,14 +102,20 @@
       "descriptionFr": "Kef El Melh est un relief montagneux d’intérêt géologique situé entre les communes de Sidi Tifour et de Tadjemout, à la limite des wilayas d’El Bayadh et de Laghouat. Une étude universitaire de terrain indique une altitude d’environ 1 253 m et décrit ses couches comme faisant partie des formations anciennes de l’Atlas saharien. Les coordonnées affichées sont approximatives et dérivées du site étudié ; l’accès et l’itinéraire doivent être confirmés sur le terrain avant toute utilisation pour la navigation touristique.",
       "descriptionEn": "Kef El Melh is a mountain feature of geological interest between the communes of Sidi Tifour and Tadjemout, near the boundary of El Bayadh and Laghouat provinces. A university field study reports an elevation of about 1,253 metres and describes its strata as among the older formations of the Saharan Atlas. The displayed coordinates are approximate and derived from the study location; access and the route should be field-checked before being used for tourist navigation.",
       "verification": "under_review",
-      "latitude": 33.6447,
-      "longitude": 1.8561,
+      "latitude": 33.6474,
+      "longitude": 1.8642,
       "sources": [
         {
           "title": "دراسة جامعية حول جبل كاف الملح – جامعة ورقلة",
           "url": "https://dspace.univ-ouargla.dz/jspui/bitstream/123456789/36067/1/Hassini-%20Barouki.pdf",
           "publisher": "جامعة قاصدي مرباح ورقلة",
           "note": "تحدد الدراسة موقع أخذ العينات بين سيدي طيفور وتاجروت، الارتفاع 1253م والإحداثيات؛ الإحداثيات تقريبية لنطاق الدراسة."
+        },
+        {
+          "title": "Kef El Melh – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/N5928920596",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "إحداثيات قمة كاف الملح المنشورة: 33.6474, 1.8642؛ أدق من نقطة نطاق الدراسة الجامعية."
         }
       ]
     },
@@ -198,8 +204,16 @@
           "url": "https://elmaouid.dz/%D9%88%D9%84%D8%A7%D9%8A%D8%A9-%D8%A7%D9%84%D8%A8%D9%8A%D8%B6-%D9%85%D8%AF%D9%8A%D9%86%D8%A9-%D8%A7%D9%84%D9%85%D9%88%D8%A7%D9%82%D8%B9-%D8%A7%D9%84%D8%A3%D8%AB%D8%B1%D9%8A%D8%A9-%D9%88%D9%85%D8%AD/",
           "publisher": "الموعد اليومي",
           "note": "تقرير صحفي سياحي يصف واحة عين النخيلة وموقعها على الطريق بين بوسمغون والأبيض سيدي الشيخ؛ ليست هي نفسها واحة القصر."
+        },
+        {
+          "title": "Oasis de Boussemghoun – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/fr/W388694245",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "إحداثيات معلم الواحة المسجل كمنطقة طبيعية: 32.8634, 0.0155؛ تمثل موضع/مركز المعلم المسجل لا كل حدود الواحة."
         }
-      ]
+      ],
+      "latitude": 32.8634,
+      "longitude": 0.0155
     },
     {
       "id": "boussemghoun-old-mosque",
@@ -281,8 +295,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/node/561",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "يوثق المسجد والزاوية التجانية وموقعها داخل القصر ووصف مرافقها."
+        },
+        {
+          "title": "Ksour de l’Atlas Saharien Algérien – UNESCO",
+          "url": "https://whc.unesco.org/fr/listesindicatives/6831/",
+          "publisher": "UNESCO World Heritage Centre",
+          "note": "إحداثيات قصر بوسمغون الواردة في القائمة التمهيدية لليونسكو: 32°51′53.27″N, 0°01′11.8″E، محولة إلى درجات عشرية."
         }
-      ]
+      ],
+      "latitude": 32.864797,
+      "longitude": 0.019944
     },
     {
       "id": "rock-art-merdoufa",
@@ -357,8 +379,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/232",
           "publisher": "خريطة التراث الثقافي الجزائري",
           "note": "المصدر يثبت الموقع وقرار الجرد، ويعرض الوصف والروايات المحلية."
+        },
+        {
+          "title": "Ksar al Ghassoul – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/N5856731885",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "نقطة أثرية مسجلة باسم Ksar al Ghassoul: 33.38116, 1.19712."
         }
-      ]
+      ],
+      "latitude": 33.38116,
+      "longitude": 1.19712
     },
     {
       "id": "ksar-stitten",
@@ -490,8 +520,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/435",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "بطاقة مديرية الثقافة لموقع الضريح ووصفه المعماري وتسجيله في الجرد الإضافي."
+        },
+        {
+          "title": "ضريح سيدي الشيخ – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/N4689288194",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "إحداثيات معلم ضريح سيدي الشيخ: 32.89164, 0.54499؛ تتوافق مع موضع الضريح في الأبيض سيدي الشيخ."
         }
-      ]
+      ],
+      "latitude": 32.89164,
+      "longitude": 0.54499
     },
     {
       "id": "ksar-ain-hachifa",
@@ -534,8 +572,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:Barrage_de_Berezina_d%27El-bayadh.jpg",
           "publisher": "Wikimedia Commons · BoukhalfaAlaa",
           "note": "صورة أخرى للسد بترخيص CC BY-SA 4.0؛ لم تُنسخ إلى أصول التطبيق بعد."
+        },
+        {
+          "title": "Barrage de Brezina – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/W239715535",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "إحداثيات المسطح المائي/سد بريزينة: 33.1631, 1.2597."
         }
-      ]
+      ],
+      "latitude": 33.1631,
+      "longitude": 1.2597
     },
     {
       "id": "rock-art-kharima",
@@ -648,8 +694,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/1357",
           "publisher": "مديرية الثقافة لولاية البيض / خريطة التراث الثقافي الجزائري",
           "note": "مصدر الموقع والوصف المعماري والتاريخ الوارد في البطاقة."
+        },
+        {
+          "title": "Borj Sidi Hamza – OpenStreetMap عبر Mapcarta",
+          "url": "https://mapcarta.com/fr/N5856732184",
+          "publisher": "OpenStreetMap / Mapcarta",
+          "note": "إحداثيات الأطلال المسجلة باسم Borj Sidi Hamza: 33.09903, 1.26222؛ وتتوافق مع وصف مديرية الثقافة لموقع البرج في وسط بريزينة."
         }
-      ]
+      ],
+      "latitude": 33.09903,
+      "longitude": 1.26222
     },
     {
       "id": "hammam-ain-ouarka",
