@@ -72,6 +72,7 @@ import org.maplibre.android.camera.CameraUpdateFactory
 import org.maplibre.android.geometry.LatLng
 import org.maplibre.android.maps.MapLibreMap
 import org.maplibre.android.maps.MapView
+import org.maplibre.android.annotations.MarkerOptions
 import org.maplibre.android.style.layers.CircleLayer
 import org.maplibre.android.style.layers.LineLayer
 import org.maplibre.android.style.layers.Property
@@ -367,6 +368,10 @@ internal fun OfflineMapScreen(
                 if (localSource != null) {
                     localSource.setGeoJson(FeatureCollection.fromFeatures(localFeatures))
                     Log.i("VISTA_MAP", "Injected ${localFeatures.size} offline places into style GeoJSON source")
+                    // Temporary render-path diagnostic: native annotation bypasses style GeoJSON layers.
+                    val diagnosticMarker = map.addMarker(MarkerOptions().position(initialMapCenter).title("VISTA MAP DIAGNOSTIC"))
+                    val diagnosticPixel = map.projection.toScreenLocation(initialMapCenter)
+                    Log.i("VISTA_MAP", "Native diagnostic marker added: ${diagnosticMarker != null}; pixel=${diagnosticPixel.x},${diagnosticPixel.y}; localLayer=${style.getLayer("vista-local-settlement-markers") != null}")
                 } else {
                     Log.e("VISTA_MAP", "Style is missing vista-local-places GeoJSON source")
                 }
