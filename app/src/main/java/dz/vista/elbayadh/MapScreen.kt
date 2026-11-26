@@ -112,7 +112,6 @@ internal fun MapScreen(
     }
 
     DisposableEffect(mapView, lifecycleOwner) {
-        mapView.onCreate(Bundle())
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> mapView.onStart()
@@ -138,6 +137,7 @@ internal fun MapScreen(
         AndroidView(
             factory = {
                 mapView.apply {
+                    onCreate(Bundle())
                     getMapAsync { nativeMap ->
                         map = nativeMap
                         nativeMap.setStyle(VISTA_MAP_STYLE)
@@ -190,7 +190,7 @@ internal fun MapScreen(
         Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
             MapControl(Icons.Default.Add, tr("تكبير", "Zoom in", "Zoom in")) { map?.animateCamera(CameraUpdateFactory.zoomIn()) }
             MapControl(Icons.Default.Remove, tr("تصغير", "Zoom out", "Zoom out")) { map?.animateCamera(CameraUpdateFactory.zoomOut()) }
-            MapControl(Icons.Default.MyLocation, tr("العودة إلى البيض", "Centrer la carte", "Center map")) {
+            MapControl(Icons.Default.MyLocation, tr("مركز ولاية البيض", "Centrer sur El Bayadh", "Center El Bayadh")) {
                 map?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(33.6825, 1.0307), 11.2))
             }
             MapControl(Icons.Default.Layers, tr("طبقات الخريطة", "Couches", "Map layers")) { showLayers = true }
