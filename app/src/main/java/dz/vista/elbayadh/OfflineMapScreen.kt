@@ -76,6 +76,7 @@ import org.maplibre.android.style.layers.LineLayer
 import org.maplibre.android.style.layers.Property
 import org.maplibre.android.style.layers.PropertyFactory
 import org.maplibre.android.style.layers.RasterLayer
+import org.maplibre.android.style.layers.SymbolLayer
 import org.maplibre.android.style.sources.RasterSource
 import org.maplibre.android.style.sources.TileSet
 import org.maplibre.android.style.sources.GeoJsonSource
@@ -98,6 +99,9 @@ private const val USER_SOURCE_ID = "vista-user-location"
 private const val USER_LAYER_ID = "vista-user-location-point"
 private const val ROUTE_SOURCE_ID = "vista-road-route"
 private const val ROUTE_LAYER_ID = "vista-road-route-line"
+private const val LOCAL_PLACES_SOURCE_ID = "vista-local-places"
+private const val LOCAL_PLACES_LAYER_ID = "vista-local-place-markers"
+private const val LOCAL_PLACES_LABEL_LAYER_ID = "vista-local-place-labels"
 
 private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double, val landmarkId: String? = null)
 private data class LocalMapPlace(
@@ -339,6 +343,31 @@ internal fun OfflineMapScreen(
                     PropertyFactory.lineColor("#2878FF"),
                     PropertyFactory.lineWidth(5.5f),
                     PropertyFactory.lineOpacity(0.94f)
+                ))
+
+                // Render the bundled offline place catalogue directly as GeoJSON.
+                val localPlaceFeatures = localMapPlaces.map { place ->
+                    Feature.fromGeometry(Point.fromLngLat(place.longitude, place.latitude)).apply {
+                        addStringProperty("place_name", place.displayName(catalogueLanguage))
+                        addStringProperty("category", place.category)
+                    }
+                }
+                style.addSource(GeoJsonSource(LOCAL_PLACES_SOURCE_ID, FeatureCollection.fromFeatures(localPlaceFeatures)))
+                style.addLayer(CircleLayer(LOCAL_PLACES_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
+                    PropertyFactory.circleColor("#B98236"),
+                    PropertyFactory.circleRadius(3.8f),
+                    PropertyFactory.circleStrokeColor("#FFFDF8"),
+                    PropertyFactory.circleStrokeWidth(1.2f)
+                ))
+                style.addLayer(SymbolLayer(LOCAL_PLACES_LABEL_LAYER_ID, LOCAL_PLACES_SOURCE_ID).withProperties(
+                    PropertyFactory.textField("{place_name}"),
+                    PropertyFactory.textFont(arrayOf("Noto Sans Regular")),
+                    PropertyFactory.textSize(10.5f),
+                    PropertyFactory.textColor("#34485A"),
+                    PropertyFactory.textHaloColor("#FFFDF8"),
+                    PropertyFactory.textHaloWidth(1.2f),
+                    PropertyFactory.textOffset(arrayOf(0f, 0.8f)),
+                    PropertyFactory.textAllowOverlap(false)
                 ))
 
                 map.addOnMapClickListener { coordinate ->
