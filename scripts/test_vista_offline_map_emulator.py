@@ -86,29 +86,41 @@ def main() -> None:
 
     image = Image.open(screenshot_path).convert("RGB")
     width, height = image.size
-    # Exclude the status and bottom navigation bars; inspect only the map canvas.
-    map_canvas = image.crop((0, int(height * 0.06), width, int(height * 0.87)))
-    sample = map_canvas.resize((320, 320))
-    colors = sample.getcolors(maxcolors=102_400) or []
-    unique_colors = len(colors)
-    background = (233, 227, 215)  # Local style's map background.
-    non_background_pixels = sum(
-        count
-        for count, color in colors
-        if sum((color[i] - background[i]) ** 2 for i in range(3)) > 18 ** 2
-    )
+    # Inspect the central map viewport, away from the search bar, controls and footer.
+    map_canvas = image.crop((int(width * 0.16), int(height * 0.20), int(width * 0.96), int(height * 0.66)))
+    pixels = list(map_canvas.getdata())
+    unique_colors = len(set(pixels))
 
-    if unique_colors < 30 or non_background_pixels < 100:
+    def near_color(target: tuple[int, int, int], tolerance: int) -> int:
+        return sum(
+            1 for pixel in pixels
+            if max(abs(pixel[channel] - target[channel]) for channel in range(3)) <= tolerance
+        )
+
+    major_road_pixels = near_color((210, 166, 111), 28)  # #d2a66f
+    minor_road_pixels = near_color((255, 253, 248), 14)  # #fffdf8
+    place_label_pixels = near_color((38, 55, 70), 26)    # #263746
+    place_marker_pixels = near_color((154, 116, 64), 22) # #9A7440
+
+    if unique_colors < 30 or major_road_pixels + minor_road_pixels < 30:
         raise AssertionError(
-            "Offline map did not render visible vector features: "
-            f"{unique_colors} colors, {non_background_pixels} non-background pixels. "
+            "Offline map did not render its road network in the city viewport: "
+            f"{unique_colors} colors, {major_road_pixels} major-road pixels, "
+            f"{minor_road_pixels} minor-road pixels. Screenshot: {screenshot_path}"
+        )
+    if place_label_pixels < 10 and place_marker_pixels < 4:
+        raise AssertionError(
+            "Offline map did not render a settlement label or place marker: "
+            f"{place_label_pixels} label pixels, {place_marker_pixels} marker pixels. "
             f"Screenshot: {screenshot_path}"
         )
 
     print(
-        "OFFLINE MAP VISUAL TEST PASSED: "
-        f"{width}x{height}, {unique_colors} colors, "
-        f"{non_background_pixels} non-background map pixels."
+        "OFFLINE MAP DETAIL TEST PASSED: "
+        f"{width}x{height}, {major_road_pixels} major-road pixels, "
+        f"{minor_road_pixels} minor-road pixels, "
+        f"{place_label_pixels} place-label pixels, "
+        f"{place_marker_pixels} place-marker pixels."
     )
 
 

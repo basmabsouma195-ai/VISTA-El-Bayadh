@@ -219,7 +219,7 @@ internal fun OfflineMapScreen(
     val wilayaMapBoundary = remember(context) { runCatching { loadWilayaMapBoundary(context) }.getOrNull() }
     val wilayaPolygons = wilayaMapBoundary?.polygons.orEmpty()
     val searchViewbox = wilayaMapBoundary?.let { "${it.west},${it.north},${it.east},${it.south}" } ?: "-0.4159,34.4482,2.3603,30.7017"
-    val initialMapCenter = wilayaMapBoundary?.let { LatLng((it.south + it.north) / 2.0, (it.west + it.east) / 2.0) } ?: LatLng(32.57, 0.97)
+    val initialMapCenter = LatLng(33.68, 1.02)
     val localMapPlaces = remember(context) { runCatching { loadLocalMapPlaces(context) }.getOrDefault(emptyList()) }
     val latestOnOpenLandmark by rememberUpdatedState(onOpenLandmark)
     val mapView = remember(context) { MapView(context) }
@@ -320,7 +320,7 @@ internal fun OfflineMapScreen(
             map.setStyle(EL_BAYADH_STYLE) { style ->
                 map.cameraPosition = CameraPosition.Builder()
                     .target(initialMapCenter)
-                    .zoom(8.0)
+                    .zoom(12.0)
                     .build()
 
                 // Keep the map uncluttered on first opening: only the selected search result is pinned.
