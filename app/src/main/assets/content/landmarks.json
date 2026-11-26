@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 22,
+  "contentVersion": 23,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -157,8 +157,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:El-Bayadh_Centre.jpg",
           "publisher": "Wikimedia Commons (وصف الصورة)",
           "note": "وصف توثيقي للموقع واللوحات الرخامية؛ ليس مرجعاً رسمياً لتاريخ إنشاء الساحة."
+        },
+        {
+          "title": "ساحة الشهداء / حديقة الحرية – OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/244157784",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "مضلع OSM لحديقة الحرية، ويُذكر أن «ساحة الشهداء» اسم بديل للموقع. نقطة العرض تمثل مركز المساحة ولا تعني مدخل الساحة."
         }
-      ]
+      ],
+      "latitude": 33.68042,
+      "longitude": 1.0203
     },
     {
       "id": "cheikh-bouamama-statue-el-bayadh",
@@ -642,8 +650,16 @@
           "url": "https://cartes.patrimoineculturelalgerien.org/ar/lieu/32-el-bayadh/557",
           "publisher": "خريطة التراث الثقافي الجزائري – مديرية الثقافة لولاية البيض",
           "note": "الوصف العمراني والينابيع والأحياء؛ تاريخ التأسيس وارد كرواية شفوية."
+        },
+        {
+          "title": "الشلالة الظهرانية – نطاق سكني في OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/444276263",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة تمثيلية لمضلع النطاق السكني المعروف بالشلالة الظهرانية؛ تقريبية لمنطقة القصر وليست إحداثيات مدخل أثري ممسوح."
         }
-      ]
+      ],
+      "latitude": 33.03101,
+      "longitude": 0.05494
     },
     {
       "id": "ksar-arbaouat",
@@ -740,8 +756,16 @@
           "url": "https://commons.wikimedia.org/wiki/File:Barrage_de_Berezina_d%27El-bayadh.jpg",
           "publisher": "Wikimedia Commons · BoukhalfaAlaa",
           "note": "صورة أخرى للسد بترخيص CC BY-SA 4.0؛ لم تُنسخ إلى أصول التطبيق بعد."
+        },
+        {
+          "title": "سد بريزينة – خريطة OpenStreetMap",
+          "url": "https://www.openstreetmap.org/way/239715535",
+          "publisher": "OpenStreetMap contributors (ODbL)",
+          "note": "نقطة تمثيلية لمضلع الخزان المائي (reservoir)، وليست بوابة السد أو نقطة وصول آمنة."
         }
-      ]
+      ],
+      "latitude": 33.1631,
+      "longitude": 1.2597
     },
     {
       "id": "rock-art-kharima",
