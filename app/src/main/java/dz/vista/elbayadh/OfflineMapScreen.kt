@@ -82,8 +82,8 @@ import org.maplibre.geojson.FeatureCollection
 import org.maplibre.geojson.Point
 
 private const val EL_BAYADH_STYLE = "asset://maps/el-bayadh-style.json"
-private const val LANDMARK_SOURCE_ID = "vista-landmarks"
-private const val LANDMARK_LAYER_ID = "vista-landmark-points"
+private const val SEARCH_SOURCE_ID = "vista-search-target"
+private const val SEARCH_LAYER_ID = "vista-search-target-point"
 private const val ROADS_LAYER_ID = "roads-major"
 private const val WATER_LAYER_ID = "water"
 private const val SATELLITE_SOURCE_ID = "vista-satellite-source"
@@ -93,7 +93,7 @@ private const val TERRAIN_LAYER_ID = "vista-terrain-layer"
 private const val USER_SOURCE_ID = "vista-user-location"
 private const val USER_LAYER_ID = "vista-user-location-point"
 
-private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double)
+private data class PlaceSearchResult(val name: String, val latitude: Double, val longitude: Double, val landmarkId: String? = null)
 
 private val MapNavy = Color(0xFF10263D)
 private val MapGold = Color(0xFFC39A58)
@@ -118,6 +118,8 @@ internal fun OfflineMapScreen(
     var baseMap by remember { mutableStateOf("standard") }
     var locationMessage by remember { mutableStateOf("") }
     var remotePlaces by remember { mutableStateOf<List<PlaceSearchResult>>(emptyList()) }
+    var selectedTarget by remember { mutableStateOf<PlaceSearchResult?>(null) }
+    var currentLocation by remember { mutableStateOf<Location?>(null) }
     var isSearchingPlaces by remember { mutableStateOf(false) }
     var searchTrigger by remember { mutableStateOf(0) }
     var activeLocationListener by remember { mutableStateOf<LocationListener?>(null) }
@@ -136,7 +138,7 @@ internal fun OfflineMapScreen(
         listOf("background", "landcover", "landuse", "water", "waterway", "buildings").forEach { id ->
             style.getLayer(id)?.setProperties(PropertyFactory.visibility(if (rasterVisible) Property.NONE else Property.VISIBLE))
         }
-        listOf("place-points", "vista-place-labels", "vista-road-labels", ROADS_LAYER_ID, LANDMARK_LAYER_ID, USER_LAYER_ID).forEach { id ->
+        listOf("place-points", "vista-place-labels", "vista-road-labels", ROADS_LAYER_ID, SEARCH_LAYER_ID, USER_LAYER_ID).forEach { id ->
             style.getLayer(id)?.setProperties(PropertyFactory.visibility(Property.VISIBLE))
         }
     }
@@ -163,7 +165,6 @@ internal fun OfflineMapScreen(
     val matchingLandmarks = landmarks.filter {
         searchText.isNotBlank() && it.name(catalogueLanguage).contains(searchText.trim(), ignoreCase = true)
     }.take(6)
-    val mappedMatches = matchingLandmarks.filter { it.latitude != null && it.longitude != null }
 
     DisposableEffect(lifecycleOwner, mapView) {
         val observer = LifecycleEventObserver { _, event ->
@@ -188,23 +189,12 @@ internal fun OfflineMapScreen(
                     .zoom(8.5)
                     .build()
 
-                val features = latestLandmarks.mapNotNull { landmark ->
-                    val latitude = landmark.latitude
-                    val longitude = landmark.longitude
-                    if (latitude == null || longitude == null ||
-                        latitude !in 31.0..35.0 || longitude !in -1.0..3.0
-                    ) return@mapNotNull null
-                    Feature.fromGeometry(Point.fromLngLat(longitude, latitude)).apply {
-                        addStringProperty("landmark_id", landmark.id)
-                    }
-                }
-                if (features.isNotEmpty()) {
-                    style.addSource(GeoJsonSource(LANDMARK_SOURCE_ID, FeatureCollection.fromFeatures(features.toTypedArray())))
-                    style.addLayer(CircleLayer(LANDMARK_LAYER_ID, LANDMARK_SOURCE_ID).withProperties(
-                        PropertyFactory.circleColor("#C39A58"), PropertyFactory.circleRadius(7.5f),
-                        PropertyFactory.circleStrokeColor("#FFF8EA"), PropertyFactory.circleStrokeWidth(2.2f)
-                    ))
-                }
+                // Keep the map uncluttered on first opening: only the selected search result is pinned.
+                style.addSource(GeoJsonSource(SEARCH_SOURCE_ID, FeatureCollection.fromFeatures(emptyArray<Feature>())))
+                style.addLayer(CircleLayer(SEARCH_LAYER_ID, SEARCH_SOURCE_ID).withProperties(
+                    PropertyFactory.circleColor("#C39A58"), PropertyFactory.circleRadius(9f),
+                    PropertyFactory.circleStrokeColor("#FFF8EA"), PropertyFactory.circleStrokeWidth(2.5f)
+                ))
                 style.addSource(GeoJsonSource(USER_SOURCE_ID, FeatureCollection.fromFeatures(emptyArray<Feature>())))
                 style.addLayer(CircleLayer(USER_LAYER_ID, USER_SOURCE_ID).withProperties(
                     PropertyFactory.circleColor("#1677FF"), PropertyFactory.circleRadius(9f),
@@ -213,7 +203,7 @@ internal fun OfflineMapScreen(
 
                 map.addOnMapClickListener { coordinate ->
                     val screenPoint = map.projection.toScreenLocation(coordinate)
-                    val selectedId = map.queryRenderedFeatures(screenPoint, LANDMARK_LAYER_ID)
+                    val selectedId = map.queryRenderedFeatures(screenPoint, SEARCH_LAYER_ID)
                         .firstOrNull()?.properties()?.get("landmark_id")?.asString
                     val selected = latestLandmarks.firstOrNull { it.id == selectedId }
                     if (selected != null) {
@@ -237,7 +227,18 @@ internal fun OfflineMapScreen(
     var permissionRequestAction: (() -> Unit)? = null
     var freshLocationAction: (() -> Unit)? = null
 
+    fun showSearchTarget(name: String, latitude: Double, longitude: Double, landmarkId: String? = null) {
+        val feature = Feature.fromGeometry(Point.fromLngLat(longitude, latitude)).apply {
+            addStringProperty("place_name", name)
+            if (landmarkId != null) addStringProperty("landmark_id", landmarkId)
+        }
+        selectedTarget = PlaceSearchResult(name, latitude, longitude, landmarkId)
+        mapRef?.style?.getSourceAs<GeoJsonSource>(SEARCH_SOURCE_ID)?.setGeoJson(feature)
+        mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 13.0))
+    }
+
     fun showUserLocation(location: Location) {
+        currentLocation = location
         val point = Point.fromLngLat(location.longitude, location.latitude)
         mapRef?.style?.getSourceAs<GeoJsonSource>(USER_SOURCE_ID)?.setGeoJson(Feature.fromGeometry(point))
         mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 14.0))
@@ -303,7 +304,8 @@ internal fun OfflineMapScreen(
         remotePlaces = withContext(Dispatchers.IO) {
             runCatching {
                 val encoded = URLEncoder.encode(query, "UTF-8")
-                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=6&countrycodes=dz&accept-language=ar").openConnection() as HttpURLConnection
+                // Approximate search window covers El Bayadh Province, including El Abiodh Sidi Cheikh.
+                val connection = URL("https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=jsonv2&limit=8&countrycodes=dz&viewbox=-1.8,35.0,3.0,29.5&bounded=1&accept-language=ar").openConnection() as HttpURLConnection
                 connection.connectTimeout = 8000
                 connection.readTimeout = 8000
                 connection.setRequestProperty("User-Agent", "VISTA-El-Bayadh/0.1.3 (tourism map)")
@@ -313,6 +315,7 @@ internal fun OfflineMapScreen(
                         val item = array.getJSONObject(index)
                         val lat = item.optString("lat").toDoubleOrNull() ?: return@mapNotNull null
                         val lon = item.optString("lon").toDoubleOrNull() ?: return@mapNotNull null
+                        if (lat !in 29.5..35.0 || lon !in -1.8..3.0) return@mapNotNull null
                         PlaceSearchResult(item.optString("display_name"), lat, lon)
                     }
                 } finally { connection.disconnect() }
@@ -359,7 +362,12 @@ internal fun OfflineMapScreen(
                     IconButton(onClick = { searchTrigger += 1 }) {
                         Icon(Icons.Filled.Search, contentDescription = "Search places", tint = MapGold)
                     }
-                    IconButton(onClick = { searchText = ""; remotePlaces = emptyList() }) {
+                    IconButton(onClick = {
+                        searchText = ""
+                        remotePlaces = emptyList()
+                        selectedTarget = null
+                        mapRef?.style?.getSourceAs<GeoJsonSource>(SEARCH_SOURCE_ID)?.setGeoJson(FeatureCollection.fromFeatures(emptyArray<Feature>()))
+                    }) {
                         Text("×", color = MapIvory, fontSize = 22.sp)
                     }
                 }
@@ -378,8 +386,7 @@ internal fun OfflineMapScreen(
                                     val lat = landmark.latitude
                                     val lon = landmark.longitude
                                     if (lat != null && lon != null) {
-                                        mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, lon), 13.0))
-                                        onOpenLandmark(landmark)
+                                        showSearchTarget(landmark.name(catalogueLanguage), lat, lon, landmark.id)
                                     }
                                 }.padding(horizontal = 10.dp, vertical = 9.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -390,14 +397,11 @@ internal fun OfflineMapScreen(
                         }
                         remotePlaces.forEach { place ->
                             Row(Modifier.fillMaxWidth().clickable {
-                                mapRef?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(place.latitude, place.longitude), 13.0))
+                                showSearchTarget(place.name, place.latitude, place.longitude)
                             }.padding(horizontal = 10.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Text(place.name, color = MapIvory, modifier = Modifier.weight(1f), fontSize = 12.sp, maxLines = 2)
                                 Text(if (catalogueLanguage == CatalogueLanguage.AR) "انتقال" else "Go", color = MapGold, fontSize = 10.sp)
                             }
-                        }
-                        if (mappedMatches.isEmpty() && matchingLandmarks.isNotEmpty()) {
-                            Text(if (catalogueLanguage == CatalogueLanguage.AR) "هذه المعالم موثقة في الدليل، لكن إحداثياتها الدقيقة لم تُعتمد بعد." else "Coordinates are not yet verified for these places.", color = MapIvory.copy(alpha = 0.72f), fontSize = 11.sp, modifier = Modifier.padding(8.dp))
                         }
                     }
                 }
@@ -429,6 +433,20 @@ internal fun OfflineMapScreen(
                     Text(if (catalogueLanguage == CatalogueLanguage.AR) "الأقمار الصناعية" else "Satellite", color = if (baseMap == "satellite") MapGold else MapIvory, modifier = Modifier.clickable { setBaseMap("satellite") })
                     Text(if (catalogueLanguage == CatalogueLanguage.AR) "التضاريس" else "Terrain", color = if (baseMap == "terrain") MapGold else MapIvory, modifier = Modifier.clickable { setBaseMap("terrain") })
                 }
+            }
+        }
+
+        val target = selectedTarget
+        val user = currentLocation
+        if (target != null && user != null) {
+            val result = FloatArray(1)
+            Location.distanceBetween(user.latitude, user.longitude, target.latitude, target.longitude, result)
+            val km = result[0] / 1000.0
+            Surface(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 104.dp), shape = RoundedCornerShape(10.dp), color = MapNavy.copy(alpha = 0.96f)) {
+                Text(
+                    if (catalogueLanguage == CatalogueLanguage.AR) "المسافة المباشرة إلى ${target.name.substringBefore(",")}: ${String.format(java.util.Locale.US, "%.2f", km)} كم" else "Straight-line distance: ${String.format(java.util.Locale.US, "%.2f", km)} km",
+                    color = MapIvory, fontSize = 12.sp, modifier = Modifier.padding(10.dp)
+                )
             }
         }
 
