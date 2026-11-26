@@ -80,16 +80,16 @@ def main() -> None:
     width, height = image.size
     # Exclude the status and bottom navigation bars; inspect only the map canvas.
     map_canvas = image.crop((0, int(height * 0.06), width, int(height * 0.87)))
-    colors = map_canvas.getcolors(maxcolors=1_000_000) or []
+    sample = map_canvas.resize((320, 320))\n    colors = sample.getcolors(maxcolors=102_400) or []
     unique_colors = len(colors)
     background = (233, 227, 215)  # Local style's map background.
     non_background_pixels = sum(
         count
-        for color, count in colors
+        for count, color in colors
         if sum((color[i] - background[i]) ** 2 for i in range(3)) > 18 ** 2
     )
 
-    if unique_colors < 30 or non_background_pixels < 500:
+    if unique_colors < 30 or non_background_pixels < 100:
         raise AssertionError(
             "Offline map did not render visible vector features: "
             f"{unique_colors} colors, {non_background_pixels} non-background pixels. "
