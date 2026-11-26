@@ -93,6 +93,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
+import org.maplibre.android.MapLibre
 import dz.vista.elbayadh.data.TripPlansStore
 import dz.vista.elbayadh.data.OfflineCatalogue
 import dz.vista.elbayadh.data.FavoritesStore
@@ -155,6 +156,7 @@ private fun copyFor(language: AppLanguage) = when (language) {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MapLibre.getInstance(this)
         setContent { VistaApp() }
     }
 }
