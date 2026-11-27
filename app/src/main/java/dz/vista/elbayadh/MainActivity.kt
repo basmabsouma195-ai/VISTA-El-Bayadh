@@ -513,13 +513,23 @@ private fun LandmarkCard(
                 Spacer(Modifier.height(5.dp))
                 Text(status, color = Gold, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
             }
-            LandmarkThumbnail(landmark.image, landmark.name(language))
-            IconButton(onClick = onFavoriteToggle) {
-                Icon(
-                    Icons.Filled.Favorite,
-                    contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
-                    tint = if (isFavorite) Color(0xFFB24E4E) else Muted
-                )
+            Box(Modifier.size(76.dp)) {
+                LandmarkThumbnail(landmark.image, landmark.name(language))
+                Surface(
+                    modifier = Modifier.align(Alignment.TopEnd).padding(4.dp).size(29.dp).clickable(onClick = onFavoriteToggle),
+                    shape = CircleShape,
+                    color = Color.White.copy(alpha = 0.94f),
+                    shadowElevation = 2.dp
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            Icons.Filled.Favorite,
+                            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                            tint = if (isFavorite) Color(0xFFB24E4E) else Color(0xFF81796F),
+                            modifier = Modifier.size(17.dp)
+                        )
+                    }
+                }
             }
         }
     }
