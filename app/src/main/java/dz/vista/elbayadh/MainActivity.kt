@@ -91,8 +91,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
@@ -547,8 +545,7 @@ private fun LandmarkDetailDialog(
     val label: (String, String, String) -> String = { ar, fr, en ->
         when (language) { CatalogueLanguage.AR -> ar; CatalogueLanguage.FR -> fr; CatalogueLanguage.EN -> en }
     }
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(Modifier.fillMaxSize().background(Ivory)) {
+    Column(Modifier.fillMaxSize().background(Ivory)) {
             Row(Modifier.fillMaxWidth().background(Forest).padding(horizontal = 16.dp, vertical = 13.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = onDismiss) { Text(label("رجوع", "Retour", "Back"), color = Color.White) }
@@ -614,7 +611,6 @@ private fun LandmarkDetailDialog(
                     }
                 }
             }
-        }
     }
 }
 
