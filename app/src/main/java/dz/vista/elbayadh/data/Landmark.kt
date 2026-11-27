@@ -26,7 +26,10 @@ data class Landmark(
     val audioAr: String?,
     val audioFr: String?,
     val audioEn: String?,
-    val sources: List<LandmarkSource> = emptyList()
+    val sources: List<LandmarkSource> = emptyList(),
+    val originAr: String = "", val originFr: String = "", val originEn: String = "",
+    val historyAr: String = "", val historyFr: String = "", val historyEn: String = "",
+    val detailsAr: String = "", val detailsFr: String = "", val detailsEn: String = ""
 ) {
     fun name(language: CatalogueLanguage): String = when (language) {
         CatalogueLanguage.AR -> nameAr
@@ -38,6 +41,21 @@ data class Landmark(
         CatalogueLanguage.AR -> descriptionAr
         CatalogueLanguage.FR -> descriptionFr.ifBlank { descriptionAr }
         CatalogueLanguage.EN -> descriptionEn.ifBlank { descriptionAr }
+    }
+    fun origin(language: CatalogueLanguage): String = when (language) {
+        CatalogueLanguage.AR -> originAr
+        CatalogueLanguage.FR -> originFr.ifBlank { originAr }
+        CatalogueLanguage.EN -> originEn.ifBlank { originAr }
+    }
+    fun history(language: CatalogueLanguage): String = when (language) {
+        CatalogueLanguage.AR -> historyAr
+        CatalogueLanguage.FR -> historyFr.ifBlank { historyAr }
+        CatalogueLanguage.EN -> historyEn.ifBlank { historyAr }
+    }
+    fun details(language: CatalogueLanguage): String = when (language) {
+        CatalogueLanguage.AR -> detailsAr
+        CatalogueLanguage.FR -> detailsFr.ifBlank { detailsAr }
+        CatalogueLanguage.EN -> detailsEn.ifBlank { detailsAr }
     }
 
     companion object {
@@ -75,7 +93,10 @@ data class Landmark(
                 audioAr = json.optString("audioAr").takeIf(String::isNotBlank),
                 audioFr = json.optString("audioFr").takeIf(String::isNotBlank),
                 audioEn = json.optString("audioEn").takeIf(String::isNotBlank),
-                sources = sources
+                sources = sources,
+                originAr = json.optString("originAr"), originFr = json.optString("originFr"), originEn = json.optString("originEn"),
+                historyAr = json.optString("historyAr"), historyFr = json.optString("historyFr"), historyEn = json.optString("historyEn"),
+                detailsAr = json.optString("detailsAr"), detailsFr = json.optString("detailsFr"), detailsEn = json.optString("detailsEn")
             )
         }
     }

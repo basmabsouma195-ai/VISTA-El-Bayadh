@@ -89,6 +89,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -533,110 +538,84 @@ private fun LandmarkDetailDialog(
     onFavoriteToggle: () -> Unit
 ) {
     val title = landmark.name(language)
-    val description = landmark.description(language)
-    val status = when (landmark.verification) {
-        VerificationStatus.VERIFIED -> when (language) {
-            CatalogueLanguage.AR -> "معلومة موثقة"
-            CatalogueLanguage.FR -> "Information vérifiée"
-            CatalogueLanguage.EN -> "Verified information"
-        }
-        VerificationStatus.ORAL_HISTORY -> when (language) {
-            CatalogueLanguage.AR -> "رواية شفوية"
-            CatalogueLanguage.FR -> "Tradition orale"
-            CatalogueLanguage.EN -> "Oral history"
-        }
-        VerificationStatus.UNDER_REVIEW -> when (language) {
-            CatalogueLanguage.AR -> "المعلومات قيد التحقيق"
-            CatalogueLanguage.FR -> "Informations en cours de vérification"
-            CatalogueLanguage.EN -> "Information under review"
-        }
+    val galleryPhotos = remember(landmark.id, photos, landmark.image) {
+        (photos + listOfNotNull(landmark.image)).filter(String::isNotBlank).distinct()
     }
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title, color = Forest, fontWeight = FontWeight.Bold) },
-        text = {
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                LandmarkThumbnail(photos.firstOrNull() ?: landmark.image, title, large = true)
-                val galleryPhotos = (photos + listOfNotNull(landmark.image)).distinct()
+    var selectedPhotoIndex by remember(landmark.id) { mutableIntStateOf(0) }
+    val selectedPhoto = galleryPhotos.getOrNull(selectedPhotoIndex)
+    var horizontalDrag by remember { mutableStateOf(0f) }
+    val label: (String, String, String) -> String = { ar, fr, en ->
+        when (language) { CatalogueLanguage.AR -> ar; CatalogueLanguage.FR -> fr; CatalogueLanguage.EN -> en }
+    }
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Column(Modifier.fillMaxSize().background(Ivory)) {
+            Row(Modifier.fillMaxWidth().background(Forest).padding(horizontal = 16.dp, vertical = 13.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onDismiss) { Text(label("رجوع", "Retour", "Back"), color = Color.White) }
+                Text(title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp,
+                    modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                TextButton(onClick = onFavoriteToggle) { Text(if (isFavorite) "♥" else "♡", color = Gold, fontSize = 23.sp) }
+            }
+            Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 26.dp)) {
+                if (selectedPhoto != null) {
+                    Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp)
+                        .pointerInput(galleryPhotos, selectedPhotoIndex) {
+                            detectHorizontalDragGestures(
+                                onDragEnd = {
+                                    if (horizontalDrag < -42f && galleryPhotos.size > 1)
+                                        selectedPhotoIndex = (selectedPhotoIndex + 1) % galleryPhotos.size
+                                    else if (horizontalDrag > 42f && galleryPhotos.size > 1)
+                                        selectedPhotoIndex = (selectedPhotoIndex - 1 + galleryPhotos.size) % galleryPhotos.size
+                                    horizontalDrag = 0f
+                                },
+                                onHorizontalDrag = { _, amount -> horizontalDrag += amount }
+                            )
+                        }) {
+                        LandmarkThumbnail(selectedPhoto, title, large = true)
+                    }
+                }
                 if (galleryPhotos.isNotEmpty()) {
-                    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top = 11.dp, bottom = 12.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                        galleryPhotos.forEach { photo ->
-                            Box(Modifier.width(78.dp).height(68.dp).clip(RoundedCornerShape(11.dp)).background(Color(0xFF5B94A4))) {
+                    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                        galleryPhotos.forEachIndexed { index, photo ->
+                            Box(Modifier.width(78.dp).height(68.dp).clip(RoundedCornerShape(11.dp))
+                                .background(if (index == selectedPhotoIndex) Gold else Color(0xFF5B94A4))
+                                .clickable { selectedPhotoIndex = index }
+                                .padding(if (index == selectedPhotoIndex) 2.dp else 0.dp)) {
                                 LandmarkThumbnail(photo, title)
                             }
                         }
                     }
                 }
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    description.ifBlank {
-                        when (language) {
-                            CatalogueLanguage.AR -> "نعمل على إعداد بطاقة هذا المعلم بمعلومات وصور ميدانية موثوقة."
-                            CatalogueLanguage.FR -> "La fiche de ce site sera complétée avec des informations et des photos de terrain vérifiées."
-                            CatalogueLanguage.EN -> "This landmark's profile is being prepared with verified information and field photographs."
-                        }
-                    },
-                    color = Ink, fontSize = 14.sp, lineHeight = 22.sp
-                )
-                Spacer(Modifier.height(10.dp))
-                Text(status, color = Gold, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
-                if (landmark.sources.isNotEmpty()) {
-                    Spacer(Modifier.height(14.dp))
-                    Text(
-                        when (language) {
-                            CatalogueLanguage.AR -> "المصادر والمراجع"
-                            CatalogueLanguage.FR -> "Sources et références"
-                            CatalogueLanguage.EN -> "Sources and references"
-                        },
-                        color = Forest,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 13.sp
-                    )
-                    landmark.sources.forEach { source ->
-                        Spacer(Modifier.height(7.dp))
-                        Text(source.title, color = Ink, fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
-                        source.publisher?.let { Text(it, color = Muted, fontSize = 11.sp) }
-                        source.note?.let { Text(it, color = Muted, fontSize = 11.sp, lineHeight = 16.sp) }
-                        source.url?.let { Text(it, color = Forest, fontSize = 10.sp) }
+                Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp)) {
+                    Text(label("التعريف", "Présentation", "Introduction"), color = Forest, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                    Text(landmark.description(language).ifBlank {
+                        label("سيُضاف التعريف التفصيلي لهذا المعلم عند استلام مادته التحريرية.",
+                            "La présentation détaillée sera ajoutée après réception du contenu éditorial.",
+                            "The detailed introduction will be added when its editorial content is provided.")
+                    }, color = Ink, fontSize = 14.sp, lineHeight = 24.sp, modifier = Modifier.padding(top = 7.dp))
+                    val origin = landmark.origin(language)
+                    if (origin.isNotBlank()) {
+                        Spacer(Modifier.height(18.dp))
+                        Text(label("النشأة", "Origine", "Origins"), color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(origin, color = Ink, fontSize = 14.sp, lineHeight = 24.sp, modifier = Modifier.padding(top = 7.dp))
+                    }
+                    val history = landmark.history(language)
+                    if (history.isNotBlank()) {
+                        Spacer(Modifier.height(18.dp))
+                        Text(label("التاريخ والتطور", "Histoire et évolution", "History and development"), color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(history, color = Ink, fontSize = 14.sp, lineHeight = 24.sp, modifier = Modifier.padding(top = 7.dp))
+                    }
+                    val details = landmark.details(language)
+                    if (details.isNotBlank()) {
+                        Spacer(Modifier.height(18.dp))
+                        Text(label("معلومات وتفاصيل إضافية", "Informations complémentaires", "Further information"), color = Forest, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(details, color = Ink, fontSize = 14.sp, lineHeight = 24.sp, modifier = Modifier.padding(top = 7.dp))
                     }
                 }
-                if (landmark.latitude != null && landmark.longitude != null) {
-                    Spacer(Modifier.height(8.dp))
-                    Text("%.5f, %.5f".format(landmark.latitude, landmark.longitude), color = Muted, fontSize = 12.sp)
-                }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = onFavoriteToggle) {
-                Text(
-                    if (isFavorite) {
-                        when (language) {
-                            CatalogueLanguage.AR -> "إزالة من المفضلة"
-                            CatalogueLanguage.FR -> "Retirer des favoris"
-                            CatalogueLanguage.EN -> "Remove from favorites"
-                        }
-                    } else {
-                        when (language) {
-                            CatalogueLanguage.AR -> "أضف إلى المفضلة"
-                            CatalogueLanguage.FR -> "Ajouter aux favoris"
-                            CatalogueLanguage.EN -> "Add to favorites"
-                        }
-                    },
-                    color = Forest
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(when (language) {
-                    CatalogueLanguage.AR -> "إغلاق"
-                    CatalogueLanguage.FR -> "Fermer"
-                    CatalogueLanguage.EN -> "Close"
-                }, color = Muted)
-            }
-        },
-        containerColor = Ivory
-    )
+        }
+    }
 }
 
 @Composable
@@ -1167,6 +1146,33 @@ private fun MoreScreen(
                 Spacer(Modifier.height(12.dp))
                 Text(if (isArabic) "عن المشروع" else if (isFrench) "Le projet" else "Project", color = Forest, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(if (isArabic) "يهدف VISTA إلى إبراز المقومات السياحية والتراثية والطبيعية لولاية البيض في دليل موحد." else if (isFrench) "VISTA valorise les ressources touristiques, patrimoniales et naturelles de la wilaya d’El Bayadh." else "VISTA showcases the tourism, heritage and natural assets of El Bayadh in one guide.", color = Muted, fontSize = 13.sp, lineHeight = 20.sp, modifier = Modifier.padding(top = 6.dp))
+            }
+        }
+        val uriHandler = LocalUriHandler.current
+        val sourceEntries = landmarks.flatMap { item ->
+            item.sources.map { source -> item.name(when (language) {
+                AppLanguage.Arabic -> CatalogueLanguage.AR
+                AppLanguage.French -> CatalogueLanguage.FR
+                AppLanguage.English -> CatalogueLanguage.EN
+            }) to source }
+        }.distinctBy { it.second.url ?: it.second.title }
+        Spacer(Modifier.height(18.dp))
+        Text(if (isArabic) "المصادر والمراجع" else if (isFrench) "Sources et références" else "Sources & references",
+            color = Forest, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(9.dp))
+        Card(Modifier.fillMaxWidth(), shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White)) {
+            Column(Modifier.padding(14.dp)) {
+                if (sourceEntries.isEmpty()) {
+                    Text(if (isArabic) "ستظهر هنا مراجع المعالم وروابطها." else if (isFrench) "Les références des sites apparaîtront ici." else "Landmark references and links will appear here.", color = Muted, fontSize = 13.sp)
+                } else sourceEntries.forEach { (landmarkName, source) ->
+                    Column(Modifier.fillMaxWidth().padding(vertical = 7.dp)) {
+                        Text(landmarkName, color = Gold, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                        Text(source.title, color = Forest, fontSize = 13.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.then(if (source.url != null) Modifier.clickable { runCatching { uriHandler.openUri(source.url) } } else Modifier))
+                        source.publisher?.let { Text(it, color = Muted, fontSize = 11.sp) }
+                        source.note?.let { Text(it, color = Muted, fontSize = 11.sp, lineHeight = 16.sp) }
+                    }
+                }
             }
         }
         Spacer(Modifier.height(22.dp))
