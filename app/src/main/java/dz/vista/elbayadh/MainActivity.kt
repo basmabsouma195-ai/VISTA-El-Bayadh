@@ -281,7 +281,7 @@ private fun VistaApp() {
                     }
                 }
                 selectedLandmark?.let { landmark ->
-                    LandmarkDetailDialog(
+                    LandmarkDetailScreen(
                         landmark = landmark,
                         language = when (language) {
                             AppLanguage.Arabic -> CatalogueLanguage.AR
@@ -527,7 +527,7 @@ private fun LandmarkCard(
 
 
 @Composable
-private fun LandmarkDetailDialog(
+private fun LandmarkDetailScreen(
     landmark: Landmark,
     language: CatalogueLanguage,
     onDismiss: () -> Unit,
