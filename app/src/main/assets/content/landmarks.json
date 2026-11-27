@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contentVersion": 19,
+  "contentVersion": 20,
   "province": {
     "id": "DZ-32",
     "name": {
@@ -464,7 +464,7 @@
       "nameAr": "قصر الغاسول",
       "nameFr": "Ksar de Ghassoul",
       "nameEn": "Ghassoul Ksar",
-      "descriptionAr": "يقع قصر الغاسول ببلدية الغاسول في ولاية البيض، وهو مسجل في قائمة الجرد الإضافي بقرار ولائي رقم 0345 المؤرخ في 5 أفريل 2016. تصف بطاقة خريطة التراث القصر بأنه مبني فوق هضبة مرتفعة، بمساكن متراصة ذات تنظيم دائري ومدخلين رئيسيين شرقي وغربي، وتذكر أن الأزقة مرصوفة بالحجارة والأخشاب وأن المسجد يقع في أعلى القصر. وتشير البطاقة إلى نشاط فلاحي وحرفي وتجاري ارتبط بالبساتين والتخزين والنسيج والحدادة ودباغة الجلود. أما عمر القصر وأصل تسميته فتوردهما البطاقة في شكل روايات محلية مختلفة.",
+      "descriptionAr": "قصر الغاسول من القصور التاريخية بولاية البيض، يقع ببلدية الغاسول، وهو مسجل في قائمة الجرد الإضافي بموجب القرار الولائي رقم 0345 المؤرخ في 05 أفريل 2016. وتتناول هذه البطاقة أصل التسمية، وموقع القصر وتخطيطه العمراني، ومعالمه الدينية، والحياة الاقتصادية والاجتماعية لسكانه.",
       "descriptionFr": "Le ksar de Ghassoul se trouve dans la commune de Ghassoul, wilaya d’El Bayadh. Il est inscrit à l’inventaire supplémentaire par arrêté de wilaya n° 0345 du 5 avril 2016. La fiche de la Carte du patrimoine culturel le décrit comme un établissement bâti sur un plateau élevé, avec des habitations regroupées selon une organisation circulaire, deux entrées principales à l’est et à l’ouest, des ruelles pavées de pierre et de bois, et une mosquée au sommet du ksar. Elle évoque également des activités agricoles, artisanales et commerciales liées aux jardins, au stockage, au tissage, à la forge et au travail du cuir. L’ancienneté du ksar et l’origine de son nom sont présentées sous forme de récits locaux divergents.",
       "descriptionEn": "Ghassoul Ksar is in Ghassoul municipality, El Bayadh Province. It was entered on the supplementary inventory under wilaya order No. 0345 dated 5 April 2016. The Algerian Cultural Heritage Map describes a settlement on an elevated plateau, with closely grouped houses in a circular arrangement, two main eastern and western gates, stone-and-wood paved lanes, and a mosque at the upper part of the ksar. The record also notes farming, craft, and trading activities associated with gardens, storage, weaving, metalwork, and leatherwork. The age of the ksar and the origin of its name are presented as differing local accounts.",
       "verification": "verified",
@@ -489,7 +489,10 @@
         }
       ],
       "latitude": 33.386833,
-      "longitude": 1.195194
+      "longitude": 1.195194,
+      "originAr": "يُقدّر عمر قصر الغاسول بنحو ثمانية قرون. وتختلف الروايات المحلية حول أصل تسميته؛ إذ تنسب إحداها الاسم إلى قبيلة «بني غسل» التي يُقال إنها من القبائل العامرية، بينما تربطه رواية أخرى بتربة بيضاء كانت تُستعمل في غسل الصوف والثياب، ومنها اشتُق اسم الغاسول. وتُعرض هذه الأقوال بوصفها روايات متداولة حول أصل التسمية.",
+      "historyAr": "قصر الغاسول مسجل في قائمة الجرد الإضافي للتراث بموجب القرار الولائي رقم 0345 المؤرخ في 05 أفريل 2016. ويُقدّر عمره، وفق الروايات الواردة في الوصف المحلي، بنحو ثمانية قرون.",
+      "detailsAr": "**موقع القصر وتخطيطه العمراني**\nيقع القصر فوق هضبة مرتفعة تطل على الجهات المحيطة. ويُرجّح أن اختيار هذا الموقع ارتبط باعتبارات أمنية، إلى جانب وفرة المياه وخصوبة الأراضي الزراعية. يتميز القصر بتخطيط معماري تتراص فيه المساكن في شكل دائري ومتداخل، ويضم مدخلين رئيسيين هما الباب الشرقي والباب الغربي، كما يحيط به سور. وقد رُصفت أزقته بالحجارة والأخشاب بسبب انحدارها، حمايةً لها من تأثير الأمطار والسيول. وتتجه معظم شوارعه نحو المسجد الذي يتوسط القصر في أعلى الهضبة.\n\n**المعالم الدينية والتعليم**\nاعتمد سكان القصر في البداية على الكتاتيب لتعليم أبنائهم، ثم ظهرت الزاوية. وتذكر بعض الروايات توافد عدد كبير من المشايخ إلى المنطقة، ومن بينهم الولي الصالح سيدي علي بن سعيد، الذي يُقال إنه كان يدرّس أبناء القصر، ولا يزال ضريحه موجوداً هناك. كما يُقال إنه جد الولي الصالح سيدي الشيخ. ويحتوي المسجد العتيق على بعض المخطوطات.\n\n**الحياة الاقتصادية**\nكانت الفلاحة النشاط الأساسي لسكان القصر، إذ تحيط به الحقول والبساتين من مختلف الجهات. ومن المحاصيل التي اشتهرت بها المنطقة التين والنعناع، وهو ما ساهم في تحقيق الاكتفاء الذاتي للسكان. كما وُجدت المطامر المخصصة لتخزين المنتجات، وكانت تُبنى من الطين والتبن وتتميز بالبرودة للمساعدة على حفظ المحاصيل ومنع تعفنها.\n\nوعُرفت داخل القصر دكاكين صغيرة تُعرض فيها السلع وتُبادل بالمقايضة مع سكان البدو الرحل. ويقع القصر في منطقة عبور على طريق التجارة في المغرب الأوسط. وإلى جانب النشاط التجاري والزراعي، مارس السكان عدداً من الصناعات التقليدية، من بينها النسيج والحدادة ودباغة الجلود."
     },
     {
       "id": "ksar-stitten",
